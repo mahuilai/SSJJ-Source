@@ -1,0 +1,17 @@
+<component size="108,33" extention="Button">
+  <controller name="button" pages="0,up,1,down,2,over,3,selectedOver" selected="0"/>
+  <displayList>
+    <image id="n0_nto6" name="n0" src="h4mm2a" xy="0,0">
+      <gearDisplay controller="button" pages="0"/>
+      <relation target="" sidePair="width-width,height-height"/>
+    </image>
+    <image id="n1_nto6" name="n1" src="h4mm2b" xy="0,0">
+      <gearDisplay controller="button" pages="1,2,3"/>
+      <relation target="" sidePair="width-width,height-height"/>
+    </image>
+    <text id="n2_nto6" name="title" xy="0,0" size="108,33" font="Microsoft YaHei" fontSize="14" color="#ffffff" align="center" vAlign="middle" autoSize="none" bold="true" singleLine="true" text="套装">
+      <relation target="" sidePair="width-width,height-height"/>
+    </text>
+  </displayList>
+  <Button/>
+</component>

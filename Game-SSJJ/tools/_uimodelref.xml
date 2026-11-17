@@ -1,0 +1,190 @@
+<Refrence>
+  <blastlikes>
+    <AssetInfo Key="backimage" BundleName="ui/blastmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/blastModel/likes/likes.png" />
+  </blastlikes>
+  <flashexplosion>
+    <AssetInfo Key="observerimage" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/flash/observerflash.png" />
+  </flashexplosion>
+  <observershadow>
+    <AssetInfo Key="bottomshadow" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observer/bottomshadow.png" />
+    <AssetInfo Key="topshadow" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observer/topshadow.png" />
+    <AssetInfo Key="help" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/observerhelp.png" />
+  </observershadow>
+  <observerallkillinfo>
+    <AssetInfo Key="ctplayer1" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ctback.png" />
+    <AssetInfo Key="cthptriimage1" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/cthptri.png" />
+    <AssetInfo Key="ctunchecked1" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ct.png" />
+    <AssetInfo Key="ctchecked1" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ctchecked.png" />
+    <AssetInfo Key="ctdoun1" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/doun.png" />
+    <AssetInfo Key="ctplayer2" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ctback.png" />
+    <AssetInfo Key="cthptriimage2" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/cthptri.png" />
+    <AssetInfo Key="ctunchecked2" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ct.png" />
+    <AssetInfo Key="ctchecked2" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ctchecked.png" />
+    <AssetInfo Key="ctdoun2" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/doun.png" />
+    <AssetInfo Key="ctplayer3" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ctback.png" />
+    <AssetInfo Key="cthptriimage3" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/cthptri.png" />
+    <AssetInfo Key="ctunchecked3" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ct.png" />
+    <AssetInfo Key="ctchecked3" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ctchecked.png" />
+    <AssetInfo Key="ctdoun3" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/doun.png" />
+    <AssetInfo Key="ctplayer4" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ctback.png" />
+    <AssetInfo Key="cthptriimage4" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/cthptri.png" />
+    <AssetInfo Key="ctunchecked4" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ct.png" />
+    <AssetInfo Key="ctchecked4" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ctchecked.png" />
+    <AssetInfo Key="ctdoun4" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/doun.png" />
+    <AssetInfo Key="ctplayer5" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ctback.png" />
+    <AssetInfo Key="cthptriimage5" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/cthptri.png" />
+    <AssetInfo Key="ctunchecked5" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ct.png" />
+    <AssetInfo Key="ctchecked5" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ctchecked.png" />
+    <AssetInfo Key="ctdoun5" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/doun.png" />
+    <AssetInfo Key="ctplayer6" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ctback.png" />
+    <AssetInfo Key="cthptriimage6" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/cthptri.png" />
+    <AssetInfo Key="ctunchecked6" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ct.png" />
+    <AssetInfo Key="ctchecked6" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ctchecked.png" />
+    <AssetInfo Key="ctdoun6" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/doun.png" />
+    <AssetInfo Key="ctplayer7" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ctback.png" />
+    <AssetInfo Key="cthptriimage7" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/cthptri.png" />
+    <AssetInfo Key="ctunchecked7" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ct.png" />
+    <AssetInfo Key="ctchecked7" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ctchecked.png" />
+    <AssetInfo Key="ctdoun7" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/doun.png" />
+    <AssetInfo Key="ctplayer8" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ctback.png" />
+    <AssetInfo Key="cthptriimage8" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/cthptri.png" />
+    <AssetInfo Key="ctunchecked8" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ct.png" />
+    <AssetInfo Key="ctchecked8" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/ctchecked.png" />
+    <AssetInfo Key="ctdoun8" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/doun.png" />
+    <AssetInfo Key="tplayer1" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/tback.png" />
+    <AssetInfo Key="thptriimage1" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/thptri.png" />
+    <AssetInfo Key="tunchecked1" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/t.png" />
+    <AssetInfo Key="tchecked1" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/tchecked.png" />
+    <AssetInfo Key="tdoun1" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/doun.png" />
+    <AssetInfo Key="tplayer2" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/tback.png" />
+    <AssetInfo Key="thptriimage2" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/thptri.png" />
+    <AssetInfo Key="tunchecked2" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/t.png" />
+    <AssetInfo Key="tchecked2" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/tchecked.png" />
+    <AssetInfo Key="tdoun2" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/doun.png" />
+    <AssetInfo Key="tplayer3" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/tback.png" />
+    <AssetInfo Key="thptriimage3" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/thptri.png" />
+    <AssetInfo Key="tunchecked3" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/t.png" />
+    <AssetInfo Key="tchecked3" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/tchecked.png" />
+    <AssetInfo Key="tdoun3" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/doun.png" />
+    <AssetInfo Key="tplayer4" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/tback.png" />
+    <AssetInfo Key="thptriimage4" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/thptri.png" />
+    <AssetInfo Key="tunchecked4" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/t.png" />
+    <AssetInfo Key="tchecked4" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/tchecked.png" />
+    <AssetInfo Key="tdoun4" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/doun.png" />
+    <AssetInfo Key="tplayer5" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/tback.png" />
+    <AssetInfo Key="thptriimage5" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/thptri.png" />
+    <AssetInfo Key="tunchecked5" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/t.png" />
+    <AssetInfo Key="tchecked5" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/tchecked.png" />
+    <AssetInfo Key="tdoun5" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/doun.png" />
+    <AssetInfo Key="tplayer6" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/tback.png" />
+    <AssetInfo Key="thptriimage6" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/thptri.png" />
+    <AssetInfo Key="tunchecked6" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/t.png" />
+    <AssetInfo Key="tchecked6" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/tchecked.png" />
+    <AssetInfo Key="tdoun6" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/doun.png" />
+    <AssetInfo Key="tplayer7" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/tback.png" />
+    <AssetInfo Key="thptriimage7" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/thptri.png" />
+    <AssetInfo Key="tunchecked7" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/t.png" />
+    <AssetInfo Key="tchecked7" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/tchecked.png" />
+    <AssetInfo Key="tdoun7" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/doun.png" />
+    <AssetInfo Key="tplayer8" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/tback.png" />
+    <AssetInfo Key="thptriimage8" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/thptri.png" />
+    <AssetInfo Key="tunchecked8" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/t.png" />
+    <AssetInfo Key="tchecked8" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/tchecked.png" />
+    <AssetInfo Key="tdoun8" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/observerPlayer/doun.png" />
+  </observerallkillinfo>
+  <rpgtabletask>
+    <AssetInfo Key="taskitem1" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/killList/taskitembg.png" />
+    <AssetInfo Key="taskitem2" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/killList/taskitembg.png" />
+    <AssetInfo Key="taskitem3" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/killList/taskitembg.png" />
+    <AssetInfo Key="taskitem4" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/killList/taskitembg.png" />
+    <AssetInfo Key="taskitem5" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/killList/taskitembg.png" />
+    <AssetInfo Key="taskitem6" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/killList/taskitembg.png" />
+    <AssetInfo Key="taskitem7" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/killList/taskitembg.png" />
+    <AssetInfo Key="taskitem8" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/killList/taskitembg.png" />
+    <AssetInfo Key="taskitem9" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/killList/taskitembg.png" />
+    <AssetInfo Key="taskitem10" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/killList/taskitembg.png" />
+  </rpgtabletask>
+  <roleskill1018progress>
+    <AssetInfo Key="bg" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/roleSkill1018/back.png" />
+  </roleskill1018progress>
+  <voiceshield>
+    <AssetInfo Key="backimage" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/embed/shield_bottom.png" />
+  </voiceshield>
+  <rpgshieldbroken>
+    <AssetInfo Key="topimage" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/shiled_broken/broken.png" />
+    <AssetInfo Key="rightimage" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/shiled_broken/broken.png" />
+    <AssetInfo Key="leftimage" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/shiled_broken/broken.png" />
+  </rpgshieldbroken>
+  <rpgshieldrecovery>
+    <AssetInfo Key="rightimage" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/shield_recovery/bg.png" />
+    <AssetInfo Key="leftimage" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/shield_recovery/bg.png" />
+  </rpgshieldrecovery>
+  <rpgbosswarning>
+    <AssetInfo Key="bg" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/BossWarning/bossbattleback.png" />
+    <AssetInfo Key="down2" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/BossWarning/bossbattlerolldown.png" />
+    <AssetInfo Key="up2" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/BossWarning/bossbattlerollup.png" />
+    <AssetInfo Key="warnning" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/BossWarning/bossbattle.png" />
+  </rpgbosswarning>
+  <rpgframeeffect>
+    <AssetInfo Key="image" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/frameeffect/chuifeng0.png" />
+  </rpgframeeffect>
+  <rpgdialogue>
+    <AssetInfo Key="back" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/dialogue/back.png" />
+  </rpgdialogue>
+  <pvebothit>
+    <AssetInfo Key="image" BundleName="ui/pvecommon" AssetName="Assets/Res/Assets/ui/GameGUIRes/pvecommon/bothit/bothit1.png" />
+  </pvebothit>
+  <rpgbosshp>
+    <AssetInfo Key="bg" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/botHp/bossHpBg_green.png" />
+    <AssetInfo Key="bottomhpimage" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/botHp/bossHp_Red.png" />
+    <AssetInfo Key="shieldbg" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/botHp/bossShieldBg.png" />
+    <AssetInfo Key="attributeimage1" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/botHp/hujia1.png" />
+    <AssetInfo Key="attributeimage2" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/botHp/hujia1.png" />
+    <AssetInfo Key="kulouimage" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/botHp/kulou.png" />
+    <AssetInfo Key="race1" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/botHp/raceBg.png" />
+    <AssetInfo Key="race2" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/botHp/raceBg.png" />
+    <AssetInfo Key="race3" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/botHp/raceBg.png" />
+    <AssetInfo Key="race4" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/botHp/raceBg.png" />
+    <AssetInfo Key="race5" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/botHp/raceBg.png" />
+    <AssetInfo Key="attack1" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/botHp/raceBg.png" />
+    <AssetInfo Key="attack2" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/botHp/raceBg.png" />
+  </rpgbosshp>
+  <antiaddiction>
+    <AssetInfo Key="imagebg" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/AntiAddiction/back.png" />
+    <AssetInfo Key="comfirm1" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/AntiAddiction/buttonUp.png" />
+    <AssetInfo Key="comfirm2" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/AntiAddiction/buttonUp.png" />
+    <AssetInfo Key="comfirm3" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/AntiAddiction/buttonUp.png" />
+    <AssetInfo Key="close" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/AntiAddiction/closeUp.png" />
+  </antiaddiction>
+  <rpgdragon>
+    <AssetInfo Key="back" BundleName="ui/rpgmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgmodel/dragoon/back.png" />
+  </rpgdragon>
+  <commontacticssound>
+    <AssetInfo Key="back" BundleName="ui/halfloadedres/playerpersonalized" AssetName="Assets/Res/Assets/ui/GameGUIRes/halfloadedres/playerpersonalized/back.png" />
+    <AssetInfo Key="selected1" BundleName="ui/halfloadedres/playerpersonalized" AssetName="Assets/Res/Assets/ui/GameGUIRes/halfloadedres/playerpersonalized/select1.png" />
+    <AssetInfo Key="selected5" BundleName="ui/halfloadedres/playerpersonalized" AssetName="Assets/Res/Assets/ui/GameGUIRes/halfloadedres/playerpersonalized/select5.png" />
+    <AssetInfo Key="selected2" BundleName="ui/halfloadedres/playerpersonalized" AssetName="Assets/Res/Assets/ui/GameGUIRes/halfloadedres/playerpersonalized/select2.png" />
+    <AssetInfo Key="selected4" BundleName="ui/halfloadedres/playerpersonalized" AssetName="Assets/Res/Assets/ui/GameGUIRes/halfloadedres/playerpersonalized/select4.png" />
+    <AssetInfo Key="selected3" BundleName="ui/halfloadedres/playerpersonalized" AssetName="Assets/Res/Assets/ui/GameGUIRes/halfloadedres/playerpersonalized/select3.png" />
+    <AssetInfo Key="selected6" BundleName="ui/halfloadedres/playerpersonalized" AssetName="Assets/Res/Assets/ui/GameGUIRes/halfloadedres/playerpersonalized/select6.png" />
+    <AssetInfo Key="selected8" BundleName="ui/halfloadedres/playerpersonalized" AssetName="Assets/Res/Assets/ui/GameGUIRes/halfloadedres/playerpersonalized/select8.png" />
+    <AssetInfo Key="selected7" BundleName="ui/halfloadedres/playerpersonalized" AssetName="Assets/Res/Assets/ui/GameGUIRes/halfloadedres/playerpersonalized/select7.png" />
+    <AssetInfo Key="title" BundleName="ui/halfloadedres/playerpersonalized" AssetName="Assets/Res/Assets/ui/GameGUIRes/halfloadedres/playerpersonalized/playerSoundTitle.png" />
+    <AssetInfo Key="lefttips" BundleName="ui/halfloadedres/playerpersonalized" AssetName="Assets/Res/Assets/ui/GameGUIRes/halfloadedres/playerpersonalized/leftPlayerExpression.png" />
+    <AssetInfo Key="righttips" BundleName="ui/halfloadedres/playerpersonalized" AssetName="Assets/Res/Assets/ui/GameGUIRes/halfloadedres/playerpersonalized/rightPlayerExpression.png" />
+  </commontacticssound>
+  <acereport>
+    <AssetInfo Key="imagebg" BundleName="ui/common" AssetName="Assets/Res/Assets/ui/GameGUIRes/common/ace/bg.png" />
+  </acereport>
+  <rpgarmamentpickinfo>
+    <AssetInfo Key="pickdi" BundleName="ui/rpgarmamentmodel" AssetName="Assets/Res/Assets/ui/GameGUIRes/rpgarmamentmodel/Texture/RpgArmament_PickWeapon.png" />
+  </rpgarmamentpickinfo>
+  <report>
+    <AssetInfo Key="back" BundleName="ui/halfloadedres/report" AssetName="Assets/Res/Assets/ui/GameGUIRes/halfloadedres/report/reportListBg.png" />
+    <AssetInfo Key="titlebg" BundleName="ui/halfloadedres/report" AssetName="Assets/Res/Assets/ui/GameGUIRes/halfloadedres/report/reportTitle2.png" />
+  </report>
+  <reportalert>
+    <AssetInfo Key="back" BundleName="ui/halfloadedres/report" AssetName="Assets/Res/Assets/ui/GameGUIRes/halfloadedres/report/reportAlertBg.png" />
+    <AssetInfo Key="blackdi" BundleName="ui/halfloadedres/report" AssetName="Assets/Res/Assets/ui/GameGUIRes/halfloadedres/report/alertBlackDi.png" />
+  </reportalert>
+</Refrence>

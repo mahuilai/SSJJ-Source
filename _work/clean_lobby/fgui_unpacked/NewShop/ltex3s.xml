@@ -1,0 +1,16 @@
+<component size="242,372">
+  <displayList>
+    <list id="n0_ltex" name="weaponList" xy="0,46" size="242,326" overflow="scroll" scrollBarFlags="4" scrollBarRes="ui://l5eynmwjt1bk28," lineGap="5" colGap="10" defaultItem="ui://rn0gspbxltex2p">
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+    </list>
+    <text id="n1_ltex" name="n1" xy="51,0" size="70,25" fontSize="16" text="推荐购买"/>
+  </displayList>
+</component>

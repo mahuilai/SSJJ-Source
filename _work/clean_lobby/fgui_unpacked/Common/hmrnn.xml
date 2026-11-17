@@ -1,0 +1,16 @@
+<component size="13,200" extention="ScrollBar">
+  <ScrollBar/>
+  <displayList>
+    <image id="n0_hmrn" src="hmrnd" name="n0" xy="0,0" size="13,200">
+      <relation target="" sidePair="height"/>
+    </image>
+    <graph id="n1_hmrn" name="bar" xy="0,20" size="13,160">
+      <relation target="" sidePair="height"/>
+    </graph>
+    <component id="n2_hmrn" name="arrow1" xy="0,0" src="hmrnk"/>
+    <component id="n3_hmrn" name="arrow2" xy="0,180" src="hmrnl">
+      <relation target="" sidePair="bottom-bottom"/>
+    </component>
+    <component id="n4_hmrn" name="grip" xy="0,20" src="hmrnm"/>
+  </displayList>
+</component>

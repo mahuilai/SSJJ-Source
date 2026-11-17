@@ -1,0 +1,8 @@
+<component size="14,14">
+  <displayList>
+    <image id="n5_j8l9" name="red" src="j8l941" xy="0,0" size="14,14">
+      <relation target="n6_j8l9" sidePair="leftext-left,rightext-right"/>
+    </image>
+    <text id="n6_j8l9" name="num" xy="3,0" pivot="1,1" size="10,15" fontSize="8" color="#ffffff" align="right" vAlign="middle" text="5"/>
+  </displayList>
+</component>

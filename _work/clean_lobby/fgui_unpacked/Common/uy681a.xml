@@ -1,0 +1,22 @@
+<component size="24,20" extention="Button">
+  <Button/>
+  <controller name="button" pages="0,up,1,down,2,over,3,selectedOver"/>
+  <displayList>
+    <image id="n0_uy68" src="uy68t" name="n0" xy="0,0">
+      <gearDisplay controller="button" pages="0"/>
+      <relation target="" sidePair="width,height"/>
+    </image>
+    <image id="n1_uy68" src="uy68u" name="n1" xy="0,0">
+      <gearDisplay controller="button" pages="1"/>
+      <relation target="" sidePair="width,height"/>
+    </image>
+    <image id="n2_uy68" src="uy68v" name="n2" xy="0,0">
+      <gearDisplay controller="button" pages="2"/>
+      <relation target="" sidePair="width,height"/>
+    </image>
+    <image id="n3_uy68" src="uy68w" name="n3" xy="0,0">
+      <gearDisplay controller="button" pages="3"/>
+      <relation target="" sidePair="width,height"/>
+    </image>
+  </displayList>
+</component>

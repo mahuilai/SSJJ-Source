@@ -1,0 +1,6 @@
+<component size="233,121" opaque="false">
+  <displayList>
+    <component id="n7_q496" name="entranceBtn" src="q4961f" xy="0,0"/>
+    <text id="n8_q496" name="timeTxt" xy="20,44" size="190,21" visible="false" fontSize="12" autoSize="none" text="xxxxxxxxxxxxxx"/>
+  </displayList>
+</component>

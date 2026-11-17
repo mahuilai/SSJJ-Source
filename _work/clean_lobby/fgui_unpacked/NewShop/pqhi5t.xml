@@ -1,0 +1,39 @@
+<component size="920,500">
+  <displayList>
+    <list id="n0_pqhi" name="list" xy="0,33" size="920,424" layout="flow_hz" overflow="scroll" lineGap="5" colGap="5" defaultItem="ui://rn0gspbxpqhi5s">
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+    </list>
+    <component id="n1_pqhi" name="pager" src="uy68o" pkg="l5eynmwj" xy="376,464"/>
+    <list id="n2_pqhi" name="subTypeList" xy="8,0" size="784,33" layout="row" selectionMode="multipleSingleClick" overflow="scroll" scroll="horizontal" colGap="5" defaultItem="ui://rn0gspbxhsmn5d">
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+    </list>
+  </displayList>
+</component>

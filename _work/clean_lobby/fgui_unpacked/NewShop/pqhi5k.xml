@@ -1,0 +1,19 @@
+<component size="216,217" extention="Button">
+  <controller name="button" pages="0,up,1,down,2,over,3,selectedOver" selected="0"/>
+  <displayList>
+    <image id="n4_pqhi" name="n4" src="pqhi5n" xy="0,0"/>
+    <loader id="n8_pqhi" name="iconLoader" xy="0,0" size="216,189" url="ui://rn0gspbxpqhi5p" autoSize="true"/>
+    <image id="n0_pqhi" name="n0" src="pqhi5l" xy="0,0">
+      <gearDisplay controller="button" pages="1,3"/>
+    </image>
+    <image id="n1_pqhi" name="n1" src="pqhi5m" xy="0,0">
+      <gearDisplay controller="button" pages="2,3"/>
+    </image>
+    <component id="n2_pqhi" name="buyBtn" src="ltex3m" xy="168,191"/>
+    <loader id="n3_pqhi" name="moneyTypeLoader" xy="1,192" size="28,14" url="ui://rn0gspbxltex2s" autoSize="true"/>
+    <richtext id="n9_pqhi" name="priceTxt" xy="31,189" size="26,21" touchable="false" fontSize="12" color="#cc9900" text="111"/>
+    <component id="n10_pqhi" name="lockItem" src="c4355h" xy="27,56"/>
+    <loader id="n11_pqhi" name="tagLoader" xy="160,6" size="48,25" url="ui://rn0gspbxltex3c" autoSize="true"/>
+  </displayList>
+  <Button mode="Radio"/>
+</component>

@@ -1,0 +1,12 @@
+<component size="953,10" extention="ScrollBar">
+  <displayList>
+    <image id="n0_r71m" name="n0" src="11hed42" xy="0,0" size="953,10">
+      <relation target="" sidePair="width-width"/>
+    </image>
+    <graph id="n1_r71m" name="bar" xy="0,0" size="953,10">
+      <relation target="" sidePair="width-width"/>
+    </graph>
+    <component id="n2_r71m" name="grip" src="11hed43" xy="141,0"/>
+  </displayList>
+  <ScrollBar/>
+</component>

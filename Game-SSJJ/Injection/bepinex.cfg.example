@@ -1,0 +1,32 @@
+## 插件配置文件示例（BepInEx 5）
+## 放置位置：D:\SSJJ-4399\battle\3_64\BepInEx\config\ssjj.offline.entry.cfg
+## 首次运行插件后会自动生成，可直接覆盖该文件内容。
+
+[Offline]
+
+## 角色资源名（与 OfflineGameSetting.Player 对应）
+# setting type: String
+# default value: police
+Player = police
+
+## 手臂资源名
+# setting type: String
+# default value: man
+Hand = man
+
+## 初始武器
+# setting type: String
+# default value: dagger
+Weapon = dagger
+
+## 场景 id（3000<=id<5000 走 unitymaps/map_<id>，对应 MapRuleUtility.IsUnityScene）
+# setting type: Int32
+# default value: 3043
+SceneId = 3043
+
+## 本地 bundle 相对 StreamingAssets 的目录（结尾带 /）
+## 清单文件名固定为 AssetBundles（文本 XML）。
+## 若沿用打包产出里的 Windows 子目录，改为 AssetBundles/Windows/ 并把清单放到该目录。
+# setting type: String
+# default value: AssetBundles/
+LocalBundleRelativePath = AssetBundles/

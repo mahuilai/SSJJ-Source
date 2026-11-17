@@ -1,0 +1,12 @@
+<component size="669,564">
+  <displayList>
+    <component id="n0_sdsda" name="page" src="97zj1" xy="184,473"/>
+    <component id="n1_sdsda" name="mode_3" src="97zj8" xy="4,214"/>
+    <component id="n2_sdsda" name="mode_4" src="97zj8" xy="4,359"/>
+    <component id="n3_sdsda" name="mode_5" src="97zj8" xy="327,359"/>
+    <component id="n4_sdsda" name="mode_2" src="97zji" xy="327,4" size="346,353"/>
+    <component id="n5_sdsda" name="mode_1" src="97zjm" xy="4,4" size="315,212"/>
+    <component id="n6_sdsda" name="hallEntraceUI" src="97zjn" xy="3,-11" visible="false"/>
+    <component id="n7_q496" name="bigActivity" src="q4961i" xy="208,3"/>
+  </displayList>
+</component>

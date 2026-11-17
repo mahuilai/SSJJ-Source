@@ -1,0 +1,168 @@
+<packageDescription id="l5eynmwj" name="Common">
+  <resources>
+    <component id="11hed43" name="ScrollBar1_grip" path="/" size="300,10"/>
+    <component id="mhd2d4h" name="ComboBox_popup" path="/" size="150,200"/>
+    <component id="mhd2d4j" name="ComboBox_item" path="/" size="105,34"/>
+    <image id="11hed42" name="滚动条底" path="/image/" size="940,10" file="11hed42.png"/>
+    <image id="11hed44" name="滚动条" path="/image/" size="300,10" file="11hed44.png"/>
+    <image id="cvvd44" name="pack_6498_3" path="/" size="60,60" file="cvvd44.png"/>
+    <image id="g2c71m" name="消费货币底图" path="/img/" size="93,17" file="g2c71m.png"/>
+    <image id="g2c71o" name="增加按钮普通态" path="/img/" size="15,17" file="g2c71o.png"/>
+    <image id="g2c71p" name="增加按钮选中态" path="/img/" size="15,17" file="g2c71p.png"/>
+    <image id="g2c71q" name="增加按钮悬停态" path="/img/" size="15,17" file="g2c71q.png"/>
+    <image id="g2c71r" name="money_1" path="/img/" size="26,26" file="g2c71r.png"/>
+    <image id="g2c71t" name="0白色" path="/img/" size="17,30" file="g2c71t.png"/>
+    <image id="g2c71u" name="1白色" path="/img/" size="17,30" file="g2c71u.png"/>
+    <image id="g2c71v" name="2白色" path="/img/" size="17,30" file="g2c71v.png"/>
+    <image id="g2c71w" name="3白色" path="/img/" size="17,30" file="g2c71w.png"/>
+    <image id="g2c71x" name="4白色" path="/img/" size="17,30" file="g2c71x.png"/>
+    <image id="g2c71y" name="5白色" path="/img/" size="17,30" file="g2c71y.png"/>
+    <image id="g2c71z" name="6白色" path="/img/" size="17,30" file="g2c71z.png"/>
+    <image id="g2c720" name="7白色" path="/img/" size="17,30" file="g2c720.png"/>
+    <image id="g2c721" name="8白色" path="/img/" size="17,30" file="g2c721.png"/>
+    <image id="g2c722" name="9白" path="/img/" size="17,30" file="g2c722.png"/>
+    <image id="g2c723" name="百分号" path="/img/" size="21,30" file="g2c723.png"/>
+    <image id="g2c724" name="斜杆符号" path="/img/" size="21,30" file="g2c724.png"/>
+    <image id="mhd2d4b" name="tips_1" path="/image/" size="30,30" file="mhd2d4b.png"/>
+    <image id="mhd2d4d" name="下拉按钮-悬停" path="/image/dyeing_color/" size="210,26" file="mhd2d4d.png"/>
+    <image id="mhd2d4e" name="下拉按钮-常态" path="/image/dyeing_color/" size="210,26" file="mhd2d4e.png"/>
+    <image id="mhd2d4f" name="下拉按钮-点击" path="/image/dyeing_color/" size="210,26" file="mhd2d4f.png"/>
+    <image id="mhd2d4g" name="下拉-三角形" path="/image/dyeing_color/" size="16,10" file="mhd2d4g.png"/>
+    <image id="mhd2d4i" name="技能框底" path="/image/" size="60,60" file="mhd2d4i.png"/>
+    <image id="mhd2d4k" name="武器类型按钮选中态" path="/image/" size="105,34" file="mhd2d4k.png"/>
+    <image id="mhd2d4l" name="武器类型按钮普通态" path="/image/" size="105,34" file="mhd2d4l.png"/>
+    <image id="mhd2d4n" name="搜索常态-1" path="/image/" size="28,29" file="mhd2d4n.png"/>
+    <image id="mhd2d4o" name="搜索悬停-1" path="/image/" size="28,29" file="mhd2d4o.png"/>
+    <image id="ubjbd4c" name="未命名-3" path="/" size="373,99" file="ubjbd4c.png"/>
+    <image id="ubjbd4e" name="背景" path="/" size="256,256" file="ubjbd4e.png"/>
+    <swf id="ubjbd4b" name="闪光" path="/" size="394,110" file="ubjbd4b.swf"/>
+    <component id="11hed41" name="ScrollBar1" path="/" size="953,10" exported="true"/>
+    <component id="av4y3z" name="bluebtn" path="/" size="145,30" exported="true"/>
+    <component id="dibhd46" name="Pager2" path="/" size="167,25" exported="true"/>
+    <component id="ez0y3i" name="yellowbtn" path="/" size="95,37" exported="true"/>
+    <component id="g2c71k" name="CurrencyBar" path="/" size="493,30" exported="true"/>
+    <component id="g2c71l" name="CurrencyItem" path="/" size="120,30" exported="true"/>
+    <component id="g2c71n" name="BtnAdd" path="/" size="15,17" exported="true"/>
+    <component id="h4mm29" name="CommonButton" path="/" size="108,33" exported="true"/>
+    <component id="hmrnk" name="ScrollBar1_arrow1" path="/image/" size="13,20" exported="true"/>
+    <component id="hmrnl" name="ScrollBar1_arrow2" path="/image/" size="13,20" exported="true"/>
+    <component id="hmrnm" name="ScrollBar1_grip" path="/image/" size="13,20" exported="true"/>
+    <component id="hmrnn" name="ScrollBar1" path="/image/" size="13,200" exported="true"/>
+    <component id="iory6" name="CloseBtn" path="/" size="16,17" exported="true"/>
+    <component id="j1942e" name="rankBtn" path="/" size="100,20" exported="true"/>
+    <component id="j8l940" name="redPoint" path="/" size="9,9" exported="true"/>
+    <component id="jn6f36" name="checkBox" path="/" size="18,14" exported="true"/>
+    <component id="jruf3t" name="AlertPanel" path="/" size="403,233" exported="true"/>
+    <component id="mhd2d47" name="BtnClose" path="/" size="20,20" exported="true"/>
+    <component id="mhd2d4a" name="BtnTip" path="/" size="30,30" exported="true"/>
+    <component id="mhd2d4c" name="ComboBox" path="/" size="127,26" exported="true"/>
+    <component id="mhd2d4m" name="BtnSearch" path="/" size="28,29" exported="true"/>
+    <component id="od5o42" name="redNumPoint" path="/" size="14,14" exported="true"/>
+    <component id="p6r03h" name="Buttonclose" path="/" size="42,42" exported="true"/>
+    <component id="t1bk25" name="ScrollBarCommon_arrow1" path="/" size="13,20" exported="true"/>
+    <component id="t1bk26" name="ScrollBarCommon_arrow2" path="/" size="13,20" exported="true"/>
+    <component id="t1bk27" name="ScrollBarCommon_grip" path="/" size="13,20" exported="true"/>
+    <component id="t1bk28" name="ScrollBarCommon" path="/" size="13,200" exported="true"/>
+    <component id="ubjbd4a" name="RougeAchievementMc" path="/" size="400,100" exported="true"/>
+    <component id="uy6819" name="BtnPagerEnd" path="/" size="24,20" exported="true"/>
+    <component id="uy681a" name="BtnPagerFirst" path="/" size="24,20" exported="true"/>
+    <component id="uy681b" name="BtnPagerNext" path="/" size="24,20" exported="true"/>
+    <component id="uy681c" name="BtnPagerPre" path="/" size="24,20" exported="true"/>
+    <component id="uy681d" name="RewardItem" path="/" size="60,60" exported="true"/>
+    <component id="uy68o" name="Pager" path="/" size="167,25" exported="true"/>
+    <font id="g2c71s" name="acgnumberw" path="/" size="0,0" exported="true"/>
+    <font id="jn6f2g" name="yellowFont" path="/img/" size="0,0" exported="true"/>
+    <font id="jn6f2h" name="smallYellowFont" path="/" size="0,0" exported="true"/>
+    <font id="jn6f2t" name="medalNum" path="/" size="0,0" exported="true"/>
+    <image id="8zad0" name="chip_grade_1" path="/image/" size="70,70" exported="true" scale="9grid" scale9grid="5,5,60,60" file="8zad0.png"/>
+    <image id="av4y3v" name="PreLoaderAssets2" path="/" size="430,250" exported="true" file="av4y3v.png"/>
+    <image id="av4y3w" name="PreLoaderAssets(1)" path="/" size="100,40" exported="true" file="av4y3w.png"/>
+    <image id="av4y3x" name="btn1" path="/" size="145,30" exported="true" file="av4y3x.png"/>
+    <image id="av4y3y" name="btn2" path="/" size="145,30" exported="true" file="av4y3y.png"/>
+    <image id="ez0y3j" name="btn_bg_1" path="/image/" size="95,37" exported="true" file="ez0y3j.png"/>
+    <image id="ez0y3k" name="btn_bg_2" path="/image/" size="95,37" exported="true" file="ez0y3k.png"/>
+    <image id="h3701" name="close_btn1" path="/image/" size="16,17" exported="true" file="h3701.png"/>
+    <image id="h3702" name="close_btn2" path="/image/" size="20,20" exported="true" file="h3702.png"/>
+    <image id="h3703" name="close_btn3" path="/image/" size="20,20" exported="true" file="h3703.png"/>
+    <image id="h3704" name="close_btn4" path="/image/" size="20,20" exported="true" file="h3704.png"/>
+    <image id="h4mm2a" name="btn_blue_1" path="/image/" size="108,33" exported="true" file="h4mm2a.png"/>
+    <image id="h4mm2b" name="btn_yellow_1" path="/image/" size="108,33" exported="true" file="h4mm2b.png"/>
+    <image id="hmrnd" name="blue_scroll" path="/image/" size="13,363" exported="true" file="hmrnd.png"/>
+    <image id="hmrne" name="blue_scroll_bar_thumb1" path="/image/" size="13,44" exported="true" scale="9grid" scale9grid="4,11,8,22" file="hmrne.png"/>
+    <image id="hmrnf" name="blue_scroll_bar_thumb2" path="/image/" size="13,44" exported="true" scale="9grid" scale9grid="4,11,8,22" file="hmrnf.png"/>
+    <image id="hmrng" name="blue_scroll_down1" path="/image/" size="13,13" exported="true" file="hmrng.png"/>
+    <image id="hmrnh" name="blue_scroll_down3" path="/image/" size="13,13" exported="true" file="hmrnh.png"/>
+    <image id="hmrni" name="blue_scroll_up1" path="/image/" size="13,13" exported="true" file="hmrni.png"/>
+    <image id="hmrnj" name="blue_scroll_up2" path="/image/" size="13,13" exported="true" file="hmrnj.png"/>
+    <image id="j8l941" name="redPoint" path="/img/" size="9,9" exported="true" file="j8l941.png"/>
+    <image id="jdhc3i" name="VIP0" path="/img/" size="25,25" exported="true" file="jdhc3i.png"/>
+    <image id="jdhc3j" name="VIP1" path="/img/" size="25,25" exported="true" file="jdhc3j.png"/>
+    <image id="jdhc3k" name="VIP10" path="/img/" size="25,25" exported="true" file="jdhc3k.png"/>
+    <image id="jdhc3l" name="VIP2" path="/img/" size="25,25" exported="true" file="jdhc3l.png"/>
+    <image id="jdhc3m" name="VIP3" path="/img/" size="25,25" exported="true" file="jdhc3m.png"/>
+    <image id="jdhc3n" name="VIP4" path="/img/" size="25,25" exported="true" file="jdhc3n.png"/>
+    <image id="jdhc3o" name="VIP5" path="/img/" size="25,25" exported="true" file="jdhc3o.png"/>
+    <image id="jdhc3p" name="VIP6" path="/img/" size="25,25" exported="true" file="jdhc3p.png"/>
+    <image id="jdhc3q" name="VIP7" path="/img/" size="25,25" exported="true" file="jdhc3q.png"/>
+    <image id="jdhc3r" name="VIP8" path="/img/" size="25,25" exported="true" file="jdhc3r.png"/>
+    <image id="jdhc3s" name="VIP9" path="/img/" size="25,25" exported="true" file="jdhc3s.png"/>
+    <image id="jn6f26" name="yellow_0" path="/img/" size="20,26" exported="true" file="jn6f26.png"/>
+    <image id="jn6f27" name="yellow_1" path="/img/" size="10,26" exported="true" file="jn6f27.png"/>
+    <image id="jn6f28" name="yellow_2" path="/img/" size="19,26" exported="true" file="jn6f28.png"/>
+    <image id="jn6f29" name="yellow_3" path="/img/" size="20,26" exported="true" file="jn6f29.png"/>
+    <image id="jn6f2a" name="yellow_4" path="/img/" size="20,26" exported="true" file="jn6f2a.png"/>
+    <image id="jn6f2b" name="yellow_5" path="/img/" size="20,26" exported="true" file="jn6f2b.png"/>
+    <image id="jn6f2c" name="yellow_6" path="/img/" size="20,26" exported="true" file="jn6f2c.png"/>
+    <image id="jn6f2d" name="yellow_7" path="/img/" size="19,26" exported="true" file="jn6f2d.png"/>
+    <image id="jn6f2e" name="yellow_8" path="/img/" size="20,26" exported="true" file="jn6f2e.png"/>
+    <image id="jn6f2f" name="yellow_9" path="/img/" size="20,26" exported="true" file="jn6f2f.png"/>
+    <image id="jn6f2i" name="small_yellow_0" path="/img/" size="11,13" exported="true" file="jn6f2i.png"/>
+    <image id="jn6f2j" name="small_yellow_1" path="/img/" size="5,13" exported="true" file="jn6f2j.png"/>
+    <image id="jn6f2k" name="small_yellow_2" path="/img/" size="11,13" exported="true" file="jn6f2k.png"/>
+    <image id="jn6f2l" name="small_yellow_3" path="/img/" size="12,13" exported="true" file="jn6f2l.png"/>
+    <image id="jn6f2m" name="small_yellow_4" path="/img/" size="10,13" exported="true" file="jn6f2m.png"/>
+    <image id="jn6f2n" name="small_yellow_5" path="/img/" size="11,13" exported="true" file="jn6f2n.png"/>
+    <image id="jn6f2o" name="small_yellow_6" path="/img/" size="11,13" exported="true" file="jn6f2o.png"/>
+    <image id="jn6f2p" name="small_yellow_7" path="/img/" size="12,13" exported="true" file="jn6f2p.png"/>
+    <image id="jn6f2q" name="small_yellow_8" path="/img/" size="11,13" exported="true" file="jn6f2q.png"/>
+    <image id="jn6f2r" name="small_yellow_9" path="/img/" size="11,13" exported="true" file="jn6f2r.png"/>
+    <image id="jn6f34" name="checkbox1" path="/image/" size="18,14" exported="true" file="jn6f34.png"/>
+    <image id="jn6f35" name="checkbox5" path="/image/" size="18,14" exported="true" file="jn6f35.png"/>
+    <image id="jn6f37" name="medal_num0" path="/img/" size="22,16" exported="true" file="jn6f37.png"/>
+    <image id="jn6f38" name="medal_num1" path="/img/" size="22,16" exported="true" file="jn6f38.png"/>
+    <image id="jn6f39" name="medal_num2" path="/img/" size="22,16" exported="true" file="jn6f39.png"/>
+    <image id="jn6f3a" name="medal_num3" path="/img/" size="22,16" exported="true" file="jn6f3a.png"/>
+    <image id="jn6f3b" name="medal_num4" path="/img/" size="22,16" exported="true" file="jn6f3b.png"/>
+    <image id="jn6f3c" name="medal_num5" path="/img/" size="22,16" exported="true" file="jn6f3c.png"/>
+    <image id="jn6f3d" name="medal_num6" path="/img/" size="22,16" exported="true" file="jn6f3d.png"/>
+    <image id="jn6f3e" name="medal_num7" path="/img/" size="22,16" exported="true" file="jn6f3e.png"/>
+    <image id="jn6f3f" name="medal_num8" path="/img/" size="22,16" exported="true" file="jn6f3f.png"/>
+    <image id="jn6f3g" name="medal_num9" path="/img/" size="22,16" exported="true" file="jn6f3g.png"/>
+    <image id="jruf3u" name="PreLoaderAssets" path="/" size="745,950" exported="true" file="jruf3u.png"/>
+    <image id="qni825" name="redPoint" path="/image/" size="9,9" exported="true" file="qni825.png"/>
+    <image id="s3hg3l" name="Bitmap" path="/" size="171,39" exported="true" file="s3hg3l.png"/>
+    <image id="s9ij2c" name="选中框" path="/image/" size="186,62" exported="true" scale="9grid" scale9grid="47,16,94,32" file="s9ij2c.png"/>
+    <image id="uy6810" name="btnPagerNext_4" path="/image/" size="24,20" exported="true" file="uy6810.png"/>
+    <image id="uy6811" name="btnPagerPre_1" path="/image/" size="24,20" exported="true" file="uy6811.png"/>
+    <image id="uy6812" name="btnPagerPre_2" path="/image/" size="24,20" exported="true" file="uy6812.png"/>
+    <image id="uy6813" name="btnPagerPre_3" path="/image/" size="24,20" exported="true" file="uy6813.png"/>
+    <image id="uy6814" name="btnPagerPre_4" path="/image/" size="24,20" exported="true" file="uy6814.png"/>
+    <image id="uy681e" name="chip_grade_2" path="/image/" size="70,70" exported="true" scale="9grid" scale9grid="5,5,60,60" file="uy681e.png"/>
+    <image id="uy681f" name="chip_grade_3" path="/image/" size="70,70" exported="true" scale="9grid" scale9grid="5,5,60,60" file="uy681f.png"/>
+    <image id="uy681g" name="chip_grade_4" path="/image/" size="70,70" exported="true" scale="9grid" scale9grid="5,5,60,60" file="uy681g.png"/>
+    <image id="uy681h" name="chip_grade_5" path="/image/" size="70,70" exported="true" scale="9grid" scale9grid="5,5,60,60" file="uy681h.png"/>
+    <image id="uy681i" name="chip_grade_6" path="/image/" size="70,70" exported="true" scale="9grid" scale9grid="5,5,60,60" file="uy681i.png"/>
+    <image id="uy681j" name="chip_grade_7" path="/image/" size="70,70" exported="true" scale="9grid" scale9grid="5,5,60,60" file="uy681j.png"/>
+    <image id="uy68p" name="btnPagerEnd_1" path="/image/" size="24,20" exported="true" file="uy68p.png"/>
+    <image id="uy68q" name="btnPagerEnd_2" path="/image/" size="24,20" exported="true" file="uy68q.png"/>
+    <image id="uy68r" name="btnPagerEnd_3" path="/image/" size="24,20" exported="true" file="uy68r.png"/>
+    <image id="uy68s" name="btnPagerEnd_4" path="/image/" size="24,20" exported="true" file="uy68s.png"/>
+    <image id="uy68t" name="btnPagerFirst_1" path="/image/" size="24,20" exported="true" file="uy68t.png"/>
+    <image id="uy68u" name="btnPagerFirst_2" path="/image/" size="24,20" exported="true" file="uy68u.png"/>
+    <image id="uy68v" name="btnPagerFirst_3" path="/image/" size="24,20" exported="true" file="uy68v.png"/>
+    <image id="uy68w" name="btnPagerFirst_4" path="/image/" size="24,20" exported="true" file="uy68w.png"/>
+    <image id="uy68x" name="btnPagerNext_1" path="/image/" size="24,20" exported="true" file="uy68x.png"/>
+    <image id="uy68y" name="btnPagerNext_2" path="/image/" size="24,20" exported="true" file="uy68y.png"/>
+    <image id="uy68z" name="btnPagerNext_3" path="/image/" size="24,20" exported="true" file="uy68z.png"/>
+  </resources>
+</packageDescription>

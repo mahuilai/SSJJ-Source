@@ -1,0 +1,24 @@
+# 统一换行：文本文件入库按 LF 存储，检出按平台
+* text=auto
+
+# 明确为文本
+*.cs    text diff=csharp
+*.java  text diff=java
+*.py    text
+*.json  text
+*.xml   text
+*.md    text
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.ps1   text eol=crlf
+*.shader text
+
+# 明确为二进制（避免任何转换）
+*.png   binary
+*.jpg   binary
+*.ico   binary
+*.swf   binary
+*.dll   binary
+*.exe   binary
+*.bin   binary
+*.zip   binary

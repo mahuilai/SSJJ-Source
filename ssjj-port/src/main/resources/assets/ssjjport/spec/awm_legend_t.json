@@ -1,0 +1,241 @@
+{
+  "schema": "ssjj-weapon-spec/1",
+  "id": "awm_legend_t",
+  "displayName": "血魔",
+  "generatedAt": "2026-11-09T10:05:31",
+  "source": {
+    "weaponTable": "06_singleplayer/tables_json/Weapon.json",
+    "weaponTableRows": 1445,
+    "weaponTableFields": 64,
+    "logicSources": [
+      "Assets.Sources.Info.Weapon.Logic.SpreadLogic/AwmLegendSpreadLogic.cs",
+      "Assets.Sources.Modules.Player.Attack.Action/AwmLegendBaseAction.cs",
+      "Assets.Sources.Modules.Player.Attack.WeaponAttack/AwmLegendBasePredicationSystem.cs",
+      "Assets.Sources.Modules.Player.Attack.WeaponRaise/AwmLegendRaisePredicactionSystem.cs",
+      "weapon.predicateSystem.reloadSystem/DefaultReloadSystem.cs"
+    ]
+  },
+  "fire": {
+    "intervalMs": 1200,
+    "rpm": 50.0,
+    "bulletsPerShot": 1,
+    "clipPerShot": 1,
+    "attackType": "AwmLegendBase",
+    "specialAttackType": "AwmLegendBaseSpecial",
+    "eventType": "Default"
+  },
+  "ammo": {
+    "clip": 15,
+    "carry": 30,
+    "clipCount": 1,
+    "reloadType": "NotSpecial",
+    "reloadDurationRule": "GetViewAnimDuration(reloadAnim) + GetViewAnimDuration(18)",
+    "cdTimeMs": 10000
+  },
+  "spread": {
+    "type": "AwmLegend",
+    "logicClass": "AwmLegendSpreadLogic",
+    "paramOrder": [
+      "AirParam",
+      "LengthParam1",
+      "LengthParam2",
+      "DuckParam",
+      "DefaultParam",
+      "FovAddParam"
+    ],
+    "params": {
+      "AirParam": 0.85,
+      "LengthParam1": 0.2,
+      "LengthParam2": 0.1,
+      "DuckParam": 0.0,
+      "DefaultParam": 0.001,
+      "FovAddParam": 0.04
+    },
+    "rawParam": "0.85,0.20,0.10,0,0.001,0.04",
+    "length2D1": 350,
+    "length2D2": 25,
+    "defaultAccuracy": 0.2,
+    "spreadScaleY": 0.4,
+    "maxInaccuracy": 0.0,
+    "accuracyType": "Normal",
+    "accuracyDivisor": -1.0,
+    "accuracyOffset": 0.0
+  },
+  "kickback": {
+    "type": "Sniper",
+    "param": 2.0
+  },
+  "movement": {
+    "type": "Sniper",
+    "params": [
+      420.0,
+      520.0
+    ],
+    "rawParam": "420,520"
+  },
+  "hit": {
+    "shotDistType": "Melee",
+    "shotDistParams": [
+      160.0,
+      20000.0
+    ],
+    "rail": {
+      "type": "Bow",
+      "resId": "22",
+      "asset": "awm_legend"
+    },
+    "hole": {
+      "type": "Bow",
+      "resId": "104",
+      "asset": "bow"
+    }
+  },
+  "melee": {
+    "slashSlashMs": 400,
+    "slashStabMs": 500,
+    "stabSlashMs": 1000,
+    "stabStabMs": 1000,
+    "delayAttackSlashMs": 200,
+    "delayAttackStabMs": 200,
+    "frameChain": [
+      {
+        "currentAttackRaise": -1,
+        "nextKnifeAttackAnim": 31,
+        "nextKnifeAttackRaise": 30,
+        "delayAttackTimeMs": 270
+      },
+      {
+        "currentAttackRaise": 30,
+        "nextKnifeAttackAnim": 170,
+        "nextKnifeAttackRaise": 169,
+        "delayAttackTimeMs": 300
+      },
+      {
+        "currentAttackRaise": 169,
+        "nextKnifeAttackAnim": 172,
+        "nextKnifeAttackRaise": 171,
+        "delayAttackTimeMs": 270
+      },
+      {
+        "currentAttackRaise": 171,
+        "nextKnifeAttackAnim": 174,
+        "nextKnifeAttackRaise": 173,
+        "delayAttackTimeMs": 360
+      },
+      {
+        "currentAttackRaise": 173,
+        "nextKnifeAttackAnim": 176,
+        "nextKnifeAttackRaise": 175,
+        "delayAttackTimeMs": 600
+      }
+    ]
+  },
+  "animation": {
+    "weaponName": "ak47",
+    "thirdType": "ak47",
+    "raiseType": "AwmLegend",
+    "sceneWeaponName": "third_awm_legend_t",
+    "clips": [
+      {
+        "id": "idle",
+        "source": "TORSO_STAND_blend0",
+        "lengthS": 0.0333,
+        "loop": true
+      },
+      {
+        "id": "walk",
+        "source": "TORSO_WALK_blend0",
+        "lengthS": 0.8,
+        "loop": true
+      },
+      {
+        "id": "draw",
+        "source": "TORSO_RAISE_blend0",
+        "lengthS": 0.4667,
+        "loop": false
+      },
+      {
+        "id": "reload",
+        "source": "TORSO_RELOAD_blend0",
+        "lengthS": 2.5,
+        "loop": false
+      },
+      {
+        "id": "inspect",
+        "source": "TORSO_SHOWGUN_blend0",
+        "lengthS": 3.3333,
+        "loop": false
+      },
+      {
+        "id": "melee",
+        "source": "TORSO_SECONDARY_ATTACK_blend0",
+        "lengthS": 1.1333,
+        "loop": false
+      },
+      {
+        "id": "attack",
+        "source": "TORSO_ATTACK_blend0",
+        "lengthS": 1.1667,
+        "loop": false
+      }
+    ]
+  },
+  "view": {
+    "attach": "AwmLegend",
+    "viewEffectModels": "AwmLegend",
+    "thirdEffectModels": "AwmLegend",
+    "uiModels": "AwmLegendCt",
+    "hideViewHand": "false",
+    "hideThirdHand": "false"
+  },
+  "cross": {},
+  "audio": {
+    "bundle": "sound/weapon/awm_legend_t_055dcf5f7532af5f5e1a9ad0a98ddd6c",
+    "events": [
+      "draw",
+      "put_away",
+      "shoot",
+      "shoot_3p",
+      "reload_empty",
+      "reload_tactical",
+      "bolt",
+      "inspect",
+      "inspect_empty"
+    ]
+  },
+  "inputAdaptation": {
+    "schema": "ssjj-spread-inputs/1",
+    "note": "ENG-02 新增：MC 输入域 -> 原版输入域的适配配置。所有数值都有逐行可核对的出处；查不到的写「未找到」并做成可配置常量。",
+    "fov": {
+      "originalUnscoped": 90,
+      "originalUnscopedSource": "SSJJEntitas_Library/.../FovComponent.cs:9 (public int Fov = 90)；configNet/share.constant/PlayerConf.cs:31 DefFov()=90；AwmLegendSpreadLogic.cs:40 判 Fov!=90",
+      "originalScoped": 40,
+      "originalScopedStatus": "确认（本枪 FovRightAction 第一级开镜）",
+      "originalScopedSource": "Assembly-CSharp/Assets.Sources.Modules.Player.Attack.Action/FovRightAction.cs:26-30 (90 -> 40)；由 AwmLegendBasePredicationSystem.cs RightActions.Add(new FovRightAction(contexts)) 挂到本枪",
+      "originalScopedSecondZoom": 10,
+      "originalScopedSecondZoomSource": "FovRightAction.cs:31-35 (40 -> 10 -> 90)；二级开镜 10，同样 != 90，散布逻辑等价",
+      "mcDefaultFov": 70,
+      "mcDefaultFovSource": "1.21.1 Yarn GameOptions 构造中 options.fov 的 SimpleOption 默认值 bipush 70（已用 javap -c 核实）；滑杆范围 30..110",
+      "mcScopedFov": "未找到",
+      "mcScopedFovNote": "MC 没有与 SSJJ 开镜 FOV 一一对应的数值（MC 开镜由模组自行改 FOV，且 FOV 还受疾跑/药水/FOV effect scale 影响）。因此适配层用布尔 isScoping 判定，不把 mcFov 当开镜依据；开镜时返回 originalScoped（可配置）。",
+      "mappingRule": "语义映射，不是线性换算：未开镜 -> 90；开镜 -> 非 90。mcFov 只作诊断输入，绝不直接透传给 computeSpread。",
+      "scopedFovConfigurable": true
+    },
+    "speed": {
+      "scale": 2000.0,
+      "scaleStatus": "确认（量纲推导，源码 + 项目文档双重佐证）",
+      "scaleFormula": "原版 cm/s = MC blocks/tick * 100 (cm/block) * 20 (tick/s) = * 2000",
+      "originalUnit": "cm/s",
+      "mcUnit": "blocks/tick",
+      "originalUnitSource": "STATE.md:134「SSJJ 原生 / 物理 / 快照 | 厘米 (cm) | Z-up」；docs/AI-设计与优化.md:36「位置 X Y Z 物理厘米坐标」、:38「Velocity2D 水平速度（cm/s）」；docs/archive/历史技术摘要.md:87「快照 / 物理（厘米）」",
+      "sourceSideCorroboration": "configNet/share.constant/PlayerConf.cs:13 height=170(cm)、:35 RunSpeed()=635(cm/s)、:40 WalkSpeed()=305、:45 CrouchMoveSpeed()=203；physics.net/data/SceneMoveData.cs:8 worldGravity=2032(cm/s^2)、:10 jumpVelocity=681(cm/s)；physics.net/physics.move/PmoveBase.cs:1188 pml.frametime = msec*0.001f（秒）且与 gravity/velocity 相乘 → velocity 为每秒量",
+      "mcUnitSource": "1.21.1 Yarn Entity.getVelocity() 返回 Vec3d，量纲 blocks/tick；MC 固定 20 tick/s；1 block = 1 m = 100 cm",
+      "threshold1": 350,
+      "threshold2": 25,
+      "thresholdSource": "AwmLegendSpreadLogic.cs:10-12 (Length2D1=350 / Length2D2=25)；Weapon.json SpreadParam 同值见 spec.spread.length2D1/2",
+      "configurable": true,
+      "fallback": "若该字段缺失/非数值，SpreadInputs 回落 1.0 并打 WARN（不静默）；此时 350/25 阈值几乎不会触发，属显式降级。",
+      "note": "scale 是量纲推导值，不是源码里写死的常量；做成 spec 可配置，便于后续用真实录屏逐帧校准。"
+    }
+  }
+}

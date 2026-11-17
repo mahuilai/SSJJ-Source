@@ -1,0 +1,148 @@
+<packageDescription id="rn0gspbx" name="NewShop">
+  <resources>
+    <component id="992s63" name="BtnPreview" path="/" size="18,16"/>
+    <component id="c4355h" name="ShopLockItem" path="/" size="167,74"/>
+    <component id="ltex2n" name="ShopWeaponUI" path="/" size="951,490"/>
+    <component id="ltex3m" name="BtnShopBuy" path="/" size="40,18"/>
+    <component id="ltex3r" name="BtnCompare" path="/" size="40,18"/>
+    <component id="ltex3x" name="BtnRecharge" path="/" size="69,22"/>
+    <component id="ltex3y" name="ShopLegendUI" path="/" size="900,521"/>
+    <component id="ltex4c" name="ShopLegendItem" path="/" size="56,26"/>
+    <component id="ltex4o" name="BtnLegendBlue" path="/" size="89,27"/>
+    <component id="ltex4p" name="BtnLegendRed" path="/" size="89,27"/>
+    <component id="ltex4t" name="BtnLegendCast" path="/" size="139,45"/>
+    <component id="ltex57" name="BtnLegendLv1" path="/" size="50,54"/>
+    <component id="ltex58" name="BtnLegendLv2" path="/" size="50,54"/>
+    <component id="ltex59" name="BtnLegendLv3" path="/" size="50,54"/>
+    <component id="ltex5a" name="ShopLegendLvUI" path="/" size="180,54"/>
+    <component id="pqhi5q" name="ShopRoleUI" path="/" size="891,525"/>
+    <component id="pqhi5t" name="ShopOtherUI" path="/" size="920,500"/>
+    <image id="992s5x" name="fragmentFlag" path="/image/" size="39,39" file="992s5x.png"/>
+    <image id="992s5y" name="spcial_graffiti_icon" path="/image/" size="76,30" file="992s5y.png"/>
+    <image id="992s5z" name="preview_2" path="/image/" size="18,16" file="992s5z.png"/>
+    <image id="992s60" name="preview_3" path="/image/" size="18,16" file="992s60.png"/>
+    <image id="992s62" name="preview_1" path="/image/" size="18,16" file="992s62.png"/>
+    <image id="c4355f" name="up_bg" path="/image/" size="88,8" scale="9grid" scale9grid="22,2,44,4" file="c4355f.png"/>
+    <image id="c4355g" name="weapon_unlock_lockIcon" path="/image/" size="167,74" file="c4355g.png"/>
+    <image id="j1do6k" name="shuaixuanzhu" path="/image/" size="110,28" file="j1do6k.png"/>
+    <image id="j1do6l" name="fubiaotbg" path="/image/" size="175,28" scale="9grid" scale9grid="44,7,88,14" file="j1do6l.png"/>
+    <image id="j1do6m" name="weixuanzhong" path="/image/" size="10,10" file="j1do6m.png"/>
+    <image id="j1do6n" name="xuanzhong" path="/image/" size="16,14" file="j1do6n.png"/>
+    <image id="j1do6r" name="输入框" path="/image/" size="169,28" file="j1do6r.png"/>
+    <image id="j1do6v" name="搜索常态" path="/image/" size="73,29" file="j1do6v.png"/>
+    <image id="j1do6w" name="搜索点击" path="/image/" size="73,29" file="j1do6w.png"/>
+    <image id="j1do6x" name="搜索悬停" path="/image/" size="73,29" file="j1do6x.png"/>
+    <image id="j1do6z" name="规则-悬停" path="/image/" size="18,22" file="j1do6z.png"/>
+    <image id="j1do70" name="规则-正常-点击" path="/image/" size="18,22" file="j1do70.png"/>
+    <image id="j1do74" name="页签纯bg-悬停" path="/image/" size="110,28" file="j1do74.png"/>
+    <image id="j1do75" name="页签纯bg-选中" path="/image/" size="110,28" file="j1do75.png"/>
+    <image id="j1do76" name="页签纯bg-正常" path="/image/" size="110,28" file="j1do76.png"/>
+    <image id="j1do77" name="传说武器页签-未选中" path="/image/" size="208,60" file="j1do77.png"/>
+    <image id="j1do78" name="传说武器页签-悬停" path="/image/" size="208,60" file="j1do78.png"/>
+    <image id="j1do79" name="传说武器页签-选中" path="/image/" size="226,86" file="j1do79.png"/>
+    <image id="ltex2q" name="never_expired_icon" path="/image/" size="43,27" file="ltex2q.png"/>
+    <image id="ltex2r" name="weapon_011" path="/image/" size="175,55" file="ltex2r.png"/>
+    <image id="ltex2u" name="mall_item_new1" path="/image/" size="224,103" file="ltex2u.png"/>
+    <image id="ltex2v" name="mall_item_new2" path="/image/" size="224,103" file="ltex2v.png"/>
+    <image id="ltex2w" name="mall_item_new3" path="/image/" size="224,103" file="ltex2w.png"/>
+    <image id="ltex3i" name="buy1" path="/image/" size="40,18" file="ltex3i.png"/>
+    <image id="ltex3j" name="buy2" path="/image/" size="40,18" file="ltex3j.png"/>
+    <image id="ltex3k" name="buy3" path="/image/" size="40,18" file="ltex3k.png"/>
+    <image id="ltex3n" name="compare1" path="/image/" size="40,18" file="ltex3n.png"/>
+    <image id="ltex3o" name="compare2" path="/image/" size="40,18" file="ltex3o.png"/>
+    <image id="ltex3p" name="compare3" path="/image/" size="40,18" file="ltex3p.png"/>
+    <image id="ltex3t" name="recharge1" path="/image/" size="69,22" file="ltex3t.png"/>
+    <image id="ltex3u" name="recharge2" path="/image/" size="69,22" file="ltex3u.png"/>
+    <image id="ltex3v" name="recharge3" path="/image/" size="69,22" file="ltex3v.png"/>
+    <image id="ltex3z" name="LegendWeaponMall_skill_1" path="/image/" size="198,95" file="ltex3z.png"/>
+    <image id="ltex40" name="LegendWeaponMall_skill_2" path="/image/" size="198,95" file="ltex40.png"/>
+    <image id="ltex41" name="LegendWeaponMall_skill_3" path="/image/" size="198,95" file="ltex41.png"/>
+    <image id="ltex42" name="LegendWeaponMall_skill_4" path="/image/" size="198,95" file="ltex42.png"/>
+    <image id="ltex43" name="LegendWeaponMall_skill_5" path="/image/" size="173,116" file="ltex43.png"/>
+    <image id="ltex44" name="LegendWeaponMall_skill_6" path="/image/" size="173,116" file="ltex44.png"/>
+    <image id="ltex45" name="LegendWeaponMall_skill_7" path="/image/" size="173,116" file="ltex45.png"/>
+    <image id="ltex46" name="LegendWeaponMall_skill_8" path="/image/" size="173,116" file="ltex46.png"/>
+    <image id="ltex47" name="btn_legend_link_1" path="/image/" size="98,39" file="ltex47.png"/>
+    <image id="ltex4d" name="prop_12" path="/image/" size="56,26" file="ltex4d.png"/>
+    <image id="ltex4e" name="blue_btn2" path="/image/" size="89,27" file="ltex4e.png"/>
+    <image id="ltex4f" name="blue_btn3" path="/image/" size="89,27" file="ltex4f.png"/>
+    <image id="ltex4g" name="blue_btn4" path="/image/" size="89,27" file="ltex4g.png"/>
+    <image id="ltex4i" name="blue_btn1" path="/image/" size="89,27" file="ltex4i.png"/>
+    <image id="ltex4j" name="red_btn3" path="/image/" size="89,27" file="ltex4j.png"/>
+    <image id="ltex4k" name="red_btn4" path="/image/" size="89,27" file="ltex4k.png"/>
+    <image id="ltex4m" name="red_btn1" path="/image/" size="89,27" file="ltex4m.png"/>
+    <image id="ltex4n" name="red_btn2" path="/image/" size="89,27" file="ltex4n.png"/>
+    <image id="ltex4q" name="btn_cast_2" path="/image/" size="139,45" file="ltex4q.png"/>
+    <image id="ltex4r" name="btn_cast_1" path="/image/" size="139,45" file="ltex4r.png"/>
+    <image id="ltex4s" name="btn_cast_4" path="/image/" size="139,45" file="ltex4s.png"/>
+    <image id="ltex4u" name="weapon_name_10450_1" path="/image/" size="202,59" file="ltex4u.png"/>
+    <image id="ltex4v" name="btn_1_2" path="/image/" size="50,54" file="ltex4v.png"/>
+    <image id="ltex4w" name="btn_1_3" path="/image/" size="50,54" file="ltex4w.png"/>
+    <image id="ltex4x" name="btn_1_1" path="/image/" size="50,54" file="ltex4x.png"/>
+    <image id="ltex4z" name="btn_2_2" path="/image/" size="50,54" file="ltex4z.png"/>
+    <image id="ltex50" name="btn_2_3" path="/image/" size="50,54" file="ltex50.png"/>
+    <image id="ltex51" name="btn_2_1" path="/image/" size="50,54" file="ltex51.png"/>
+    <image id="ltex53" name="btn_3_2" path="/image/" size="50,54" file="ltex53.png"/>
+    <image id="ltex54" name="btn_3_3" path="/image/" size="50,54" file="ltex54.png"/>
+    <image id="ltex55" name="btn_3_1" path="/image/" size="50,54" file="ltex55.png"/>
+    <image id="ltex5b" name="arrow_icon" path="/image/" size="12,11" file="ltex5b.png"/>
+    <image id="mqjb7b" name="传说武器背景_back" path="/image/" size="957,604" file="mqjb7b.png"/>
+    <image id="pp7c7a" name="bg" path="/image/" size="957,594" file="pp7c7a.png"/>
+    <image id="pqhi5i" name="Suit1Icon" path="/image/" size="50,18" file="pqhi5i.png"/>
+    <image id="pqhi5l" name="item_role_select" path="/image/" size="216,189" file="pqhi5l.png"/>
+    <image id="pqhi5m" name="item_role_over" path="/image/" size="216,189" file="pqhi5m.png"/>
+    <image id="pqhi5n" name="item_role_bg" path="/image/" size="216,217" file="pqhi5n.png"/>
+    <image id="pqhi5p" name="parts_101_2_1" path="/image/" size="216,189" file="pqhi5p.png"/>
+    <image id="pqhi5u" name="advancedIcon1" path="/image/" size="34,18" file="pqhi5u.png"/>
+    <image id="pqhi5v" name="rareIcon" path="/image/" size="34,18" file="pqhi5v.png"/>
+    <component id="b725s" name="NewShopPanel" path="/" size="957,594" exported="true"/>
+    <component id="hsmn5d" name="ShopBtnSubType" path="/" size="70,20" exported="true"/>
+    <component id="j1do6o" name="ShopBtnWeaponType" path="/" size="70,20" exported="true"/>
+    <component id="j1do6p" name="ShopBtnMode" path="/" size="70,20" exported="true"/>
+    <component id="j1do6q" name="ShopBtnYear" path="/" size="70,20" exported="true"/>
+    <component id="j1do6y" name="BtnHelp" path="/" size="18,22" exported="true"/>
+    <component id="ltex24" name="ShopBtnTypeTab" path="/" size="110,28" exported="true"/>
+    <component id="ltex2k" name="BtnSort" path="/" size="73,29" exported="true"/>
+    <component id="ltex2p" name="ShopWeaponItem" path="/" size="224,103" exported="true"/>
+    <component id="ltex3s" name="ShopWeaponSubUI" path="/" size="242,372" exported="true"/>
+    <component id="pqhi5j" name="ShopBtnLegendTab" path="/" size="208,60" exported="true"/>
+    <component id="pqhi5k" name="ShopRoleItem" path="/" size="216,217" exported="true"/>
+    <component id="pqhi5s" name="ShopSkinItem" path="/" size="224,103" exported="true"/>
+    <component id="pqhi5w" name="ShopStuffItem" path="/" size="224,103" exported="true"/>
+    <image id="992s64" name="stuff_quality1" path="/image/" size="222,77" exported="true" file="992s64.png"/>
+    <image id="992s65" name="stuff_quality2" path="/image/" size="222,77" exported="true" file="992s65.png"/>
+    <image id="992s66" name="stuff_quality3" path="/image/" size="222,77" exported="true" file="992s66.png"/>
+    <image id="992s67" name="stuff_quality4" path="/image/" size="222,77" exported="true" file="992s67.png"/>
+    <image id="992s68" name="stuff_quality5" path="/image/" size="222,77" exported="true" file="992s68.png"/>
+    <image id="992s69" name="weaponQualityBg_1" path="/image/" size="222,77" exported="true" file="992s69.png"/>
+    <image id="992s6a" name="bg_weapon_31" path="/image/" size="224,77" exported="true" file="992s6a.png"/>
+    <image id="992s6b" name="bg_weapon_41" path="/image/" size="224,77" exported="true" file="992s6b.png"/>
+    <image id="992s6c" name="weaponQualityBg_3" path="/image/" size="222,77" exported="true" file="992s6c.png"/>
+    <image id="992s6d" name="weaponQualityBg_2" path="/image/" size="222,77" exported="true" file="992s6d.png"/>
+    <image id="992s6g" name="weaponQualityBg_8" path="/image/" size="224,77" exported="true" file="992s6g.png"/>
+    <image id="992s6h" name="weaponQualityBg_6" path="/image/" size="222,77" exported="true" file="992s6h.png"/>
+    <image id="992s6i" name="weaponQualityBg_0" path="/image/" size="222,77" exported="true" file="992s6i.png"/>
+    <image id="ltex2s" name="moneyType_1" path="/image/" size="28,14" exported="true" file="ltex2s.png"/>
+    <image id="ltex2t" name="moneyType_2" path="/image/" size="28,14" exported="true" file="ltex2t.png"/>
+    <image id="ltex2x" name="nameBg_0" path="/image/" size="99,17" exported="true" file="ltex2x.png"/>
+    <image id="ltex2y" name="nameBg_1" path="/image/" size="99,19" exported="true" file="ltex2y.png"/>
+    <image id="ltex2z" name="nameBg_2" path="/image/" size="99,19" exported="true" file="ltex2z.png"/>
+    <image id="ltex30" name="nameBg_3" path="/image/" size="99,17" exported="true" file="ltex30.png"/>
+    <image id="ltex31" name="nameBg_6" path="/image/" size="99,19" exported="true" file="ltex31.png"/>
+    <image id="ltex32" name="nameBg_8" path="/image/" size="99,19" exported="true" file="ltex32.png"/>
+    <image id="ltex33" name="nameIcon_1" path="/image/" size="25,25" exported="true" file="ltex33.png"/>
+    <image id="ltex34" name="nameIcon_2" path="/image/" size="33,30" exported="true" file="ltex34.png"/>
+    <image id="ltex35" name="nameIcon_3" path="/image/" size="24,22" exported="true" file="ltex35.png"/>
+    <image id="ltex36" name="nameIcon_6" path="/image/" size="33,30" exported="true" file="ltex36.png"/>
+    <image id="ltex37" name="nameIcon_8" path="/image/" size="26,26" exported="true" file="ltex37.png"/>
+    <image id="ltex38" name="tag_1" path="/image/" size="48,24" exported="true" file="ltex38.png"/>
+    <image id="ltex39" name="tag_2" path="/image/" size="48,24" exported="true" file="ltex39.png"/>
+    <image id="ltex3a" name="tag_3" path="/image/" size="48,24" exported="true" file="ltex3a.png"/>
+    <image id="ltex3b" name="tag_4" path="/image/" size="48,24" exported="true" file="ltex3b.png"/>
+    <image id="ltex3c" name="tag_vip" path="/image/" size="48,25" exported="true" file="ltex3c.png"/>
+    <swf id="ltex3d" name="weaponEffect_1" path="/image/" size="550,400" exported="true" file="ltex3d.swf"/>
+    <swf id="ltex3e" name="weaponEffect_2" path="/image/" size="550,400" exported="true" file="ltex3e.swf"/>
+    <swf id="ltex3f" name="weaponEffect_6" path="/image/" size="550,400" exported="true" file="ltex3f.swf"/>
+    <swf id="ltex3g" name="weaponEffect_8" path="/image/" size="224,77" exported="true" file="ltex3g.swf"/>
+  </resources>
+</packageDescription>

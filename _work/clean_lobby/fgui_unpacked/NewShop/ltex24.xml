@@ -1,0 +1,20 @@
+<component size="110,28" extention="Button">
+  <controller name="button" pages="0,up,1,down,2,over,3,selectedOver" selected="3"/>
+  <displayList>
+    <image id="n5_j1do" name="n5" src="j1do76" xy="0,0">
+      <gearDisplay controller="button" pages="0,2"/>
+    </image>
+    <image id="n6_j1do" name="n6" src="j1do75" xy="0,0">
+      <gearDisplay controller="button" pages="1,3"/>
+    </image>
+    <image id="n7_j1do" name="n7" src="j1do74" xy="0,0">
+      <gearDisplay controller="button" pages="2"/>
+    </image>
+    <text id="n4_fgwl" name="title" xy="0,0" size="110,31" fontSize="16" color="#ffffff" align="center" vAlign="middle" autoSize="none" singleLine="true" text="章节1">
+      <gearDisplay controller="button" pages="0,1,2,3"/>
+      <gearColor controller="button" pages="0,1,2,3" values="#ffffff,#000000|#ffffff,#000000|#ffffff,#000000|#ffffff,#000000"/>
+      <relation target="" sidePair="width-width,height-height"/>
+    </text>
+  </displayList>
+  <Button mode="Radio"/>
+</component>

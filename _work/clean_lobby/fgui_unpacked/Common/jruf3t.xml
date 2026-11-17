@@ -1,0 +1,22 @@
+<component size="403,233">
+  <controller name="c1" pages="0,单按钮,1,2个按钮" selected="0"/>
+  <controller name="c2" pages="0,无选择框,1,有选择框" selected="1"/>
+  <displayList>
+    <image id="n1_av4y" name="n1" src="av4y3v" xy="0,0"/>
+    <image id="n2_av4y" name="n2" src="av4y3w" xy="16,9"/>
+    <component id="n3_av4y" name="checkBtn" src="jn6f36" xy="54,139">
+      <gearDisplay controller="c2" pages="1"/>
+    </component>
+    <text id="n4_av4y" name="checkTxt" xy="76,135" size="305,24" fontSize="14" color="#ffffff" autoSize="none" strokeColor="#000000" text="">
+      <gearDisplay controller="c2" pages="1"/>
+    </text>
+    <text id="n5_av4y" name="title" xy="24,60" size="356,64" fontSize="14" color="#ffffff" align="center" autoSize="none" strokeColor="#000000"/>
+    <component id="n8_av4y" name="confirmBtn" src="av4y3z" xy="129,193">
+      <gearXY controller="c1" pages="0" values="129,193" default="50,191"/>
+    </component>
+    <component id="n9_av4y" name="cancelBtn" src="av4y3z" xy="229,192">
+      <gearDisplay controller="c1" pages="1"/>
+      <Button title="取消"/>
+    </component>
+  </displayList>
+</component>

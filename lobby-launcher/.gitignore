@@ -1,0 +1,10 @@
+/target/
+/dist/
+/shots/
+/大厅截图/
+/data/previews/
+/assets/previews/
+*.exe
+*.zip
+__pycache__/
+*.py[cod]

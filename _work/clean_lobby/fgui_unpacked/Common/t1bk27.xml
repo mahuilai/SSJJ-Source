@@ -1,0 +1,14 @@
+<component size="13,20" extention="Button">
+  <controller name="button" pages="0,up,1,down,2,over,3,selectedOver" selected="2"/>
+  <displayList>
+    <image id="n0_t1bk" name="n0" src="hmrne" xy="0,0" size="13,20">
+      <gearDisplay controller="button" pages="0,1"/>
+      <relation target="" sidePair="width-width,height-height"/>
+    </image>
+    <image id="n2_t1bk" name="n2" src="hmrnf" xy="0,0" size="13,20">
+      <gearDisplay controller="button" pages="2"/>
+      <relation target="" sidePair="width-width,height-height"/>
+    </image>
+  </displayList>
+  <Button/>
+</component>

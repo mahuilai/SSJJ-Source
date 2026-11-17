@@ -1,0 +1,20 @@
+<component size="73,29" extention="Button">
+  <controller name="button" pages="0,up,1,down,2,over,3,selectedOver" selected="0"/>
+  <displayList>
+    <text id="n4_fgwl" name="title" xy="0,0" size="73,31" fontSize="1" color="#8d8d8d" align="center" vAlign="middle" autoSize="none" singleLine="true" text="品质">
+      <gearDisplay controller="button" pages="0,1,2,3"/>
+      <gearColor controller="button" pages="0,1,2,3" values="#8d8d8d,#000000|#000000,#000000|#ffffff,#000000|#000000,#000000"/>
+      <relation target="" sidePair="width-width,height-height"/>
+    </text>
+    <image id="n5_j1do" name="n5" src="j1do6v" xy="0,0">
+      <gearDisplay controller="button" pages="0,1"/>
+    </image>
+    <image id="n6_j1do" name="n6" src="j1do6w" xy="0,0">
+      <gearDisplay controller="button" pages="3"/>
+    </image>
+    <image id="n7_j1do" name="n7" src="j1do6x" xy="0,0">
+      <gearDisplay controller="button" pages="2"/>
+    </image>
+  </displayList>
+  <Button/>
+</component>

@@ -1,0 +1,720 @@
+{
+  "schema": "ssjj-state-transitions/1",
+  "weapon": "awm_legend_t",
+  "animationWeaponName": "ak47",
+  "sourceRoot": "D:/逆向/SSJJ双塔惊魂/Game source/02_managed_src",
+  "note": "本文件只记录源码/数据表中能逐行核对的事实。查不到的字段一律写 null 或 未找到，不做推断。StateId 全部来自 configNet/share.constant/AnimationConstant.cs；clip 名来自 ViewAnimStateInfo.AnimationName 与 spec/awm_legend_t.json 的 .anm clip 名。",
+  "stateIdEnum": {
+    "source": "configNet/share.constant/AnimationConstant.cs",
+    "values": {
+      "0": "ILLEGAL_ANIM",
+      "13": "TORSO_STAND",
+      "14": "TORSO_WALK",
+      "15": "TORSO_ATTACK",
+      "16": "TORSO_RAISE",
+      "17": "TORSO_RELOAD",
+      "18": "TORSO_PULL_CHARGER",
+      "20": "TORSO_SECONDARY_ATTACK",
+      "29": "TORSO_ATTACK2",
+      "30": "TORSO_ATTACK_RAISE",
+      "31": "TORSO_KNIFE_ATTACK",
+      "44": "TORSO_SHOWGUN",
+      "169": "TORSO_ATTACK_RAISE1",
+      "170": "TORSO_KNIFE_ATTACK1",
+      "171": "TORSO_ATTACK_RAISE2",
+      "172": "TORSO_KNIFE_ATTACK2",
+      "173": "TORSO_ATTACK_RAISE3",
+      "174": "TORSO_KNIFE_ATTACK3",
+      "175": "TORSO_ATTACK_RAISE4",
+      "176": "TORSO_KNIFE_ATTACK4"
+    },
+    "note": "AnimationConstantUtil.GetAnimation(int) 用反射把 AnimationConstant 的 public static int 字段名反查成 clip 名；未知 id 回落到 13。"
+  },
+  "playbackRule": {
+    "source": "Assembly-CSharp/Assets.Sources.Modules.Player.Anim.FirstPerson/ViewAnimSystem.cs:70-77,130-148",
+    "defaultTransitionTime": "0.25f；当 WeaponViewAnimBlendLoader.IsViewAnimBlendDisable(weaponName) 为 true 时为 0f；StateId==662 时强制 0f",
+    "playAtFixedTime": "PlayAtFixedTime(0, viewInfo.AnimationName, currentTime*0.001f, 1f, isLoop, false, transitionTime, true)",
+    "currentTime": "非 loop 时 currentTime = GetViewAnimDuration(StateId) - RemainTime；若 GetViewAnimDuration 返回 0，回落到 handAnimator.GetAnimDuration(0, AnimationName)*1000",
+    "channels": "handAnimator 与 weaponAnimator 同参数各播一次；双持时 WeaponAnimator2/HandAnimator2 用 LeftViewAnimInfo 再播一次"
+  },
+  "remainTimeRule": {
+    "source": "Assembly-CSharp/Assets.Sources.Modules.Player.Anim.FirstPerson/PlayerViewPredictionSystem.cs:23-39,173-198",
+    "rule": "每预测帧 RightCurrentTime += FrameInterval*RightSpeed；RemainTime -= FrameInterval*RightSpeed（下限 0）；RemainTime==0 时 Sequencing() 调 ViewAnimStateInfo.NextState(...)。 NextState 优先用 IWeaponAnimInfo.ViewGetNextAnim(StateId)（即 ViewAnimConfig XML 的 nextAnimation 属性），否则回落到 AnimationConstantUtility.GetTorsoAnimNextId()。 若新 StateId 与旧相同，则只重置 RemainTime=GetViewAnimDuration(StateId)；否则 PlayerAnimationUtility.SetViewAnimation(myPlayer, newStateId)。",
+    "setViewAnimation": "Assembly-CSharp/Assets.Sources.Utils.PlayerAnim/PlayerAnimationUtility.cs:50-66 — 设 ViewAnimInfo、RightCurrentTime=0、RemainTime=GetViewAnimDuration(animId)、RightSpeed=speed；isNewEvent 时 AnimSeq++"
+  },
+  "durationRule": {
+    "source": "SSJJAnim_Library/SSJJAnim.AnimData/AnimationDesc.cs:33 + SSJJAnim.WeaponAnim/WeaponAnimationData.cs:18-67 + SSJJAnim.WeaponAnim/DefaultWeaponAnimInfo.cs:9-12",
+    "rule": "AnimationDesc.TotalTime = (int)(FrameCount * 33.333332f) 毫秒；FrameCount = <action end - start + 1>；StartReloadDuration 与 RaiseDuration 都走 IWeaponAnimInfo.GetViewAnimDuration(animId)。",
+    "reload": "GetReloadDuration = GetViewAnimDuration(17) + GetViewAnimDuration(18) = 2533 + 33 = 2566 ms（权威值，DefaultReloadSystem.cs:33-41）",
+    "raise": "DefaultRaiseSystem.OnPredicate: NextAttackTimer = ClientTime + GetViewAnimDuration(16)/raiseSpeed  (weaponPredicateNet.net/.../DefaultRaiseSystem.cs:17-22)",
+    "weaponSpecificViewAnimConfig": "已导出：notes/viewanim-config/viewanim-config.json（原始 XML notes/viewanim-config/awm_legend_t__hand.DAE.action.xml）。每个 StateId 的权威 GetViewAnimDuration 已写入各状态的 runtimeDurationMs。",
+    "specProxy": "specClipLengthMs 来自 ak47.anm decode（build_weapon_spec.py:104-113），是 .anm 骨骼 clip 长度，与 GetViewAnimDuration 不是同一概念。AnimationTimeline 现在优先使用 runtimeDurationMs，specClipLengthMs 仅保留作对照，不再用于调度。"
+  },
+  "eventFrameRule": {
+    "source": "SSJJAnim_Library/SSJJAnim.WeaponAnim/WeaponAnimationData.cs:27-34 + Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:63-120",
+    "rule": "ViewAnimConfig XML 的 <action eventName=\"...\" eventFrame=\"N\"/> → AnimationDesc.EventName / EventTime=(int)(N*33.333332f) ms。 WeaponNoticePlayBackSystem.ProcessNotice 取 ViewAnimEventName(animId) 与 ViewAnimEventTime(animId)，当 currentTime > EventTime 时 Play2DSound(sound/weapon/{EventName}.mp3)。 即：音效由动画事件帧越过触发，不是 startAction + 定时器。",
+    "otherFlags": "ViewGetChangeStopSound / ViewAnimIsSoundLoop / ViewGetSoundOnlyOne / ViewAnimForceNewEvent / GetLoopSoundCurrentWaitTime(默认 200) 同源，见 IWeaponAnimInfo.cs 与 DefaultWeaponAnimInfo.cs",
+    "weaponSpecificEventFrames": "权威（ENG-03 细化）：awm_legend_t 的 24 条 <action> 全部没有 eventFrame 属性 → WeaponAnimationData.cs:27-33 的 EventTime 保持 AnimationDesc 默认 0。WeaponNoticePlayBackSystem.cs:90 判的是严格 `currentTime > EventTime`，而 ViewAnimSystem.cs:144 的 currentTime = GetViewAnimDuration - RemainTime 在动画起点为 0，因此带 eventName 的动作在**起点之后的第一个预测帧**触发音效，不是动画第 0 帧本身。全库 2,691 个 TextAsset 中仅 4 个无关武器含 eventFrame，本枪不属于。",
+    "nextAnimation": "权威结论：本枪 24 条 <action> 全部**没有 nextAnimation 属性** → AnimationDesc.NextId 默认 -1 (AnimationDesc.cs:19) → DefaultWeaponAnimInfo.ViewGetNextAnim 返回 -1 → ViewAnimStateInfo.NextState 的 weaponNextId > 0 判否，回落 AnimationConstantUtility.GetTorsoAnimNextId()。故阶段 1 记录的回落转移对本枪即为权威规则。",
+    "fireCommandChain": "fire(15) 无 eventName → WeaponNoticePlayBackSystem.cs:70-72 直接 return，改由开火命令链同步触发：AbstractFireAction.cs:23-26,61-64 → FireFunctions.cs:376-398 (AddFireEvent 1/11/59) → WeaponUtil.cs:161-217 (AddSound case 1 → SoundResourceUtility.GetWeaponSoundFireAssetInfo) → Play2DSound。该链在开火命令同一预测帧内执行，非动画事件帧驱动，故没有 eventFrame 数值。"
+  },
+  "audioEventNames": {
+    "source": "src/main/resources/assets/ssjjport/spec/awm_legend_t.json audio.events",
+    "values": [
+      "draw",
+      "put_away",
+      "shoot",
+      "shoot_3p",
+      "reload_empty",
+      "reload_tactical",
+      "bolt",
+      "inspect",
+      "inspect_empty"
+    ],
+    "note": "只有事件名，没有 StateId 绑定、没有 eventFrame 帧号。"
+  },
+  "blendRule": {
+    "source": "SSJJAnim_Library/SSJJAnim.Player/SJAnimationPlayer.cs:286-318 (TpsStateCaculate) + :321-380 (CommonCaculate)",
+    "rule": "SJAnimationState 带 Layer 与 Weight；同 bone 多 state 时，Layer 大者覆盖，Layer 相同则按 t = 1 - wA/(wA+wB) 对 Position/Rotation 做 Lerp 并把 Weight 累加。AddClip(clip, layer, name) 按 (layer,name) 索引。"
+  },
+  "states": {
+    "raise": {
+      "action": "raise",
+      "stateId": 16,
+      "stateIdName": "TORSO_RAISE",
+      "stateIdSource": "configNet/share.constant/AnimationConstant.cs:37；weaponPredicateNet.net/.../DefaultRaiseSystem.cs:25-28 GetViewRaiseAnim()=16；Assembly-CSharp/.../AwmLegendRaisePredicactionSystem.cs GetRaiseAdminId()=16；ViewAnimConfig 交叉验证：TORSO_RAISE -> 16 (notes/viewanim-config/viewanim-config.json)",
+      "clip": "TORSO_RAISE",
+      "clipSource": "SSJJAnim_Library/SSJJAnim.AnimState/ViewAnimStateInfo.cs:8 AnimationName = AnimationConstantUtil.GetAnimation(StateId)",
+      "anmClip": "TORSO_RAISE_blend0",
+      "anmClipSource": "spec/awm_legend_t.json animation.clips[id=draw].source",
+      "loop": false,
+      "loopSource": "SSJJAnim_Library/SSJJAnim.AnimState/ViewAnimStateInfo.cs:14-36 IsLoop 白名单不含 16",
+      "runtimeDurationMs": 499,
+      "runtimeDurationSource": "notes/viewanim-config/viewanim-config.json -> TORSO_RAISE: start=26 end=40 FrameCount=15；AnimationDesc.TotalTime=(int)(FrameCount*33.333332f) = 499 ms（C# (int) 截断）",
+      "specClipLengthMs": 466.7,
+      "specClipLengthSource": "spec/awm_legend_t.json clips[draw].lengthS=0.4667（ak47.anm decode；tools/build_weapon_spec.py:108）——代理值，非权威运行时时长；【ENG-02】代理值已弃用，调度改用 runtimeDurationMs",
+      "durationSource": "DefaultRaiseSystem.cs:17-21；AwmLegendRaisePredicactionSystem.cs GetNextWeaponRaisedSpeed(): 若 AwmLegendAttach.isFire 曾为 true 则 raiseSpeed=1.3f，否则 1f",
+      "eventFrames": [
+        {
+          "atMs": 0,
+          "type": "SOUND",
+          "name": "awm_legend_t_raise",
+          "source": "notes/viewanim-config/awm_legend_t__hand.DAE.action.xml <action name=TORSO_RAISE eventName=awm_legend_t_raise>；eventFrame 属性不存在 -> EventTime=0 (WeaponAnimationData.cs:27-33)",
+          "note": "音效走动画事件帧；EventTime=0 表示动画起点，不是定时器。"
+        }
+      ],
+      "eventFramesNote": "确认（P1）：eventName=awm_legend_t_raise，EventTime=0，起点后第一个预测帧触发；映射键 ssjjport:awm_legend_t_raise。",
+      "audioEventNames": [
+        "draw"
+      ],
+      "transitions": [
+        {
+          "to": "idle",
+          "toStateId": 13,
+          "when": "RemainTime 归零且 ViewAnimConfig 未用 nextAnimation 覆盖",
+          "source": "configNet/share.constant/AnimationConstantUtility.cs:1081-1105 GetTorsoAnimNextId case 16 -> 13；ViewAnimStateInfo.cs:49-57 NextState",
+          "authority": "确认（ENG-02）：本枪 ViewAnimConfig 无 nextAnimation → NextId=-1 → 回落 AnimationConstantUtility.GetTorsoAnimNextId 为权威"
+        }
+      ],
+      "transitionNote": "【ENG-02】已确认无 nextAnimation 覆盖，回落转移即权威。",
+      "durationAuthoritative": true,
+      "frameRange": {
+        "start": 26,
+        "end": 40,
+        "frameCount": 15
+      },
+      "viewAnimConfigLoop": false,
+      "animationEventName": "awm_legend_t_raise",
+      "eventTimeMs": 0,
+      "eventTimeSource": "eventFrame 属性不存在 -> AnimationDesc.EventTime 默认 0（动画起点触发）",
+      "nextAnimationAttr": null,
+      "nextId": -1,
+      "nextIdSource": "nextAnimation 属性不存在 -> AnimationDesc.NextId 默认 -1；ViewAnimStateInfo.NextState 回落到 AnimationConstantUtility.GetTorsoAnimNextId",
+      "audioEventsNoteSource": "notes/audio-events/audio-events.json"
+    },
+    "fire": {
+      "action": "fire",
+      "stateId": 15,
+      "stateIdName": "TORSO_ATTACK",
+      "stateIdSource": "configNet/share.constant/AnimationConstant.cs:35；weaponPredicateNet.net/.../AbstractFireAction.cs:50-58 SetFireAnim() -> ForceRightViewAnim(player,15) + ForceTorsoAnim(player,15)；ViewAnimConfig 交叉验证：TORSO_ATTACK -> 15 (notes/viewanim-config/viewanim-config.json)",
+      "clip": "TORSO_ATTACK",
+      "clipSource": "ViewAnimStateInfo.cs:8",
+      "anmClip": "TORSO_ATTACK_blend0",
+      "anmClipSource": "spec/awm_legend_t.json animation.clips[id=attack].source",
+      "loop": false,
+      "loopSource": "ViewAnimStateInfo.cs:14-36 IsLoop 白名单不含 15",
+      "runtimeDurationMs": 1199,
+      "runtimeDurationSource": "notes/viewanim-config/viewanim-config.json -> TORSO_ATTACK: start=571 end=606 FrameCount=36；AnimationDesc.TotalTime=(int)(FrameCount*33.333332f) = 1199 ms（C# (int) 截断）",
+      "specClipLengthMs": 1166.7,
+      "specClipLengthSource": "spec/awm_legend_t.json clips[attack].lengthS=1.1667（ak47.anm decode；tools/build_weapon_spec.py:112）——代理值；【ENG-02】代理值已弃用，调度改用 runtimeDurationMs",
+      "fireIntervalMs": 1200,
+      "fireIntervalSource": "spec/awm_legend_t.json fire.intervalMs=1200 (Weapon.json AttackInterval)；weaponPredicateNet.net/.../AbstractFireAction.cs:45-48 SetGunAttackTimer()=ClientTime+AttackInterval",
+      "fireGate": "CanFireTimeCondition: ClientTime > NextAttackTimer；CanFireClipCondition: Clip >= 1 (AbstractFireAction.cs:35-43)",
+      "fireEvent": "CommonFireEvent -> FireFunctions.FireEvent(args) (AbstractFireAction.cs:61-64)；后坐/枪口特效在开火命令时触发，源码中未找到把它们绑定到动画事件帧的 FrameAction。Kickback=Sniper/2.0、ShotDist=Melee 160,20000 为数据表数值(spec)，不是事件帧。",
+      "eventFrames": [],
+      "eventFramesNote": "确认（P1，非动画事件帧）：fire(15) 无 eventName，音效由开火命令链 AbstractFireAction → FireFunctions.FireEvent → WeaponUtil.AddSound(1) 在开火预测帧同步播放 awm_legend_t_fire；shoot_3p 仍为未找到（见 gaps）。",
+      "audioEventNames": [
+        "shoot",
+        "shoot_3p"
+      ],
+      "transitions": [
+        {
+          "to": "bolt",
+          "toStateId": 18,
+          "when": "RemainTime 归零（回落规则 case 15 -> 18）",
+          "source": "configNet/share.constant/AnimationConstantUtility.cs:1058-1064 GetTorsoAnimNextId case 15/29/199/200/201 -> 18",
+          "authority": "确认（ENG-02）：本枪 ViewAnimConfig 无 nextAnimation → NextId=-1 → 回落 AnimationConstantUtility.GetTorsoAnimNextId 为权威"
+        }
+      ],
+      "transitionNote": "【ENG-02】已确认无 nextAnimation 覆盖，回落转移即权威。",
+      "durationAuthoritative": true,
+      "frameRange": {
+        "start": 571,
+        "end": 606,
+        "frameCount": 36
+      },
+      "viewAnimConfigLoop": false,
+      "animationEventName": null,
+      "eventTimeMs": 0,
+      "eventTimeSource": "eventFrame 属性不存在 -> AnimationDesc.EventTime 默认 0（动画起点触发）",
+      "nextAnimationAttr": null,
+      "nextId": -1,
+      "nextIdSource": "nextAnimation 属性不存在 -> AnimationDesc.NextId 默认 -1；ViewAnimStateInfo.NextState 回落到 AnimationConstantUtility.GetTorsoAnimNextId",
+      "audioEventsNoteSource": "notes/audio-events/audio-events.json"
+    },
+    "reload": {
+      "action": "reload",
+      "stateId": 17,
+      "stateIdName": "TORSO_RELOAD",
+      "stateIdSource": "configNet/share.constant/AnimationConstant.cs:39；weaponPredicateNet.net/.../DefaultReloadSystem.cs:246-254 GetViewReloadAnim()=17 / GetTorsoReloadAnim()=17；ViewAnimConfig 交叉验证：TORSO_RELOAD -> 17 (notes/viewanim-config/viewanim-config.json)",
+      "clip": "TORSO_RELOAD",
+      "clipSource": "ViewAnimStateInfo.cs:8",
+      "anmClip": "TORSO_RELOAD_blend0",
+      "anmClipSource": "spec/awm_legend_t.json animation.clips[id=reload].source",
+      "loop": false,
+      "loopSource": "ViewAnimStateInfo.cs:14-36 IsLoop 白名单不含 17",
+      "runtimeDurationMs": 2533,
+      "runtimeDurationSource": "notes/viewanim-config/viewanim-config.json -> TORSO_RELOAD: start=41 end=116 FrameCount=76；AnimationDesc.TotalTime=(int)(FrameCount*33.333332f) = 2533 ms（C# (int) 截断）",
+      "specClipLengthMs": 2500.0,
+      "specClipLengthSource": "spec/awm_legend_t.json clips[reload].lengthS=2.5（ak47.anm decode；tools/build_weapon_spec.py:109）——仅对应第 1 段(17)的代理值，不含第 2 段(18)；【ENG-02】代理值已弃用，调度改用 runtimeDurationMs",
+      "durationRule": "GetViewAnimDuration(reloadAnim=17) + GetViewAnimDuration(18) (DefaultReloadSystem.cs:33-41)",
+      "startRule": "StartReload: SetReloadEndTime(ClientTime+duration)；SetNextAttackTimer(ClientTime+duration)；ForceTorsoAnim(17)；ForceRightViewAnim(17)；ResetFov(90)；Deploy() (DefaultReloadSystem.cs:66-88)",
+      "endRule": "CheckReloadEnd: ClientTime>ReloadEndTime 时 ReloadClip() 补弹；若 ViewAnimId 不在 CanReloadAnim 白名单内则取消 (DefaultReloadSystem.cs:152-164,236-244)",
+      "autoReload": "Clip==0 且 CarryClip>0 且当前 viewAnimId 通过 CanReloadAnim 时自动 StartReload (DefaultReloadSystem.cs:43-56)",
+      "reloadType": "NotSpecial (spec ammo.reloadType)",
+      "eventFrames": [
+        {
+          "atMs": 0,
+          "type": "SOUND",
+          "name": "awm_legend_t_reload",
+          "source": "notes/viewanim-config/awm_legend_t__hand.DAE.action.xml <action name=TORSO_RELOAD eventName=awm_legend_t_reload>；eventFrame 属性不存在 -> EventTime=0 (WeaponAnimationData.cs:27-33)",
+          "note": "音效走动画事件帧；EventTime=0 表示动画起点，不是定时器。"
+        }
+      ],
+      "eventFramesNote": "确认（P1）：eventName=awm_legend_t_reload，EventTime=0，起点后第一个预测帧触发；reload_empty/reload_tactical 共用此 clip，原版无区分。",
+      "audioEventNames": [
+        "reload_empty",
+        "reload_tactical"
+      ],
+      "transitions": [
+        {
+          "to": "bolt",
+          "toStateId": 18,
+          "when": "RemainTime 归零（回落规则 case 17 -> 18）",
+          "source": "configNet/share.constant/AnimationConstantUtility.cs:1139-1142 GetTorsoAnimNextId case 17/38 -> 18",
+          "authority": "确认（ENG-02）：本枪 ViewAnimConfig 无 nextAnimation → NextId=-1 → 回落 AnimationConstantUtility.GetTorsoAnimNextId 为权威"
+        }
+      ],
+      "transitionNote": "【ENG-02】已确认无 nextAnimation 覆盖，回落转移即权威。 17->18 两段式与 GetReloadDuration 一致：2533 + 33 = 2566 ms；18 段时长现在为权威 33ms，不再是未找到。",
+      "durationAuthoritative": true,
+      "frameRange": {
+        "start": 41,
+        "end": 116,
+        "frameCount": 76
+      },
+      "viewAnimConfigLoop": false,
+      "animationEventName": "awm_legend_t_reload",
+      "eventTimeMs": 0,
+      "eventTimeSource": "eventFrame 属性不存在 -> AnimationDesc.EventTime 默认 0（动画起点触发）",
+      "nextAnimationAttr": null,
+      "nextId": -1,
+      "nextIdSource": "nextAnimation 属性不存在 -> AnimationDesc.NextId 默认 -1；ViewAnimStateInfo.NextState 回落到 AnimationConstantUtility.GetTorsoAnimNextId",
+      "audioEventsNoteSource": "notes/audio-events/audio-events.json"
+    },
+    "bolt": {
+      "action": "bolt",
+      "stateId": 18,
+      "stateIdName": "TORSO_PULL_CHARGER",
+      "stateIdSource": "configNet/share.constant/AnimationConstant.cs:41；DefaultReloadSystem.cs:40 用 GetViewAnimDuration(18)；ViewAnimConfig 交叉验证：TORSO_PULL_CHARGER -> 18 (notes/viewanim-config/viewanim-config.json)",
+      "clip": "TORSO_PULL_CHARGER",
+      "clipSource": "ViewAnimStateInfo.cs:8；06_singleplayer/anim/anim/hand.action 中也定义 TORSO_PULL_CHARGER（通用 hand 表，非本枪专属配置）",
+      "anmClip": "确认不存在（spec clips 无 bolt/18 条目；ViewAnimConfig 有 0 帧占位 action）",
+      "anmClipSource": "spec/awm_legend_t.json 的 animation.clips 中没有 bolt/18 对应条目",
+      "loop": false,
+      "loopSource": "ViewAnimStateInfo.cs:14-36 IsLoop 白名单不含 18",
+      "runtimeDurationMs": 33,
+      "runtimeDurationSource": "notes/viewanim-config/viewanim-config.json -> TORSO_PULL_CHARGER: start=0 end=0 FrameCount=1；AnimationDesc.TotalTime=(int)(FrameCount*33.333332f) = 33 ms（C# (int) 截断）",
+      "specClipLengthMs": null,
+      "eventFrames": [],
+      "eventFramesNote": "未找到（P1）：音效 bundle 无 *_bolt clip，ViewAnimConfig bolt(18) 无 eventName，TpsWeaponSoundPredicateSystem 只注册 StateId 17。不编时刻。",
+      "audioEventNames": [
+        "bolt"
+      ],
+      "transitions": [
+        {
+          "to": "idle",
+          "toStateId": 13,
+          "when": "RemainTime 归零（回落规则 case 18 -> 13）",
+          "source": "configNet/share.constant/AnimationConstantUtility.cs:1081-1105 GetTorsoAnimNextId case 18 -> 13",
+          "authority": "确认（ENG-02）：本枪 ViewAnimConfig 无 nextAnimation → NextId=-1 → 回落 AnimationConstantUtility.GetTorsoAnimNextId 为权威"
+        }
+      ],
+      "transitionNote": "【ENG-02】已确认无 nextAnimation 覆盖，回落转移即权威。【ENG-02/03】本状态时长现为权威 33ms，AnimationTimeline（唯一时钟）会按 duration 自动推进；ENG-03 已删除 settleTimelineToIdle 兜底。",
+      "durationAuthoritative": true,
+      "frameRange": {
+        "start": 0,
+        "end": 0,
+        "frameCount": 1
+      },
+      "specClipLengthSource": "确认不存在：spec/awm_legend_t.json animation.clips 无 bolt clip；权威时长已由 runtimeDurationMs=33ms 给出。",
+      "viewAnimConfigLoop": false,
+      "animationEventName": null,
+      "eventTimeMs": 0,
+      "eventTimeSource": "eventFrame 属性不存在 -> AnimationDesc.EventTime 默认 0（动画起点触发）",
+      "nextAnimationAttr": null,
+      "nextId": -1,
+      "nextIdSource": "nextAnimation 属性不存在 -> AnimationDesc.NextId 默认 -1；ViewAnimStateInfo.NextState 回落到 AnimationConstantUtility.GetTorsoAnimNextId",
+      "audioEventsNoteSource": "notes/audio-events/audio-events.json"
+    },
+    "putaway": {
+      "action": "putaway",
+      "stateId": null,
+      "stateIdName": "确认不存在",
+      "stateIdSource": "configNet/share.constant/AnimationConstant.cs 全表 + notes/viewanim-config/awm_legend_t__hand.DAE.action.xml 24 条 action + 02_managed_src 全树 grep put_away/putaway/PutAway 均无结果。",
+      "clip": "确认不存在",
+      "clipSource": "确认不存在：ViewAnimConfig 无对应 action",
+      "anmClip": "确认不存在",
+      "loop": null,
+      "runtimeDurationMs": null,
+      "specClipLengthMs": "确认不存在",
+      "eventFrames": [],
+      "eventFramesNote": "确认不存在（P1）：音效 bundle 无 put_away clip；本枪无独立收枪动作。",
+      "audioEventNames": [
+        "put_away"
+      ],
+      "audioEventNamesSource": "spec/awm_legend_t.json audio.events —— 仅证明存在 put_away 音频事件名，不能证明存在对应 StateId/clip；收枪音效可能由切枪系统直接播放。",
+      "transitions": [],
+      "transitionNote": "确认不存在：无该动作，无 transition。",
+      "stateIdStatus": "确认不存在（非未找到）：ViewAnimConfig 24 条 <action> 与 AnimationConstant.cs 505 个常量中均无 putaway/PUT_AWAY；spec audio.events 的 put_away 只是音频事件名。",
+      "runtimeDurationSource": "确认不存在：无该动作",
+      "resolution": "ENG-02 结论：本枪没有独立收枪视图动画。WeaponState 的 PUTAWAY 相位是移植侧骨架，下阶段应改为「切枪时直接隐藏 viewmodel」，不要伪造一个 StateId。",
+      "specClipLengthSource": "确认不存在：无该动作",
+      "audioEventsNoteSource": "notes/audio-events/audio-events.json"
+    },
+    "inspect": {
+      "action": "inspect",
+      "stateId": 44,
+      "stateIdName": "TORSO_SHOWGUN",
+      "stateIdSource": "configNet/share.constant/AnimationConstant.cs:93；Assembly-CSharp/Assets.Sources.Modules.Player.Attack.Action/NormalFrameAction.cs:16-21 Cmd.IsShowGun -> SetViewAnimation(arg.Player, 44)；ViewAnimConfig 交叉验证：TORSO_SHOWGUN -> 44 (notes/viewanim-config/viewanim-config.json)",
+      "clip": "TORSO_SHOWGUN",
+      "clipSource": "ViewAnimStateInfo.cs:8",
+      "anmClip": "TORSO_SHOWGUN_blend0",
+      "anmClipSource": "spec/awm_legend_t.json animation.clips[id=inspect].source",
+      "loop": false,
+      "loopSource": "ViewAnimStateInfo.cs:14-36 IsLoop 白名单不含 44",
+      "runtimeDurationMs": 3366,
+      "runtimeDurationSource": "notes/viewanim-config/viewanim-config.json -> TORSO_SHOWGUN: start=470 end=570 FrameCount=101；AnimationDesc.TotalTime=(int)(FrameCount*33.333332f) = 3366 ms（C# (int) 截断）",
+      "specClipLengthMs": 3333.3,
+      "specClipLengthSource": "spec/awm_legend_t.json clips[inspect].lengthS=3.3333（ak47.anm decode；tools/build_weapon_spec.py:110）——代理值；【ENG-02】代理值已弃用，调度改用 runtimeDurationMs",
+      "trigger": "Cmd.IsShowGun && CanShowGun() (NormalFrameAction.cs:18-20)；weaponPredicateNet.net/.../ShowGunFrameAction.cs 走 ActionFunctions.CheckShowGun",
+      "eventFrames": [],
+      "eventFramesNote": "未找到（P1）：音效 bundle 无 *_inspect clip，TORSO_SHOWGUN(44) 无 eventName，源码未发现独立 Play2DSound 调用；inspect/inspect_empty 无区分依据。",
+      "audioEventNames": [
+        "inspect",
+        "inspect_empty"
+      ],
+      "transitions": [
+        {
+          "to": "idle",
+          "toStateId": 13,
+          "when": "RemainTime 归零（回落规则 case 44 -> 13）",
+          "source": "configNet/share.constant/AnimationConstantUtility.cs:1163-1165 GetTorsoAnimNextId case 35/44 -> 13",
+          "authority": "确认（ENG-02）：本枪 ViewAnimConfig 无 nextAnimation → NextId=-1 → 回落 AnimationConstantUtility.GetTorsoAnimNextId 为权威"
+        }
+      ],
+      "durationAuthoritative": true,
+      "frameRange": {
+        "start": 470,
+        "end": 570,
+        "frameCount": 101
+      },
+      "viewAnimConfigLoop": true,
+      "loopDiscrepancyNote": "ViewAnimConfig 写 loop=true，但 ViewAnimStateInfo.cs:14-36 的 IsLoop 硬编码白名单不含该 StateId。ViewAnimSystem.PlayHandAnimation 用 IAnimStateInfo.IsLoop，WeaponNoticePlayBackSystem 用 IWeaponAnimInfo.ViewAnimIsLoop(XML)。两处语义不同，本表现在两者都记录，不擅自判定谁覆盖谁。",
+      "animationEventName": null,
+      "eventTimeMs": 0,
+      "eventTimeSource": "eventFrame 属性不存在 -> AnimationDesc.EventTime 默认 0（动画起点触发）",
+      "nextAnimationAttr": null,
+      "nextId": -1,
+      "nextIdSource": "nextAnimation 属性不存在 -> AnimationDesc.NextId 默认 -1；ViewAnimStateInfo.NextState 回落到 AnimationConstantUtility.GetTorsoAnimNextId",
+      "transitionNote": "【ENG-02】已确认无 nextAnimation 覆盖，回落转移即权威。",
+      "audioEventsNoteSource": "notes/audio-events/audio-events.json"
+    },
+    "melee": {
+      "action": "melee",
+      "stateId": 20,
+      "stateIdName": "TORSO_SECONDARY_ATTACK",
+      "stateIdSource": "configNet/share.constant/AnimationConstant.cs:45；Assembly-CSharp/Assets.Sources.Modules.Player.Attack.Action/KnifeRightAction.cs:52 SetViewAnimation(arg.Player, 20)；ViewAnimConfig 交叉验证：TORSO_SECONDARY_ATTACK -> 20 (notes/viewanim-config/viewanim-config.json)",
+      "clip": "TORSO_SECONDARY_ATTACK",
+      "clipSource": "ViewAnimStateInfo.cs:8",
+      "anmClip": "TORSO_SECONDARY_ATTACK_blend0",
+      "anmClipSource": "spec/awm_legend_t.json animation.clips[id=melee].source",
+      "loop": false,
+      "loopSource": "ViewAnimStateInfo.cs:14-36 IsLoop 白名单不含 20",
+      "runtimeDurationMs": 1166,
+      "specClipLengthMs": 1133.3,
+      "specClipLengthSource": "spec/awm_legend_t.json clips[melee].lengthS=1.1333（ak47.anm decode；tools/build_weapon_spec.py:111）——代理值；【ENG-02】代理值已弃用，调度改用 runtimeDurationMs",
+      "frameChain": {
+        "source": "Assembly-CSharp/Assets.Sources.Modules.Player.Attack.Action/AwmLegendBaseAction.cs:34-46 (weaponKnifeAttacks[5]) + WeaponKnifeAttackAction.cs:KnifeLogic/NextKnife",
+        "mechanism": "WeaponKnifeAttackAction.KnifeLogic 要求当前 viewAnim == currentAttackRaise 且 (GetViewAnimDuration(currentAttackRaise) - RemainTime) >= 50，随后 NextKnife() 调 SetViewAnimation(nextKnifeAttackAnim)、SetTorseAnimation(15)，并令 NextSecondaryAttackTimer/NextAttackTimer = ClientTime + duration(nextKnifeAttackRaise) + duration(nextKnifeAttackAnim)。AwmLegendBaseAction.WeaponKnifeAttackLogic 命中后 OnFireWithDelay(delayAttackTime)。这是 FrameAction 帧链，不是独立定时器。",
+        "events": [
+          {
+            "index": 0,
+            "currentAttackRaise": -1,
+            "nextKnifeAttackAnim": 31,
+            "nextKnifeAttackRaise": 30,
+            "delayAttackTimeMs": 270
+          },
+          {
+            "index": 1,
+            "currentAttackRaise": 30,
+            "nextKnifeAttackAnim": 170,
+            "nextKnifeAttackRaise": 169,
+            "delayAttackTimeMs": 300
+          },
+          {
+            "index": 2,
+            "currentAttackRaise": 169,
+            "nextKnifeAttackAnim": 172,
+            "nextKnifeAttackRaise": 171,
+            "delayAttackTimeMs": 270
+          },
+          {
+            "index": 3,
+            "currentAttackRaise": 171,
+            "nextKnifeAttackAnim": 174,
+            "nextKnifeAttackRaise": 173,
+            "delayAttackTimeMs": 360
+          },
+          {
+            "index": 4,
+            "currentAttackRaise": 173,
+            "nextKnifeAttackAnim": 176,
+            "nextKnifeAttackRaise": 175,
+            "delayAttackTimeMs": 600
+          }
+        ]
+      },
+      "eventFrames": [
+        {
+          "atMs": 0,
+          "type": "SOUND",
+          "name": "awm_legend_t_sec_fire",
+          "source": "notes/viewanim-config/awm_legend_t__hand.DAE.action.xml <action name=TORSO_SECONDARY_ATTACK eventName=awm_legend_t_sec_fire>；eventFrame 属性不存在 -> EventTime=0 (WeaponAnimationData.cs:27-33)",
+          "note": "音效走动画事件帧；EventTime=0 表示动画起点，不是定时器。"
+        },
+        {
+          "atMs": 270,
+          "type": "MELEE_DELAY",
+          "name": "knife_0",
+          "source": "AwmLegendBaseAction.cs:36-37"
+        },
+        {
+          "atMs": 300,
+          "type": "MELEE_DELAY",
+          "name": "knife_1",
+          "source": "AwmLegendBaseAction.cs:38-39"
+        },
+        {
+          "atMs": 270,
+          "type": "MELEE_DELAY",
+          "name": "knife_2",
+          "source": "AwmLegendBaseAction.cs:40-41"
+        },
+        {
+          "atMs": 360,
+          "type": "MELEE_DELAY",
+          "name": "knife_3",
+          "source": "AwmLegendBaseAction.cs:42-43"
+        },
+        {
+          "atMs": 600,
+          "type": "MELEE_DELAY",
+          "name": "knife_4",
+          "source": "AwmLegendBaseAction.cs:44-45"
+        }
+      ],
+      "eventFramesNote": "确认（P1）：eventName=awm_legend_t_sec_fire，EventTime=0；另有 5 个 MELEE_DELAY 近战延迟帧（SetDelayAttackTime），不是音效 eventFrame。",
+      "audioEventNames": [
+        "awm_legend_t_sec_fire"
+      ],
+      "knifeAnimTransitionsSource": "configNet/share.constant/AnimationConstantUtility.cs:1081-1121 GetTorsoAnimNextId",
+      "knifeAnimTransitions": [
+        {
+          "fromStateId": 31,
+          "toStateId": 30
+        },
+        {
+          "fromStateId": 30,
+          "toStateId": 13
+        },
+        {
+          "fromStateId": 170,
+          "toStateId": 169
+        },
+        {
+          "fromStateId": 169,
+          "toStateId": 13
+        },
+        {
+          "fromStateId": 172,
+          "toStateId": 171
+        },
+        {
+          "fromStateId": 171,
+          "toStateId": 13
+        },
+        {
+          "fromStateId": 174,
+          "toStateId": 173
+        },
+        {
+          "fromStateId": 173,
+          "toStateId": 13
+        },
+        {
+          "fromStateId": 176,
+          "toStateId": 175
+        },
+        {
+          "fromStateId": 175,
+          "toStateId": 13
+        }
+      ],
+      "transitions": [
+        {
+          "to": "idle",
+          "toStateId": 13,
+          "when": "RemainTime 归零（回落规则 case 20 -> 13）",
+          "source": "configNet/share.constant/AnimationConstantUtility.cs:1081-1105 GetTorsoAnimNextId case 20 -> 13",
+          "authority": "确认（ENG-02）：本枪 ViewAnimConfig 无 nextAnimation → NextId=-1 → 回落 AnimationConstantUtility.GetTorsoAnimNextId 为权威"
+        }
+      ],
+      "runtimeDurationSource": "notes/viewanim-config/viewanim-config.json -> TORSO_SECONDARY_ATTACK: start=383 end=417 FrameCount=35；AnimationDesc.TotalTime=(int)(FrameCount*33.333332f) = 1166 ms（C# (int) 截断）",
+      "durationAuthoritative": true,
+      "frameRange": {
+        "start": 383,
+        "end": 417,
+        "frameCount": 35
+      },
+      "viewAnimConfigLoop": false,
+      "animationEventName": "awm_legend_t_sec_fire",
+      "eventTimeMs": 0,
+      "eventTimeSource": "eventFrame 属性不存在 -> AnimationDesc.EventTime 默认 0（动画起点触发）",
+      "nextAnimationAttr": null,
+      "nextId": -1,
+      "nextIdSource": "nextAnimation 属性不存在 -> AnimationDesc.NextId 默认 -1；ViewAnimStateInfo.NextState 回落到 AnimationConstantUtility.GetTorsoAnimNextId",
+      "transitionNote": "【ENG-02】已确认无 nextAnimation 覆盖，回落转移即权威。",
+      "audioEventNamesSource": "ViewAnimConfig <action name=TORSO_SECONDARY_ATTACK eventName=awm_legend_t_sec_fire>；近战帧链另有 awm_legend_t_skill2 (TORSO_KNIFE_ATTACK4)",
+      "audioEventsNoteSource": "notes/audio-events/audio-events.json"
+    },
+    "idle": {
+      "action": "idle",
+      "stateId": 13,
+      "stateIdName": "TORSO_STAND",
+      "stateIdSource": "configNet/share.constant/AnimationConstant.cs:31；ViewAnimConfig 交叉验证：TORSO_STAND -> 13 (notes/viewanim-config/viewanim-config.json)",
+      "clip": "TORSO_STAND",
+      "anmClip": "TORSO_STAND_blend0",
+      "loop": true,
+      "loopSource": "ViewAnimStateInfo.cs:20 IsLoop case 13 -> true",
+      "runtimeDurationMs": 33,
+      "specClipLengthMs": 33.3,
+      "transitions": [
+        {
+          "to": "idle",
+          "toStateId": 13,
+          "when": "自循环",
+          "source": "configNet/share.constant/AnimationConstantUtility.cs:1212-1213 GetTorsoAnimNextId case 13 -> 13",
+          "authority": "确认（ENG-02）：本枪 ViewAnimConfig 无 nextAnimation → NextId=-1 → 回落 AnimationConstantUtility.GetTorsoAnimNextId 为权威"
+        }
+      ],
+      "runtimeDurationSource": "notes/viewanim-config/viewanim-config.json -> TORSO_STAND: start=0 end=0 FrameCount=1；AnimationDesc.TotalTime=(int)(FrameCount*33.333332f) = 33 ms（C# (int) 截断）",
+      "durationAuthoritative": true,
+      "frameRange": {
+        "start": 0,
+        "end": 0,
+        "frameCount": 1
+      },
+      "specClipLengthSource": "；【ENG-02】代理值已弃用，调度改用 runtimeDurationMs",
+      "viewAnimConfigLoop": true,
+      "animationEventName": null,
+      "eventTimeMs": 0,
+      "eventTimeSource": "eventFrame 属性不存在 -> AnimationDesc.EventTime 默认 0（动画起点触发）",
+      "nextAnimationAttr": null,
+      "nextId": -1,
+      "nextIdSource": "nextAnimation 属性不存在 -> AnimationDesc.NextId 默认 -1；ViewAnimStateInfo.NextState 回落到 AnimationConstantUtility.GetTorsoAnimNextId",
+      "eventFramesNote": "权威（ENG-02）：TORSO_STAND 在 ViewAnimConfig 中没有 eventName 属性 → 该动作不产生动画音效事件；相关音效不来自此配置（见 eventFrameRule）。",
+      "transitionNote": "【ENG-02】已确认无 nextAnimation 覆盖，回落转移即权威。"
+    },
+    "walk": {
+      "action": "walk",
+      "stateId": 14,
+      "stateIdName": "TORSO_WALK",
+      "stateIdSource": "configNet/share.constant/AnimationConstant.cs:33；ViewAnimConfig 交叉验证：TORSO_WALK -> 14 (notes/viewanim-config/viewanim-config.json)",
+      "clip": "TORSO_WALK",
+      "anmClip": "TORSO_WALK_blend0",
+      "loop": true,
+      "loopSource": "ViewAnimStateInfo.cs:21 IsLoop case 14 -> true",
+      "runtimeDurationMs": 833,
+      "specClipLengthMs": 800.0,
+      "transitions": [
+        {
+          "to": "walk",
+          "toStateId": 14,
+          "when": "自循环",
+          "source": "configNet/share.constant/AnimationConstantUtility.cs:1200-1201 GetTorsoAnimNextId case 14 -> 14",
+          "authority": "确认（ENG-02）：本枪 ViewAnimConfig 无 nextAnimation → NextId=-1 → 回落 AnimationConstantUtility.GetTorsoAnimNextId 为权威"
+        }
+      ],
+      "runtimeDurationSource": "notes/viewanim-config/viewanim-config.json -> TORSO_WALK: start=1 end=25 FrameCount=25；AnimationDesc.TotalTime=(int)(FrameCount*33.333332f) = 833 ms（C# (int) 截断）",
+      "durationAuthoritative": true,
+      "frameRange": {
+        "start": 1,
+        "end": 25,
+        "frameCount": 25
+      },
+      "specClipLengthSource": "；【ENG-02】代理值已弃用，调度改用 runtimeDurationMs",
+      "viewAnimConfigLoop": true,
+      "animationEventName": null,
+      "eventTimeMs": 0,
+      "eventTimeSource": "eventFrame 属性不存在 -> AnimationDesc.EventTime 默认 0（动画起点触发）",
+      "nextAnimationAttr": null,
+      "nextId": -1,
+      "nextIdSource": "nextAnimation 属性不存在 -> AnimationDesc.NextId 默认 -1；ViewAnimStateInfo.NextState 回落到 AnimationConstantUtility.GetTorsoAnimNextId",
+      "eventFramesNote": "权威（ENG-02）：TORSO_WALK 在 ViewAnimConfig 中没有 eventName 属性 → 该动作不产生动画音效事件；相关音效不来自此配置（见 eventFrameRule）。",
+      "transitionNote": "【ENG-02】已确认无 nextAnimation 覆盖，回落转移即权威。"
+    }
+  },
+  "gaps": [
+    "【ENG-03 已解决】两个并行时钟已合并：AnimationTimeline 为唯一时钟，WeaponState 通过 StateListener 订阅其状态与权威时长，不再读 spec clip 长度、不再自行计时。",
+    "【ENG-03 已解决】draw / reload_empty / reload_tactical / shoot / 近战 的触发来源已确认：前三者来自 ViewAnimConfig eventName（EventTime=0、起点后第一个预测帧），shoot 来自开火命令链（同一预测帧同步）。见 notes/audio-events/audio-events.json",
+    "【仍缺·未找到】shoot_3p 的触发时刻：awm_legend_t 音效 bundle 9 个 AudioClip 中无 *_3p 资产；TpsWeaponSoundPredicateSystem.cs:26 只为 StateId 17 注册 reload，未注册 15；PlayerSound 用 isMyPlayer 控制衰减而非切换 clip。无独立 clip、无独立触发规则。",
+    "【仍缺·未找到】bolt 的触发时刻：无 *_bolt clip；ViewAnimConfig TORSO_PULL_CHARGER(18) 无 eventName → WeaponNoticePlayBackSystem.cs:70-72 直接 return；TpsWeaponSoundPredicateSystem 只注册 17。可能混在 reload/fire 音里，但找不到独立触发点。",
+    "【仍缺·未找到】inspect / inspect_empty 的触发时刻：无 *_inspect clip；TORSO_SHOWGUN(44) 无 eventName；CheckShowGun/ShowGunFrameAction 未发现独立 Play2DSound。两个事件名也找不到空/非空弹匣的区分依据。",
+    "【仍缺·未找到】后坐(Kickback Sniper 2.0) / 枪口特效的动画事件帧：ViewAnimConfig 无相关属性，AddFireSparks 由开火命令链同步调用但无 eventFrame 数值，未找到绑定到动画事件帧的 FrameAction。",
+    "【仍缺·确认不存在】putaway：无收枪动作、无 put_away 音效资产（ENG-02/ENG-03 双重确认），WeaponState.PUTAWAY 仅为移植侧骨架。",
+    "【保留·不裁决】ViewAnimConfig 的 loop 属性与 ViewAnimStateInfo.IsLoop 硬编码白名单在 StateId 44/150 上不一致（XML true vs 硬编码 false）；两个消费者不同，两者都记录，未擅自裁决。",
+    "【仍缺·待下阶段】MC 侧开镜 FOV 数值未找到（SpreadInputs 用 isScoping 布尔 + spec 可配置 40）；raiseSpeed（开火后 1.3f，AwmLegendRaisePredicactionSystem.cs）尚未接入攻击计时器。",
+    "【仍缺·待下阶段】实际音频播放：ENG-04 已撤掉 sounds.json 占位键，只保留映射表；没有 .ogg 资产、没有 SoundEvent 注册、没有播放调用；音效事件帧目前只做日志派发。"
+  ],
+  "viewAnimConfig": {
+    "status": "已导出（ENG-02）",
+    "rawXml": "notes/viewanim-config/awm_legend_t__hand.DAE.action.xml",
+    "parsedJson": "notes/viewanim-config/viewanim-config.json",
+    "exporter": "tools/export_viewanim_config.py",
+    "authoritySource": {
+      "viewAnimConfigAssetName": "Assets/Res/Assets/weapon/{name}/view/hand.DAE.action.xml",
+      "source": "Assembly-CSharp/Assets.Sources.Info.Weapon.WeaponInfo/DefaultWeaponInfo.cs:336",
+      "loader": "Assembly-CSharp/Assets.Sources.Modules.Player.Anim.FirstPerson/LoadFirstHandSystem.cs:479-485",
+      "parser": "SSJJAnim_Library/SSJJAnim.WeaponAnim/WeaponAnimationData.cs:18-67",
+      "durationFormula": "AnimationDesc.TotalTime = (int)(FrameCount * 33.333332f) ms; FrameCount = end-start+1",
+      "stateIdSource": "configNet/share.constant/AnimationConstant.cs (public const int)"
+    },
+    "actionCount": 24,
+    "reloadDurationMs": 2566,
+    "getViewAnimDurationMs": {
+      "TORSO_STAND": 33,
+      "TORSO_WALK": 833,
+      "TORSO_ATTACK": 1199,
+      "TORSO_RAISE": 499,
+      "TORSO_DIE": 33,
+      "TORSO_RELOAD": 2533,
+      "TORSO_PULL_CHARGER": 33,
+      "TORSO_KNIFE_ATTACK": 366,
+      "TORSO_ATTACK_RAISE": 633,
+      "TORSO_KNIFE_ATTACK1": 399,
+      "TORSO_ATTACK_RAISE1": 599,
+      "TORSO_KNIFE_ATTACK2": 399,
+      "TORSO_ATTACK_RAISE2": 433,
+      "TORSO_KNIFE_ATTACK3": 466,
+      "TORSO_ATTACK_RAISE3": 433,
+      "TORSO_KNIFE_ATTACK4": 866,
+      "TORSO_ATTACK_RAISE4": 466,
+      "TORSO_SECONDARY_ATTACK": 1166,
+      "TORSO_NORMAL_TO_SPECIAL": 266,
+      "TORSO_SPECIAL_TO_NORMAL": 266,
+      "TORSO_SPECIAL_STAND": 33,
+      "TORSO_SPECIAL_WALK": 833,
+      "TORSO_SPECIAL_ATTACK_END": 1233,
+      "TORSO_SHOWGUN": 3366
+    },
+    "hasEventFrameAttr": false,
+    "hasNextAnimationAttr": false,
+    "scan": {
+      "textAssetsScanned": 2691,
+      "bundlesWithEventFrame": [
+        "weapon\\highgrenade_deathray1_99ee66ac5d1bdd6b790d5ddd4451ec9a::hand.DAE.action",
+        "weapon\\highgrenade_deathray2_d6c95e30139ad39c7eb37f90ddce384c::hand.DAE.action",
+        "weapon\\highgrenade_deathray_260d8c83ac7f220fde221e42026407f1::hand.DAE.action",
+        "weapon\\rpk_hero_bad3e0f6b2ca1faf4d33b161f8a1d180::hand.DAE.action"
+      ],
+      "bundlesWithNextAnimation": [
+        "weapon\\blood_shadow_sword_02c65301c04e6af600083eb9b24ea184::hand.DAE.action",
+        "weapon\\c4_claymore_cb5f09d5d5301f7c1eb9a92e8c59529c::hand.DAE.action",
+        "weapon\\gatling_7cc2d2b66baef6c85c073082bae5e267::hand.DAE.action",
+        "weapon\\light_with_shadow_cc3a5fb71b543c148cf9a8786d0b202a::hand.DAE.action",
+        "weapon\\taiyi_grenade2_544496a84c0ce8e1445fa25de98febe2::hand.DAE.action",
+        "weapon\\taiyi_grenade_01de5ebcb0422281fd3458c4597ceaf2::hand.DAE.action",
+        "weapon\\verdict_legend2_c4e7d91af8554f529edc6e8578f93962::hand.DAE.action",
+        "weaponskin\\skin_light_with_shadow_starry_85269ca0787083d14b3616a8eac65048::hand.DAE.action",
+        "weaponskin\\skin_taiyi_grenade_ji_d47e5e65ff58ead7d326ae82284815c0::hand.DAE.action",
+        "weaponskin\\skin_taiyi_grenade_ji_d47e5e65ff58ead7d326ae82284815c0::hand.DAE.action",
+        "weaponskin\\skin_taiyi_grenade_ji_d47e5e65ff58ead7d326ae82284815c0::hand.DAE.action"
+      ]
+    },
+    "note": "C# 的 (int) 是向零截断，故 36 帧 = 1199ms 而不是 1200ms；本表数值已按截断复现。"
+  },
+  "audioEvents": {
+    "status": "ENG-03 已导出（P1）",
+    "rawSoundConfig": "notes/audio-events/soundconfig.xml",
+    "audioClips": "notes/audio-events/audio-clips.json",
+    "derivedTable": "notes/audio-events/audio-events.json",
+    "eventMap": "assets/ssjjport/spec/audio-event-map.json",
+    "soundsJson": null,
+    "exporter": "tools/export_audio_events.py",
+    "backfill": "tools/backfill_audio_events.py",
+    "authority": {
+      "audioBundle": "sound/weapon/awm_legend_t_055dcf5f7532af5f5e1a9ad0a98ddd6c",
+      "weaponBundle": "weapon/awm_legend_t_4e41f53852ab64dd135a4278f48fd8fe",
+      "viewAnimConfig": "notes/viewanim-config/viewanim-config.json",
+      "eventTimeRule": "WeaponAnimationData.cs:27-33 —— 仅当 <action eventFrame=...> 存在时才赋值 EventTime；本枪 24 条 action 全部没有该属性 → EventTime 恒为默认 0。",
+      "eventFireRule": "WeaponNoticePlayBackSystem.cs:90 —— if (currentTime > EventTime)；currentTime = GetViewAnimDuration - RemainTime（ViewAnimSystem.cs:144），起点为 0，故严格 >0 才播放，即起点之后的第一个预测帧。",
+      "fireCommandRule": "AbstractFireAction.cs:23-26,61-64 + FireFunctions.cs:376-398 —— 开火音效在 onFireActions 链内同步触发，非动画事件帧驱动。",
+      "soundConfigRule": "SounfConfigXmlAsset.cs:9-27 + SoundConfigData.cs:41-62 —— 武器包 <soundConfig> 用 eventId→url 映射，仅含 10047/10048 两个特效音。"
+    },
+    "confirmedSpecEvents": [
+      "draw",
+      "reload_empty / reload_tactical",
+      "shoot",
+      "（近战 / 二级开火）"
+    ],
+    "stillMissing": [
+      "shoot_3p",
+      "bolt",
+      "inspect / inspect_empty",
+      "put_away",
+      "后坐 / 枪口特效的动画事件帧"
+    ],
+    "note": "spec.audio.events 是通用事件名清单，与本枪 9 个真实 AudioClip 名不同套；映射见 audio-event-map.json。仍查不到的触发时刻一律保留「未找到」并注明原因，没有编造任何帧号或毫秒数。"
+  },
+  "gapsSource": "notes/audio-events/audio-events.json"
+}

@@ -1,0 +1,22 @@
+<component size="315,212" overflow="hidden">
+  <displayList>
+    <loader id="n0_sdsda" name="mode_Icon" xy="3,3" size="312,208" url="ui://yb6s62jcq496w"/>
+    <swf id="n1_sdsda" name="effectMc" src="97zja" xy="3,4" size="343,232"/>
+    <image id="n2_sdsda" name="unityIcon" src="97zjb" xy="7,7"/>
+    <component id="n3_sdsda" name="hallModeTips" src="97zjc" xy="7,7" touchable="false"/>
+    <loader id="n4_sdsda" name="hot_icon" xy="7,7" size="20,20"/>
+    <loader id="n5_sdsda" name="tips_icon" xy="7,7" size="20,20"/>
+    <component id="n6_sdsda" name="hallModeLockTips" src="97zjf" xy="7,62" touchable="false"/>
+    <image id="n7_sdsda" name="select_bg" src="97zjh" xy="0,0" size="315,213"/>
+  </displayList>
+  <transition name="up">
+    <item time="0" type="Visible" target="n3_sdsda" value="true"/>
+    <item time="0" type="XY" target="n3_sdsda" tween="true" startValue="7,7" endValue="7,-50" duration="12"/>
+    <item time="12" type="Visible" target="n3_sdsda" value="false"/>
+  </transition>
+  <transition name="down">
+    <item time="0" type="Visible" target="n3_sdsda" value="true"/>
+    <item time="0" type="XY" target="n3_sdsda" tween="true" startValue="7,-50" endValue="7,7" duration="12"/>
+    <item time="12" type="Visible" target="n3_sdsda" value="true"/>
+  </transition>
+</component>

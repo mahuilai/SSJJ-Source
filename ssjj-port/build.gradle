@@ -1,0 +1,92 @@
+plugins {
+    id 'fabric-loom' version '1.9-SNAPSHOT'
+    id 'java'
+}
+
+repositories {
+    maven { url = 'https://maven.fabricmc.net/' }
+    mavenCentral()
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    // GemRender（GLB/glTF + GPU 蒙皮 + 第一人称 hand pass）。
+    // 原包 MANIFEST 写死 Fabric-Loom-Version: 1.16.3，Loom 1.9 会拒绝 remap；
+    // libs/gemrender-loom19.jar 是仅把该版本标记改成 1.9.2 的副本（其余字节未动）。
+    modCompileOnly files('libs/gemrender-loom19.jar')
+
+    // ENG-02: JUnit 5 参数化回归测试（散布契约 + 动画时间轴）
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // 测试显式带 Gson，避免依赖 Loom 的传递顺序
+    testImplementation 'com.google.code.gson:gson:2.10.1'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
+}
+
+tasks.processResources {
+    inputs.property "version", project.version
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 21
+}
+
+// ENG-02: gradle test 必须真跑起来（原先 compileTestJava NO-SOURCE）
+// Windows + 中文工程路径：Gradle 用 UTF-8 写 worker 的 @argfile，
+// 而 java.exe 按平台字符集(GBK)解码 @argfile，导致 -cp 里的中文目录被打乱，
+// 测试类在 worker 里 ClassNotFoundException。
+// 解决办法：生成一个 manifest-only 的 pathing jar（放在纯 ASCII 的 java.io.tmpdir），
+// 把完整 classpath 以百分号编码的 file: URL 写进 Class-Path 属性。
+def pathingJarFile = new File(System.getProperty('java.io.tmpdir'), 'ssjj-port-test/pathing.jar')
+
+tasks.register('makeTestPathingJar') {
+    dependsOn 'testClasses'
+    outputs.file(pathingJarFile)
+    doLast {
+        def urls = sourceSets.test.runtimeClasspath.files.collect { it.toURI().toASCIIString() }
+        def mf = new java.util.jar.Manifest()
+        mf.mainAttributes.putValue('Manifest-Version', '1.0')
+        mf.mainAttributes.putValue('Class-Path', urls.join(' '))
+        pathingJarFile.parentFile.mkdirs()
+        pathingJarFile.withOutputStream { os ->
+            new java.util.jar.JarOutputStream(os, mf).close()
+        }
+        println "[ssjj-port] test pathing jar: ${pathingJarFile} (${urls.size()} entries)"
+    }
+}
+
+tasks.named('test', Test) {
+    useJUnitPlatform()
+    dependsOn 'makeTestPathingJar'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = files(pathingJarFile)
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = 'full'
+        showStandardStreams = false
+    }
+    reports {
+        junitXml.required = true
+        html.required = true
+    }
+}
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}

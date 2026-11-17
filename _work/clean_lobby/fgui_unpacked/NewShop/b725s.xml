@@ -1,0 +1,37 @@
+<component size="957,594">
+  <controller name="c1" pages="0,武器,1,传说,2,角色,4,其他" selected="0"/>
+  <displayList>
+    <image id="n24_mqjb" name="n24" src="mqjb7b" xy="0,0"/>
+    <image id="n23_pp7c" name="n23" src="pp7c7a" xy="0,0" size="957,594">
+      <gearDisplay controller="c1" pages="0,2,4"/>
+    </image>
+    <component id="n9_ltex" name="weaponUI" src="ltex2n" xy="7,80" size="951,483">
+      <gearDisplay controller="c1" pages="0"/>
+    </component>
+    <component id="n10_ltex" name="currencyBar" src="g2c71k" pkg="l5eynmwj" xy="708,46" size="251,30"/>
+    <component id="n11_ltex" name="rechargeBtn" src="ltex3x" xy="848,7"/>
+    <component id="n13_ltex" name="filterBtn" src="ltex2k" xy="240,5">
+      <Button title="筛选"/>
+    </component>
+    <component id="n15_ltex" name="legendUI" src="ltex3y" xy="21,76" size="919,521">
+      <gearDisplay controller="c1" pages="1"/>
+    </component>
+    <component id="n18_pqhi" name="roleUI" src="pqhi5q" xy="21,74">
+      <gearDisplay controller="c1" pages="2"/>
+    </component>
+    <component id="n20_pqhi" name="otherUI" src="pqhi5t" xy="24,77">
+      <gearDisplay controller="c1" pages="4"/>
+    </component>
+    <list id="n5_ltex" name="typeList" xy="21,46" size="752,28" layout="row" overflow="scroll" scroll="horizontal" colGap="2" defaultItem="ui://rn0gspbxltex24">
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+    </list>
+    <image id="n21_j1do" name="filterInputBgImage" src="j1do6r" xy="56,6"/>
+    <component id="n22_j1do" name="helpBtn" src="j1do6y" xy="326,9"/>
+    <text id="n12_ltex" name="filterInputTxt" xy="57,6" size="169,31" input="true" prompt="搜索输入名称搜索" fontSize="16" color="#999999" autoSize="none" singleLine="true" text=""/>
+  </displayList>
+</component>

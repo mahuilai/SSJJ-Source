@@ -1,0 +1,9 @@
+<component size="100,100">
+  <displayList>
+    <image id="n0_sdsda" name="kingImage" xy="0,0" src="97zjk"/>
+    <text id="n1_sdsda" name="kingScoreTxtLabel" xy="80,99" size="80,20" text="16516500" color="#f6a81a"/>
+    <text id="n2_sdsda" name="kingScoreLabel" xy="26,99" size="80,20" text="冠军积分：" color="#f6a81a"/>
+    <text id="n3_sdsda" name="kingNameTxtLabel" xy="25,68" size="105,20" text="" color="#ffe8a1" align="center" autoSize="none"/>
+    <text id="n4_sdsda" name="kingSeasonLabel" xy="39,50" size="80,20" text="第{0}赛季" color="#fffbf3" align="center" autoSize="none"/>
+  </displayList>
+</component>

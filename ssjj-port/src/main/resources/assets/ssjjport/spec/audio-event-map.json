@@ -1,0 +1,189 @@
+{
+  "schema": "ssjj-audio-event-map/1",
+  "weapon": "awm_legend_t",
+  "namespace": "ssjjport",
+  "source": "notes/audio-events/audio-events.json",
+  "soundsJson": null,
+  "note": "只建映射，不实现实际 .ogg 播放，也不生成 sounds.json：ENG-04 经 javap 核实，sounds.json 的键不会自动进 Registries.SOUND_EVENT，无 subtitle 时连 ERROR 分支都被跳过，默认日志级别下完全静默 —— 保留占位键等于「有事件帧、没声音、无报警」。严禁把 spec.audio.events 的通用事件名当成资产名。",
+  "eventNameToSoundKey": {
+    "awm_legend_t_change": "awm_legend_t_change",
+    "awm_legend_t_change2": "awm_legend_t_change2",
+    "awm_legend_t_fire": "awm_legend_t_fire",
+    "awm_legend_t_fire3": "awm_legend_t_fire3",
+    "awm_legend_t_raise": "awm_legend_t_raise",
+    "awm_legend_t_reload": "awm_legend_t_reload",
+    "awm_legend_t_sec_fire": "awm_legend_t_sec_fire",
+    "awm_legend_t_skill2": "awm_legend_t_skill2"
+  },
+  "specEventToSoundKey": {
+    "draw": "awm_legend_t_raise",
+    "shoot": "awm_legend_t_fire",
+    "reload_empty": "awm_legend_t_reload",
+    "reload_tactical": "awm_legend_t_reload"
+  },
+  "confirmedTriggers": [
+    {
+      "specEvent": "draw",
+      "audioClip": "awm_legend_t_raise",
+      "trigger": "ViewAnimConfig <action name=TORSO_RAISE eventName=awm_legend_t_raise>；eventFrame 属性不存在 → EventTime=0。WeaponNoticePlayBackSystem.cs:90 判 currentTime > EventTime（严格 >），动画起点 currentTime=ViewAnimDuration-RemainTime=0，故在起点之后的第一个预测帧触发（非动画第 0 帧本身）。",
+      "stateId": 16,
+      "eventTimeMs": 0,
+      "sources": [
+        "Game source/02_managed_src/SSJJAnim_Library/SSJJAnim.WeaponAnim/WeaponAnimationData.cs:27-33",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:70-72",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:76",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:90",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:105-109",
+        "notes/viewanim-config/awm_legend_t__hand.DAE.action.xml"
+      ]
+    },
+    {
+      "specEvent": "reload_empty / reload_tactical",
+      "audioClip": "awm_legend_t_reload",
+      "trigger": "ViewAnimConfig <action name=TORSO_RELOAD eventName=awm_legend_t_reload>；eventFrame 属性不存在 → EventTime=0，起点后第一个预测帧触发。TPS 侧另有 TpsWeaponSoundPredicateSystem.cs:26 把 StateId 17 映射到 '{weapon}_reload'，同样在动画进入 17 时播放（>1000ms 节流）。",
+      "stateId": 17,
+      "eventTimeMs": 0,
+      "sources": [
+        "Game source/02_managed_src/SSJJAnim_Library/SSJJAnim.WeaponAnim/WeaponAnimationData.cs:27-33",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:70-72",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:76",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:90",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:105-109",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/TpsWeaponSoundPredicateSystem.cs:26",
+        "notes/viewanim-config/awm_legend_t__hand.DAE.action.xml"
+      ]
+    },
+    {
+      "specEvent": "shoot",
+      "audioClip": "awm_legend_t_fire",
+      "trigger": "fire(15) 在 ViewAnimConfig 中没有 eventName，WeaponNoticePlayBackSystem.cs:70-72 直接 return → 走开火命令链：AbstractFireAction.Action → onFireActions.Step（同步）→ CommonFireEvent → FireFunctions.FireEvent → AddFireEvent(args,1) → BroadCastEvent → WeaponUtil.AddSound(case 1) → SoundResourceUtility.GetWeaponSoundFireAssetInfo → PlayerSound → Play2DSound。整条链在开火命令同一预测帧内同步执行，没有动画事件帧延迟（不是 eventFrame 驱动）。",
+      "stateId": 15,
+      "eventTimeMs": null,
+      "sources": [
+        "Game source/02_managed_src/weaponPredicateNet.net/weapon.predicateSystem.attackSystem.actions/AbstractFireAction.cs:23-26",
+        "Game source/02_managed_src/weaponPredicateNet.net/weapon.predicateSystem.attackSystem.actions/AbstractFireAction.cs:61-64",
+        "Game source/02_managed_src/weaponPredicateNet.net/weapon.utils/FireFunctions.cs:376-398",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Attack.SharePredicationApapter/WeaponUtil.cs:161-217",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Attack.SharePredicationApapter/WeaponUtil.cs:219-224",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Utils/SoundResourceUtility.cs:88-92",
+        "notes/viewanim-config/awm_legend_t__hand.DAE.action.xml"
+      ]
+    },
+    {
+      "specEvent": "（近战 / 二级开火）",
+      "audioClip": "awm_legend_t_sec_fire",
+      "trigger": "ViewAnimConfig 的 TORSO_SECONDARY_ATTACK(20) / TORSO_KNIFE_ATTACK(31) / KNIFE_ATTACK1..3(170/172/174) 均带 eventName=awm_legend_t_sec_fire，eventFrame 缺失 → EventTime=0，进入动作后第一个预测帧触发。另 FireFunctions.FireEvent 的 case 11/59 也会经 AddSound 播 _sec_fire / _fire3（同预测帧）。",
+      "stateId": 20,
+      "eventTimeMs": 0,
+      "sources": [
+        "Game source/02_managed_src/SSJJAnim_Library/SSJJAnim.WeaponAnim/WeaponAnimationData.cs:27-33",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:70-72",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:76",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:90",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:105-109",
+        "Game source/02_managed_src/weaponPredicateNet.net/weapon.predicateSystem.attackSystem.actions/AbstractFireAction.cs:23-26",
+        "Game source/02_managed_src/weaponPredicateNet.net/weapon.predicateSystem.attackSystem.actions/AbstractFireAction.cs:61-64",
+        "Game source/02_managed_src/weaponPredicateNet.net/weapon.utils/FireFunctions.cs:376-398",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Attack.SharePredicationApapter/WeaponUtil.cs:161-217",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Attack.SharePredicationApapter/WeaponUtil.cs:219-224",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Utils/SoundResourceUtility.cs:88-92",
+        "notes/viewanim-config/awm_legend_t__hand.DAE.action.xml"
+      ]
+    }
+  ],
+  "unmappedSpecEvents": [
+    "shoot_3p",
+    "bolt",
+    "inspect / inspect_empty",
+    "put_away",
+    "后坐 / 枪口特效的动画事件帧"
+  ],
+  "unmappedSpecEventsDetail": [
+    {
+      "specEvent": "shoot_3p",
+      "status": "未找到",
+      "reason": "awm_legend_t 音效 bundle 的 9 个 AudioClip 中没有 *_3p / *_third 资产；TpsWeaponSoundPredicateSystem.cs:26 只把 StateId 17 映射到 'reload'，没有为 StateId 15 注册第三人称开火音；WeaponUtil.PlayerSound 用 isMyPlayer 控制 2D 音衰减而非切换 clip。因此 spec.audio.events 里的 shoot_3p 无独立 clip、无独立触发规则。",
+      "sources": [
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/TpsWeaponSoundPredicateSystem.cs:26",
+        "Game source/02_managed_src/weaponPredicateNet.net/weapon.predicateSystem.attackSystem.actions/AbstractFireAction.cs:23-26",
+        "Game source/02_managed_src/weaponPredicateNet.net/weapon.predicateSystem.attackSystem.actions/AbstractFireAction.cs:61-64",
+        "Game source/02_managed_src/weaponPredicateNet.net/weapon.utils/FireFunctions.cs:376-398",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Attack.SharePredicationApapter/WeaponUtil.cs:161-217",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Attack.SharePredicationApapter/WeaponUtil.cs:219-224",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Utils/SoundResourceUtility.cs:88-92",
+        "sound/weapon/awm_legend_t_055dcf5f7532af5f5e1a9ad0a98ddd6c",
+        "weapon/awm_legend_t_4e41f53852ab64dd135a4278f48fd8fe"
+      ]
+    },
+    {
+      "specEvent": "bolt",
+      "status": "未找到",
+      "reason": "音效 bundle 中无 *_bolt / *_pull / *_charger 资产；ViewAnimConfig 的 TORSO_PULL_CHARGER(18) 无 eventName → WeaponNoticePlayBackSystem.cs:70-72 直接 return；TpsWeaponSoundPredicateSystem 只注册 17。拉栓音可能混在 awm_legend_t_reload 或 awm_legend_t_fire 里，但源码与资源包都找不到独立触发点，故不填时刻、不猜。",
+      "sources": [
+        "Game source/02_managed_src/SSJJAnim_Library/SSJJAnim.WeaponAnim/WeaponAnimationData.cs:27-33",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:70-72",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:76",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:90",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:105-109",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/TpsWeaponSoundPredicateSystem.cs:26",
+        "sound/weapon/awm_legend_t_055dcf5f7532af5f5e1a9ad0a98ddd6c",
+        "weapon/awm_legend_t_4e41f53852ab64dd135a4278f48fd8fe",
+        "notes/viewanim-config/awm_legend_t__hand.DAE.action.xml"
+      ]
+    },
+    {
+      "specEvent": "inspect / inspect_empty",
+      "status": "未找到",
+      "reason": "音效 bundle 中无 *_inspect / *_showgun 资产；ViewAnimConfig 的 TORSO_SHOWGUN(44) 无 eventName；源码中 CheckShowGun / ShowGunFrameAction 未发现独立 Play2DSound 调用。两个 spec 事件名也找不到区分依据（空/非空弹匣），不编造。",
+      "sources": [
+        "Game source/02_managed_src/SSJJAnim_Library/SSJJAnim.WeaponAnim/WeaponAnimationData.cs:27-33",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:70-72",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:76",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:90",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Sound/WeaponNoticePlayBackSystem.cs:105-109",
+        "sound/weapon/awm_legend_t_055dcf5f7532af5f5e1a9ad0a98ddd6c",
+        "weapon/awm_legend_t_4e41f53852ab64dd135a4278f48fd8fe",
+        "notes/viewanim-config/awm_legend_t__hand.DAE.action.xml"
+      ]
+    },
+    {
+      "specEvent": "put_away",
+      "status": "确认不存在",
+      "reason": "ENG-02 已确认 ViewAnimConfig 24 条 action 与 AnimationConstant.cs 505 个常量均无收枪动作；音效 bundle 9 个 AudioClip 中也无 put_away / *_away 资产。spec.audio.events 的 put_away 只是通用事件名清单里的一项。",
+      "sources": [
+        "sound/weapon/awm_legend_t_055dcf5f7532af5f5e1a9ad0a98ddd6c",
+        "weapon/awm_legend_t_4e41f53852ab64dd135a4278f48fd8fe",
+        "notes/viewanim-config/awm_legend_t__hand.DAE.action.xml"
+      ]
+    },
+    {
+      "specEvent": "后坐 / 枪口特效的动画事件帧",
+      "status": "未找到",
+      "reason": "ViewAnimConfig 24 条 action 无相关属性；AddFireSparks（WeaponUtil.cs:114-135）由开火命令链同步调用、与 muzzle flash 相关但无 eventFrame 数值；未找到绑定到动画事件帧的 FrameAction。",
+      "sources": [
+        "Game source/02_managed_src/weaponPredicateNet.net/weapon.predicateSystem.attackSystem.actions/AbstractFireAction.cs:23-26",
+        "Game source/02_managed_src/weaponPredicateNet.net/weapon.predicateSystem.attackSystem.actions/AbstractFireAction.cs:61-64",
+        "Game source/02_managed_src/weaponPredicateNet.net/weapon.utils/FireFunctions.cs:376-398",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Attack.SharePredicationApapter/WeaponUtil.cs:161-217",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Modules.Player.Attack.SharePredicationApapter/WeaponUtil.cs:219-224",
+        "Game source/02_managed_src/Assembly-CSharp/Assets.Sources.Utils/SoundResourceUtility.cs:88-92",
+        "notes/viewanim-config/awm_legend_t__hand.DAE.action.xml"
+      ]
+    }
+  ],
+  "unmappedClips": [
+    "awm_legend_t_skill"
+  ],
+  "unmappedClipsNote": "这些 AudioClip 真实存在，但本轮找不到独立触发规则，因此不注册为映射键、不编帧号。",
+  "audioClips": [
+    "awm_legend_t_change",
+    "awm_legend_t_change2",
+    "awm_legend_t_fire",
+    "awm_legend_t_fire3",
+    "awm_legend_t_raise",
+    "awm_legend_t_reload",
+    "awm_legend_t_sec_fire",
+    "awm_legend_t_skill",
+    "awm_legend_t_skill2"
+  ]
+}

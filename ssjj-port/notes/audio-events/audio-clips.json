@@ -1,0 +1,17 @@
+{
+  "sourceBundle": "sound/weapon/awm_legend_t_055dcf5f7532af5f5e1a9ad0a98ddd6c",
+  "sourceRoot": "D:\\SSJJ-4399\\battle\\3_64\\SSJJ_BattleClient_Unity_Data\\StreamingAssets\\AssetBundles\\Windows",
+  "count": 9,
+  "clips": [
+    "awm_legend_t_change",
+    "awm_legend_t_change2",
+    "awm_legend_t_fire",
+    "awm_legend_t_fire3",
+    "awm_legend_t_raise",
+    "awm_legend_t_reload",
+    "awm_legend_t_sec_fire",
+    "awm_legend_t_skill",
+    "awm_legend_t_skill2"
+  ],
+  "note": "UnityPy 枚举 AudioClip.m_Name；这是本枪实际存在的全部音效资产。spec.audio.events 的 draw/shoot/bolt/inspect 等是通用事件名，不是资产名。"
+}

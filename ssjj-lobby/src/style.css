@@ -1,0 +1,103 @@
+/* 大厅视口：固定 1024x650，与原版 AIR 视口一致 */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: "Microsoft YaHei", "宋体", sans-serif;
+  cursor: default;
+  user-select: none;
+}
+
+#viewport {
+  position: relative;
+  width: 1024px;
+  height: 650px;
+  overflow: hidden;
+  background: #000;
+  margin: 0 auto;
+  transform-origin: top left;
+}
+
+#stage {
+  position: absolute;
+  inset: 0;
+  width: 1024px;
+  height: 650px;
+}
+
+#overlay {
+  position: absolute;
+  inset: 0;
+  width: 1024px;
+  height: 650px;
+  pointer-events: none;
+}
+
+/* 单个 UI 节点 */
+.n {
+  position: absolute;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  backface-visibility: hidden;
+  /* 组件容器裁剪内容，避免子节点溢出铺满全屏 */
+  overflow: hidden;
+  /* 节点默认允许子节点以自身左上角为原点定位 */
+}
+
+.n > .n {
+  /* 子节点坐标相对父节点，不需要额外偏移 */
+}
+
+.n.img { background-position: center; }
+
+.n.label {
+  color: #fff;
+  font-size: 12px;
+  line-height: 1;
+  white-space: pre;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.n.hit {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.n.hit:hover {
+  filter: brightness(1.16);
+}
+
+.n.hit:active {
+  filter: brightness(0.9);
+}
+
+/* 弹窗层 */
+#overlay .panel {
+  position: absolute;
+  pointer-events: auto;
+}
+
+.panel-mask {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.66);
+  pointer-events: auto;
+}
+
+#status {
+  position: absolute;
+  left: 8px;
+  bottom: 6px;
+  font: 11px/1.5 monospace;
+  color: #6d8ba6;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 2px 8px;
+  border-radius: 3px;
+  z-index: 99;
+  pointer-events: none;
+}

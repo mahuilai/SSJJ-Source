@@ -1,0 +1,8 @@
+{
+  "name": "ssjj.gun.awm_legend_t.name",
+  "display": "ssjj:awm_legend_t_display",
+  "data": "ssjj:awm_legend_t_data",
+  "tooltip": "ssjj.gun.awm_legend_t.desc",
+  "type": "sniper",
+  "sort": 1
+}

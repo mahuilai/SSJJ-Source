@@ -1,0 +1,270 @@
+package wdnative.animctrl
+{
+   import avm2.intrinsics.memory.*;
+   import wdnative.ESP;
+   import wdnative.F__Z15QuaternionSlerpPKfPffS1_;
+   
+   public function blendAngle(param1:int, param2:int, param3:Number, param4:Vector.<Number>) : void
+   {
+      var _loc30_:* = undefined;
+      var _loc13_:int = 0;
+      var _loc29_:Number = NaN;
+      var _loc21_:Number = NaN;
+      var _loc31_:int = 0;
+      var _loc38_:int = 0;
+      var _loc28_:Number = NaN;
+      var _loc18_:* = NaN;
+      var _loc27_:Number = NaN;
+      _loc13_ = wdnative.ESP;
+      var _loc12_:int = _loc13_ - 48;
+      _loc18_ = _loc27_ = 0;
+      _loc31_ = param1;
+      _loc38_ = param2;
+      var _loc16_:Number = _loc29_ = param3;
+      if(_loc16_ >= _loc18_)
+      {
+         _loc18_ = _loc29_;
+         _loc16_ = _loc28_ = 1;
+         _loc27_ = _loc29_;
+         if(!(_loc18_ <= _loc16_ | _loc18_ != _loc18_ | _loc16_ != _loc16_))
+         {
+            _loc27_ = _loc28_;
+         }
+      }
+      while(true)
+      {
+         _loc21_ = _loc27_;
+         if(_loc21_ >= 0.001)
+         {
+            if(_loc31_ != _loc38_)
+            {
+               if(!(_loc21_ <= 0.999 | _loc21_ != _loc21_ | false))
+               {
+                  var _loc25_:Number;
+                  var _loc19_:*;
+                  var _loc23_:Number;
+                  _loc18_ = _loc25_ = _loc18_ = lf32(_loc38_ + 20) * (_loc19_ = _loc23_ = 0.5);
+                  var _temp_22:* = Math.sin(_loc18_);
+                  var _temp_21:* = Math.cos(_loc18_);
+                  _loc16_ = _loc23_ = _loc16_ = (_loc16_ = lf32(_loc38_ + 16)) * _loc19_;
+                  var _loc24_:* = Math.sin(_loc16_);
+                  _loc16_ = _loc23_ = _loc16_ = Math.cos(_loc16_);
+                  var _loc5_:* = lf32(_loc38_ + 12);
+                  var _loc20_:*;
+                  var _loc6_:Number = _loc20_ = _loc19_ = _loc5_ * _loc19_;
+                  _loc19_ = _loc20_ = _loc19_ = Math.sin(_loc6_);
+                  var _loc22_:Number;
+                  _loc5_ = _loc22_ = _loc5_ = _loc19_ * _loc16_;
+                  _loc25_ = _temp_21;
+                  _loc18_ = _temp_22;
+                  var _loc15_:Number;
+                  var _loc7_:Number;
+                  var _loc8_:Number = _loc15_ = _loc7_ = _loc5_ * _loc18_;
+                  var _loc17_:Number;
+                  _loc7_ = _loc17_ = _loc24_;
+                  _loc6_ = _loc17_ = _loc24_ = Math.cos(_loc6_);
+                  var _loc11_:Number = _loc17_ = _loc24_ = _loc6_ * _loc7_;
+                  var _loc14_:*;
+                  _loc24_ = _loc14_ = §§pop();
+                  var _loc26_:Number;
+                  _loc14_ = _loc26_ = _loc11_ * _loc24_;
+                  var _temp_34:* = _loc14_;
+                  _loc14_ = _loc26_ = _loc8_ - _temp_34;
+                  sf32(_loc14_,_loc13_ - 32);
+                  _loc22_ = _loc5_ *= _loc24_;
+                  var _temp_42:* = _loc22_;
+                  var _loc36_:Number;
+                  _loc22_ = _loc5_ = (_loc8_ = _loc36_ = _loc8_ = _loc11_ * _loc18_) + _temp_42;
+                  sf32(_loc22_,_loc13_ - 28);
+                  _loc19_ = _loc20_ = _loc19_ *= _loc7_;
+                  _loc15_ = _loc7_ = _loc19_ * _loc18_;
+                  var _temp_56:* = _loc15_;
+                  _loc23_ = _loc16_ = (_loc16_ = _loc23_ = _loc16_ = (_loc6_ = _loc23_ = _loc16_ = _loc6_ * _loc16_) * _loc24_) - _temp_56;
+                  sf32(_loc23_,_loc13_ - 24);
+                  _loc20_ = _loc19_ *= _loc24_;
+                  var _temp_64:* = _loc20_;
+                  _loc25_ = _loc18_ = (_loc18_ = _loc25_ = _loc18_ = _loc6_ * _loc18_) + _temp_64;
+                  sf32(_loc25_,_loc13_ - 20);
+                  _loc20_ = lf32(_loc38_);
+                  param4[0] = _loc20_;
+                  _loc20_ = lf32(_loc38_ + 4);
+                  param4[1] = _loc20_;
+                  _loc20_ = lf32(_loc38_ + 8);
+                  param4[2] = _loc20_;
+                  param4[3] = _loc14_;
+                  param4[4] = _loc22_;
+                  param4[5] = _loc23_;
+                  param4[6] = _loc25_;
+                  break;
+               }
+               _loc18_ = _loc25_ = 1;
+               _loc18_ = _loc18_ - _loc21_;
+               var _temp_95:* = _loc18_;
+               _loc26_ = _loc14_ = _loc26_ = lf32(_loc31_ + 20) * (_loc16_ = _loc23_ = 0.5);
+               var _temp_86:* = Math.sin(_loc26_);
+               var _temp_85:* = Math.cos(_loc26_);
+               _loc19_ = _loc20_ = _loc19_ = (_loc19_ = lf32(_loc31_ + 16)) * _loc16_;
+               _loc6_ = Math.sin(_loc19_);
+               _loc19_ = _loc20_ = _loc19_ = Math.cos(_loc19_);
+               _loc24_ = lf32(_loc31_ + 12);
+               var _loc10_:Number = _loc17_ = _loc24_ = _loc24_ * _loc16_;
+               _loc24_ = _loc17_ = _loc24_ = Math.sin(_loc10_);
+               _loc8_ = _loc15_ = _loc7_ = _loc24_ * _loc19_;
+               _loc14_ = _temp_85;
+               _loc26_ = _temp_86;
+               _loc11_ = _loc15_ = _loc7_ = _loc8_ * _loc26_;
+               var _loc37_:Number;
+               _loc7_ = _loc37_ = _loc6_;
+               _loc6_ = _loc37_ = _loc6_ = Math.cos(_loc10_);
+               var _loc32_:Number;
+               _loc10_ = _loc32_ = _loc10_ = _loc6_ * _loc7_;
+               _loc22_ = _temp_95;
+               _loc5_ = §§pop();
+               var _loc9_:Number;
+               var _loc33_:Number = _loc9_ = _loc10_ * _loc5_;
+               var _temp_98:* = _loc33_;
+               _loc11_ -= _temp_98;
+               sf32(_loc11_,_loc13_ - 16);
+               _loc36_ = _loc8_ *= _loc5_;
+               var _temp_105:* = _loc36_;
+               var _loc34_:Number;
+               _loc8_ = (_loc11_ = _loc34_ = _loc11_ = _loc10_ * _loc26_) + _temp_105;
+               sf32(_loc8_,_loc13_ - 12);
+               _loc24_ = _loc17_ = _loc24_ *= _loc7_;
+               _loc15_ = _loc7_ = _loc24_ * _loc26_;
+               var _temp_118:* = _loc15_;
+               _loc6_ = (_loc6_ = _loc37_ = _loc6_ = (_loc19_ = _loc20_ = _loc19_ = _loc6_ * _loc19_) * _loc5_) - _temp_118;
+               sf32(_loc6_,_loc13_ - 8);
+               _loc17_ = _loc24_ *= _loc5_;
+               var _temp_125:* = _loc17_;
+               _loc26_ = (_loc26_ = _loc14_ = _loc26_ = _loc19_ * _loc26_) + _temp_125;
+               sf32(_loc26_,_loc13_ - 4);
+               _loc26_ = lf32(_loc38_ + 20);
+               _loc26_ = _loc14_ = _loc26_ = _loc26_ * _loc16_;
+               var _temp_144:* = Math.sin(_loc26_);
+               var _temp_143:* = Math.cos(_loc26_);
+               _loc26_ = _loc14_ = _loc26_ = (_loc26_ = lf32(_loc38_ + 16)) * _loc16_;
+               _loc5_ = Math.sin(_loc26_);
+               _loc26_ = _loc14_ = _loc26_ = Math.cos(_loc26_);
+               _loc24_ = lf32(_loc38_ + 12);
+               _loc11_ = _loc23_ = _loc16_ = _loc24_ * _loc16_;
+               _loc24_ = _loc23_ = _loc16_ = Math.sin(_loc11_);
+               _loc7_ = _loc23_ = _loc16_ = _loc24_ * _loc26_;
+               _loc23_ = _temp_143;
+               _loc16_ = _temp_144;
+               _loc8_ = _loc37_ = _loc6_ = _loc7_ * _loc16_;
+               _loc6_ = _loc22_ = _loc5_;
+               _loc5_ = _loc22_ = _loc5_ = Math.cos(_loc11_);
+               _loc11_ = _loc34_ = _loc11_ = _loc5_ * _loc6_;
+               _loc19_ = _loc20_ = §§pop();
+               _loc32_ = _loc10_ = _loc11_ * _loc19_;
+               var _temp_156:* = _loc32_;
+               _loc8_ -= _temp_156;
+               sf32(_loc8_,_loc13_ - 32);
+               _loc15_ = _loc7_ *= _loc19_;
+               var _temp_163:* = _loc15_;
+               _loc7_ = (_loc8_ = _loc36_ = _loc8_ = _loc11_ * _loc16_) + _temp_163;
+               sf32(_loc7_,_loc13_ - 28);
+               _loc24_ = _loc17_ = _loc24_ *= _loc6_;
+               _loc37_ = _loc6_ = _loc24_ * _loc16_;
+               var _temp_176:* = _loc37_;
+               _loc5_ = (_loc5_ = _loc22_ = _loc5_ = (_loc26_ = _loc14_ = _loc26_ = _loc5_ * _loc26_) * _loc19_) - _temp_176;
+               sf32(_loc5_,_loc13_ - 24);
+               _loc20_ = _loc19_ = _loc24_ * _loc19_;
+               var _temp_183:* = _loc20_;
+               _loc16_ = (_loc16_ = _loc23_ = _loc16_ = _loc26_ * _loc16_) + _temp_183;
+               sf32(_loc16_,_loc13_ - 20);
+               _loc12_ -= 16;
+               var _loc35_:int = _loc13_ - 48;
+               si32(_loc35_,_loc12_ + 12);
+               _loc35_ = _loc13_ - 32;
+               si32(_loc35_,_loc12_ + 4);
+               _loc35_ = _loc13_ - 16;
+               si32(_loc35_,_loc12_);
+               sf32(_loc27_,_loc12_ + 8);
+               wdnative.ESP = _loc12_;
+               wdnative.F__Z15QuaternionSlerpPKfPffS1_();
+               _loc12_ += 16;
+               _loc16_ = lf32(_loc38_);
+               _loc16_ = _loc23_ = _loc16_ = _loc16_ * _loc21_;
+               _loc18_ = §§pop();
+               _loc26_ = lf32(_loc31_);
+               _loc26_ = _loc14_ = _loc26_ = _loc26_ * _loc18_;
+               _loc22_ = _loc16_ = _loc26_ + _loc16_;
+               var _temp_208:* = lf32(_loc31_ + 8);
+               var _temp_205:* = lf32(_loc38_ + 8);
+               var _temp_200:* = lf32(_loc31_ + 4);
+               var _temp_197:* = lf32(_loc38_ + 4);
+               param4[0] = _loc22_;
+               _loc24_ = _loc17_ = _loc24_ = _temp_197 * _loc21_;
+               _loc19_ = _loc20_ = _loc19_ = _temp_200 * _loc18_;
+               _loc20_ = _loc19_ = _loc19_ + _loc24_;
+               param4[1] = _loc20_;
+               _loc26_ = _loc14_ = _loc26_ = _temp_205 * _loc21_;
+               _loc18_ = _loc25_ = _loc18_ = _temp_208 * _loc18_;
+               _loc25_ = _loc18_ = _loc18_ + _loc26_;
+               param4[2] = _loc25_;
+               _loc25_ = lf32(_loc13_ - 48);
+               param4[3] = _loc25_;
+               _loc25_ = lf32(_loc13_ - 44);
+               param4[4] = _loc25_;
+               _loc25_ = lf32(_loc13_ - 40);
+               param4[5] = _loc25_;
+               _loc25_ = lf32(_loc13_ - 36);
+               param4[6] = _loc25_;
+               break;
+            }
+         }
+         _loc18_ = lf32(_loc31_ + 20);
+         _loc19_ = _loc23_ = 0.5;
+         _loc18_ = _loc25_ = _loc18_ *= _loc19_;
+         _loc26_ = Math.sin(_loc18_);
+         _loc18_ = Math.cos(_loc18_);
+         _loc16_ = lf32(_loc31_ + 16);
+         _loc16_ = _loc23_ = _loc16_ = _loc16_ * _loc19_;
+         _loc24_ = Math.sin(_loc16_);
+         _loc16_ = _loc23_ = _loc16_ = Math.cos(_loc16_);
+         _loc5_ = lf32(_loc31_ + 12);
+         _loc6_ = _loc20_ = _loc19_ = _loc5_ * _loc19_;
+         _loc19_ = _loc20_ = _loc19_ = Math.sin(_loc6_);
+         _loc5_ = _loc22_ = _loc5_ = _loc19_ * _loc16_;
+         _loc18_ = _loc25_ = _loc18_;
+         _loc8_ = _loc15_ = _loc7_ = _loc5_ * _loc18_;
+         _loc7_ = _loc17_ = _loc24_;
+         _loc6_ = _loc17_ = _loc24_ = Math.cos(_loc6_);
+         _loc11_ = _loc17_ = _loc24_ = _loc6_ * _loc7_;
+         _loc24_ = _loc14_ = _loc26_;
+         _loc26_ = _loc14_ = _loc26_ = _loc11_ * _loc24_;
+         _loc14_ = _loc26_ = _loc8_ - _loc26_;
+         sf32(_loc14_,_loc13_ - 16);
+         _loc5_ = _loc22_ = _loc5_ *= _loc24_;
+         _loc8_ = _loc36_ = _loc8_ = _loc11_ * _loc18_;
+         _loc22_ = _loc5_ = _loc8_ + _loc5_;
+         sf32(_loc22_,_loc13_ - 12);
+         _loc19_ = _loc20_ = _loc19_ *= _loc7_;
+         _loc7_ = _loc15_ = _loc7_ = _loc19_ * _loc18_;
+         _loc6_ = _loc23_ = _loc16_ = _loc6_ * _loc16_;
+         _loc16_ = _loc23_ = _loc16_ = _loc6_ * _loc24_;
+         _loc23_ = _loc16_ = _loc16_ - _loc7_;
+         sf32(_loc23_,_loc13_ - 8);
+         _loc19_ = _loc20_ = _loc19_ *= _loc24_;
+         _loc18_ = _loc25_ = _loc18_ = _loc6_ * _loc18_;
+         _loc25_ = _loc18_ = _loc18_ + _loc19_;
+         sf32(_loc25_,_loc13_ - 4);
+         _loc20_ = lf32(_loc31_);
+         param4[0] = _loc20_;
+         _loc20_ = lf32(_loc31_ + 4);
+         param4[1] = _loc20_;
+         _loc20_ = lf32(_loc31_ + 8);
+         param4[2] = _loc20_;
+         param4[3] = _loc14_;
+         param4[4] = _loc22_;
+         param4[5] = _loc23_;
+         param4[6] = _loc25_;
+         break;
+      }
+      wdnative.ESP = _loc12_ = _loc13_;
+      return _loc30_;
+   }
+}
+

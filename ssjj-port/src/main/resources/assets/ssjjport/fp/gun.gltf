@@ -1,0 +1,102 @@
+{
+ "asset": {
+  "version": "2.0",
+  "generator": "sjfp2gltf (gun only)"
+ },
+ "scene": 0,
+ "scenes": [
+  {
+   "nodes": [
+    0
+   ]
+  }
+ ],
+ "nodes": [
+  {
+   "name": "SSJJ_Gun",
+   "mesh": 0
+  }
+ ],
+ "meshes": [
+  {
+   "name": "gun",
+   "primitives": [
+    {
+     "attributes": {
+      "POSITION": 0,
+      "TEXCOORD_0": 1
+     },
+     "indices": 2,
+     "material": 0,
+     "mode": 4
+    }
+   ]
+  }
+ ],
+ "materials": [
+  {
+   "name": "gun",
+   "doubleSided": true,
+   "pbrMetallicRoughness": {
+    "metallicFactor": 0.0,
+    "roughnessFactor": 0.8
+   }
+  }
+ ],
+ "accessors": [
+  {
+   "bufferView": 0,
+   "componentType": 5126,
+   "count": 3070,
+   "type": "VEC3",
+   "min": [
+    -5.942,
+    -80.106,
+    -21.932
+   ],
+   "max": [
+    5.942,
+    41.084,
+    9.725
+   ]
+  },
+  {
+   "bufferView": 1,
+   "componentType": 5126,
+   "count": 3070,
+   "type": "VEC2"
+  },
+  {
+   "bufferView": 2,
+   "componentType": 5125,
+   "count": 7920,
+   "type": "SCALAR"
+  }
+ ],
+ "bufferViews": [
+  {
+   "buffer": 0,
+   "byteOffset": 0,
+   "byteLength": 36840,
+   "target": 34962
+  },
+  {
+   "buffer": 0,
+   "byteOffset": 36840,
+   "byteLength": 24560,
+   "target": 34962
+  },
+  {
+   "buffer": 0,
+   "byteOffset": 61400,
+   "byteLength": 31680,
+   "target": 34963
+  }
+ ],
+ "buffers": [
+  {
+   "uri": "gun.bin",
+   "byteLength": 93080
+  }
+ ]
+}

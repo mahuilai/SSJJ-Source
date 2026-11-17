@@ -1,0 +1,33 @@
+{
+  "name": "ssjj-lobby",
+  "version": "1.0.0",
+  "description": "生死狙击 · 纯离线单机大厅",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win --x64"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "com.ssjj.offline.lobby",
+    "productName": "生死狙击离线大厅",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "assets/icon.ico"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*"
+    ]
+  }
+}

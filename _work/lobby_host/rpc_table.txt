@@ -1,0 +1,5199 @@
+# ssjj rpc table v1
+# req cb nparams / P kind alias nfields / F name kind
+R abandonScratchOff callbackAbandonScratchOff 2
+P int - 0
+P bean bean.ClientScratchOffUserBean 5
+F bossDiffId int
+F cells array
+F scrapeNum int
+F _allBuffStr string
+F _buffArray array
+R abandonSlotMachine callbackAbandonSlotMachine 3
+P int - 0
+P int - 0
+P bean bean.ClientSlotMachineUserBean 10
+F diffType int
+F luckyValue int
+F roulettes array
+F subscripts array
+F pullCount int
+F buffers array
+F superPrizes object
+F eligible boolean
+F badges array
+F enableBuffers boolean
+R acgBagTakeOff callbackAcgBagTakeOff 0
+R acgBagTakeOn callbackAcgBagTakeOn 0
+R acquireBountyArenaReward callbackAcquireBountyArenaReward 4
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+R acquireCatalogReward callbackAcquireCatalogReward 3
+P int - 0
+P int - 0
+P array - 0
+R acquireDecodePack callbackAcquireDecodePack 3
+P int - 0
+P int - 0
+P array - 0
+R acquireExpeditionReward callbackAcquireExpeditionReward 3
+P int - 0
+P int - 0
+P array - 0
+R acquireFestivalCycleReward callbackAcquireFestivalCycleReward 5
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R acquireJumpReward callbackJumpRewardPack 2
+P int - 0
+P array - 0
+R acquirePalResource callbackAcquirePalResource 2
+P int - 0
+P array - 0
+R acquirePeakLikeReward callbackAcquirePeakLikeReward 4
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R acquireRaceSeasonReward callbackRaceSeasonReward 2
+P int - 0
+P array - 0
+R acquireRepelPack callbackAcquireRepelPack 3
+P int - 0
+P int - 0
+P array - 0
+R acquireReputationReward callbackAcquireReputationReward 3
+P int - 0
+P int - 0
+P array - 0
+R acquireRpgTeamDonatePack callbackRpgTeamDonatePack 3
+P int - 0
+P int - 0
+P array - 0
+R acquireScratchOffCellReward callbackAcquireScratchOffCellReward 4
+P int - 0
+P int - 0
+P array - 0
+P array - 0
+R acquireSeasonPassReward callbackAcquireSeasonPassReward 3
+P int - 0
+P int - 0
+P array - 0
+R acquireTimeSafeBoxPack callbackAcquireTimeSafeBoxPack 4
+P int - 0
+P int - 0
+P bean bean.ClientTimeSafeBoxOrderBean 4
+F id int
+F orderId int
+F createTime int
+F status int
+P array - 0
+R acquireWarLetterReward callbackAcquireWarLetterReward 3
+P int - 0
+P int - 0
+P array - 0
+R acquireWishTeamPack callbackAcquireWishTeamPack 3
+P int - 0
+P int - 0
+P array - 0
+R activateDecennialWrap callbackActivateDecennialWrap 3
+P int - 0
+P number - 0
+P bean bean.DecennialUserBean 3
+F status int
+F cycleStatusMap object
+F id number
+R activeFavorite callbackActiveFavorite 2
+P int - 0
+P int - 0
+R activeRpgGodWay callbackActiveRpgGodWay 1
+P int - 0
+R activeRpgLevelTelnet callbackActiveRpgLevelTelnet 2
+P int - 0
+P bean bean.RpgLevelTelnetNodeBean 1
+F tid int
+R activeWarLetter callbackActiveWarLetter 3
+P int - 0
+P int - 0
+P array - 0
+R addBlack onAddBlack 1
+P bean bean.CommonCharInfo 21
+F characterId number
+F globalCharId number
+F vipLv int
+F characterName string
+F lv int
+F teamId int
+F teamName string
+F isOnline boolean
+F friendType int
+F logoutTime number
+F inGameServer boolean
+F dateline number
+F notReadChatNum int
+F onlineIndex int
+F myself boolean
+F socialRelationshipType int
+F couldInvite boolean
+F teamJobFlag int
+F type int
+F rankSect int
+F raceSect int
+R addClickPosition callbackAddClientPosition 0
+R addEnvoyToLingFu callbackAddEnvoyToLingFu 3
+P int - 0
+P number - 0
+P int - 0
+R addEnvoysToLingFu callbackAddEnvoysToLingFu 3
+P int - 0
+P array - 0
+P int - 0
+R addRpgWeaponBattleExpByItem callbackAddRpgWeaponBattleExpByItem 2
+P boolean - 0
+P boolean - 0
+R allowJoinRpgTeam callbackAllowJoinRpgTeam 1
+P int - 0
+R allowJoinTeam onAllowJoinTeam 2
+P int - 0
+P int - 0
+R applyChatWindowId callbackApplyChatWindowId 3
+P int - 0
+P string - 0
+P bean com.wooduan.hallserver.services.Endpoint 6
+F id string
+F name string
+F domain string
+F port int
+F type string
+F ip string
+R applyDyeingFormula callbackApplyDyeingFormula 0
+R applyJoinRpgTeam callbackApplyJoinRpgTeam 1
+P int - 0
+R applyJoinTeam onApplyJoinTeam 3
+P int - 0
+P int - 0
+P number - 0
+R applyMonitor callbackApplyMonitor 1
+P int - 0
+R applyPalJobFlag callbackApplyPalJobFlag 2
+P int - 0
+P int - 0
+R assistantSwitchAbility callbackAssistantSwitchAbility 3
+P int - 0
+P any - 0
+P int - 0
+R assistantSwitchAllAbilities callbackAssistantSwitchAllAbilities 3
+P int - 0
+P any - 0
+P int - 0
+R automaticEquip callbackAutomaticEquip 1
+P int - 0
+R automaticEquipSave callbackAutomaticEquipSave 2
+P int - 0
+P bean bean.ClientHallEquipConfigBean 6
+F saveConfigTime number
+F equipDoneTime number
+F selectDefault boolean
+F configId int
+F uid int
+F hallEquipDetailInfo any
+R automaticSelectDefault callbackAutomaticSelectDefault 2
+P bean bean.ClientHallEquipConfigBean 6
+F saveConfigTime number
+F equipDoneTime number
+F selectDefault boolean
+F configId int
+F uid int
+F hallEquipDetailInfo any
+P bean bean.ClientHallEquipConfigBean 6
+F saveConfigTime number
+F equipDoneTime number
+F selectDefault boolean
+F configId int
+F uid int
+F hallEquipDetailInfo any
+R avatarChanged callBackAvatarChanged 2
+P int - 0
+P int - 0
+R avatarTalentAwake callBackAvatarTalentAwake 3
+P int - 0
+P int - 0
+P object - 0
+R avatarUnlockSuit callbackAvatarUnlockSuit 4
+P int - 0
+P int - 0
+P array - 0
+P array - 0
+R banPeakWeaponGroup callbackBanPeakWeaponGroup 3
+P int - 0
+P int - 0
+P int - 0
+R banPushRecommandFriend onPushRecommandFriend 1
+P array - 0
+R bargainRealmExchangeItem callbackBargainRealmExchangeItem 4
+P int - 0
+P int - 0
+P int - 0
+P bean bean.ClientRealmExchangeBean 5
+F group int
+F season int
+F lv int
+F historyLv int
+F bargainLv int
+R batchActiveFavorite callbackBatchActiveFavorite 2
+P int - 0
+P array - 0
+R batchCompleteRpgTask callbackBatchCompleteRpgTask 3
+P int - 0
+P array - 0
+P array - 0
+R batchDecompositeRing callbackBatchDecompositeRing 2
+P array - 0
+P array - 0
+R batchGetAvatarWornRank callbackBatchGetAvatarWornRank 3
+P int - 0
+P array - 0
+P object - 0
+R batchInviteJoinRaceRoom onBatchInviteJoinRaceRoom 2
+P int - 0
+P number - 0
+R batchInviteJoinRoom onBatchInviteJoinRoom 3
+P int - 0
+P number - 0
+P number - 0
+R batchLockRing callbackBatchLockRing 2
+P array - 0
+P boolean - 0
+R batchReceiveTask callBackBatchReceiveTask 2
+P int - 0
+P string - 0
+R bindApplet callbackBindApplet 3
+P int - 0
+P string - 0
+P int - 0
+R bindAvatarEquipment callbackBindAvatarEquipment 3
+P int - 0
+P array - 0
+P int - 0
+R bindPhoneNumber callbackBindPhoneNumber 2
+P int - 0
+P string - 0
+R buy callBackBuy 5
+P int - 0
+P int - 0
+P array - 0
+P int - 0
+P int - 0
+R buyChip onBuyChip 3
+P int - 0
+P int - 0
+P int - 0
+R buyFestivalMarketRefreshNum callbackBuyFestivalMarketRefreshNum 1
+P int - 0
+R buyFestivalMarketSelfSaleNum callbackBuyFestivalMarketSelfSaleNum 1
+P int - 0
+R buyMore callBackBuyMore 5
+P array - 0
+P array - 0
+P array - 0
+P array - 0
+P array - 0
+R buyMysteryShop callbackBuyMysteryShop 3
+P int - 0
+P int - 0
+P array - 0
+R buyRealmExchangeItem callbackBuyRealmExchangeItem 3
+P int - 0
+P bean bean.ClientRealmExchangeBean 5
+F group int
+F season int
+F lv int
+F historyLv int
+F bargainLv int
+P array - 0
+R buyRpgShop onBuyRpgShop 4
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R buyTeamLeagueReviveCoin callbackBuyTeamLeagueReviveCoin 2
+P int - 0
+P int - 0
+R buyWithDiscount onBuyWithEcard 4
+P int - 0
+P int - 0
+P array - 0
+P int - 0
+R buyWithEcard onBuyWithEcard 4
+P int - 0
+P int - 0
+P array - 0
+P int - 0
+R calibrateSlaveProperty callbackCalibrateSlaveProperty 3
+P int - 0
+P number - 0
+P object - 0
+R calibrateWeaponPrecision callbackCalibrateWeaponPrecision 3
+P int - 0
+P number - 0
+P bean bean.ClientWeaponCalibrationBean 3
+F lv int
+F calibrationNum int
+F precision int
+R cancelBountyTask callBackCancelBountyTask 2
+P int - 0
+P number - 0
+R cancelBuyLegionGoods callbackCancelBuyLegionGoods 3
+P int - 0
+P int - 0
+P number - 0
+R cancelResetSecPsw callbackCancelResetSecPsw 1
+P int - 0
+R capturePalSLG callbackCapturePalSLG 2
+P int - 0
+P object - 0
+R changeAvatarModel callbackChangeAvatarModel 2
+P number - 0
+P int - 0
+R changeChannelCamp callbackChangeChannelCamp 2
+P number - 0
+P int - 0
+R changeDangerFactor callbackChangeDangerFactor 3
+P int - 0
+P int - 0
+P array - 0
+R changeDesperateFightFlag callbackChangeDesperateFightFlag 1
+P boolean - 0
+R changeExercisesChannelTeamNeedFill callbackChangeExercisesChannelTeamNeedFill 1
+P boolean - 0
+R changeFestivalChannelTeam callbackChangeFestivalChannelTeam 3
+P int - 0
+P int - 0
+P int - 0
+R changeFestivalDangerFactor callbackChangeFestivalDangerFactor 4
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R changeGameToObserver callBackChangeGameToObserver 2
+P number - 0
+P boolean - 0
+R changeMedalStatus callbackChangeMedalStatus 1
+P array - 0
+R changeMultipleRpgTeam callbackChangeRpgTeam 3
+P int - 0
+P int - 0
+P int - 0
+R changeOneOnOneCard callbackChangeOneOnOneCard 2
+P int - 0
+P int - 0
+R changeOpenAvatarReplace callbackChangeOpenAvatarReplace 2
+P int - 0
+P int - 0
+R changeP3Hero callbackChangeP3Hero 3
+P int - 0
+P int - 0
+P number - 0
+R changePalSignupStatus callbackChangePalSignupStatus 5
+P int - 0
+P int - 0
+P int - 0
+P number - 0
+P boolean - 0
+R changePhoneCheckSecPsw callbackChangePhoneCheckSecPsw 1
+P int - 0
+R changePinnacleInfinityLevel callbackChangePinnacleInfinityLevel 2
+P int - 0
+P int - 0
+R changePlayerName onChangePlayerName 1
+P int - 0
+R changePosition onChangePosition 1
+P int - 0
+R changePrepareStatus callbackChannelUserChangePrepareStatus 2
+P number - 0
+P boolean - 0
+R changePresetTemplate callbackChangePresetTemplate 5
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+P boolean - 0
+R changeReadFlag onChangeReadFlag 1
+P number - 0
+R changeRpgCamp callbackChangeRpgCamp 2
+P number - 0
+P int - 0
+R changeRpgPosition onChangeRpgPosition 1
+P int - 0
+R changeRpgTeam callbackChangeRpgTeam 3
+P int - 0
+P int - 0
+P int - 0
+R changeRpgTeamDeclaration callbackChangeRpgTeamDeclaration 2
+P int - 0
+P string - 0
+R changeRpgTeamDisableUseTeamSignup callbackDisableUseTeamSignup 2
+P int - 0
+P boolean - 0
+R changeRpgTeamNotice callbackChangeRpgTeamNotice 2
+P int - 0
+P string - 0
+R changeRuneBagName callbackChangeRuneBagName 3
+P int - 0
+P string - 0
+P int - 0
+R changeScuffleEquipConfig callbackChangeScuffleEquipConfig 1
+P bean bean.ScuffleEquipConfigBean 6
+F configId int
+F weaponBagIndex int
+F avatarId int
+F dragoonBagId int
+F tacticalWeaponStorageId number
+F runeBagIndex int
+R changeSecPsw callbackChangePhoneCheckSecPsw 1
+P int - 0
+R changeStorageStoreMark callbackChangeStorageStoreMark 2
+P number - 0
+P boolean - 0
+R changeTeam callBackChangeTeam 3
+P number - 0
+P int - 0
+P boolean - 0
+R changeTeamDeclaration onChangeTeamDeclaration 1
+P int - 0
+R changeTeamName onChangeTeamName 1
+P int - 0
+R changeTeamNotice onChangeTeamNotice 1
+P int - 0
+R changeTeamPassword callbackChangeTeamPassword 1
+P string - 0
+R changeTeamleader onChangeTeamleader 1
+P int - 0
+R changeTeamleaderResult onChangeTeamleader 1
+P int - 0
+R changeTrialTowerSelected callbackTrialTowerChangeSelected 2
+P int - 0
+P bean bean.TrialTowerUserBean 6
+F level int
+F lvlIndex int
+F selected array
+F rewardCount int
+F rewards array
+F ready boolean
+R changeUserSetting onChangeUserSetting 1
+P bean bean.UserSettingBean 14
+F isRecommendDenied boolean
+F isChatFromStrangersDenied boolean
+F isInviteJoinTeamDenied boolean
+F isCreateFriendDenied boolean
+F isBackgroundMusic boolean
+F isBackgroundMusicNotice boolean
+F isCache boolean
+F isShowMedalInBattle boolean
+F isChromeNotice boolean
+F unityWindowModel string
+F otherSettingString string
+F battleClientValue string
+F playerCareerLevel int
+F enableLoginIpProtect boolean
+R changeUserStayStep onChangeUserSetting 1
+P bean bean.UserSettingBean 14
+F isRecommendDenied boolean
+F isChatFromStrangersDenied boolean
+F isInviteJoinTeamDenied boolean
+F isCreateFriendDenied boolean
+F isBackgroundMusic boolean
+F isBackgroundMusicNotice boolean
+F isCache boolean
+F isShowMedalInBattle boolean
+F isChromeNotice boolean
+F unityWindowModel string
+F otherSettingString string
+F battleClientValue string
+F playerCareerLevel int
+F enableLoginIpProtect boolean
+R changeWeaponModel callbackChangeWeaponModel 2
+P number - 0
+P int - 0
+R changeZoomAbility callbackChangeZoomAbility 3
+P int - 0
+P object - 0
+P object - 0
+R changeZoomChannelTeam callbackChangeZoomChannelTeam 4
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+R changeZoomDanger callbackChangeZoomDanger 1
+P int - 0
+R channelAvaliable onChannelAvaliable 2
+P int - 0
+P int - 0
+R chargeFestivalCycleBuf callbackChargeFestivalCycleBuf 3
+P int - 0
+P int - 0
+P int - 0
+R checkActivityDisplayConditions callbackCheckActivityDisplayConditions 2
+P array - 0
+P array - 0
+R checkActivityLogicConditions callbackCheckActivityLogicConditions 2
+P array - 0
+P array - 0
+R checkAndActiveMedal callbackCheckAndActiveMedal 2
+P array - 0
+P array - 0
+R checkPlayerName callBackCheckPlayerName 1
+P int - 0
+R checkTeamLeagueMember callbackCheckTeamLeagueMember 3
+P int - 0
+P int - 0
+P int - 0
+R checkTeamName onCheckTeamName 1
+P int - 0
+R choiceOptionalPackItem callbackChoiceOptionalPackItem 3
+P int - 0
+P array - 0
+P string - 0
+R choiceRaceTypeAndLevel callbackChoiceRaceTypeAndLevel 2
+P int - 0
+P bean common.channel.bean.ChannelTeam 6
+F teamId number
+F capacity int
+F ownerId number
+F teamStatus int
+F roomId number
+F userMap object
+R claimAccomplishmentReward onClaimAccomplishmentReward 4
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R claimCycleTaskActiveReward callbackClaimCycleTaskActiveReward 4
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R claimFestivalMarketCommission callbackClaimFestivalMarketCommission 2
+P int - 0
+P array - 0
+R claimFestivalSpanReward callbackClaimFestivalSpanReward 3
+P int - 0
+P int - 0
+P array - 0
+R claimGlobalAchvMedalReward callbackClaimGlobalAchvMedalReward 3
+P int - 0
+P bean bean.GlobalAchvBean 5
+F charId int
+F medalIdList array
+F achvPoint number
+F recentlyCompletedTaskMap object
+F achvTotalCount number
+P array - 0
+R claimIntelligenceItems callbackClaimIntelligenceItems 2
+P int - 0
+P bean bean.IntelligenceClaimBean 2
+F charId int
+F claimItems number
+R claimMonthlyCardPack callbackClaimMonthlyCardPack 2
+P int - 0
+P array - 0
+R claimNewbieTaskReward callbackClaimNewbieTaskReward 3
+P int - 0
+P int - 0
+P array - 0
+R claimPalAllianceRedPacket callbackClaimPalAllianceRedPacket 4
+P int - 0
+P number - 0
+P bean bean.PalAllianceRedPacketOpenRequest 5
+F packetId number
+F sourceItemId int
+F senderGCid number
+F senderName string
+F avatarId int
+P array - 0
+R claimZoomReward callbackClaimZoomReward 2
+P int - 0
+P array - 0
+R clearRpgArenaData callbackClearRpgArenaData 1
+P bean bean.clientresult.ClientRpgArenaResult 10
+F userId int
+F raceType int
+F currentDifficultId int
+F rootAvatarIds array
+F storageIdList array
+F dragoonUsedCount int
+F crashTimeLeft int
+F perfect boolean
+F challengeNum int
+F envoyUsageCount object
+R clearRpgInfinity callbackResetRpgInfinity 1
+P boolean - 0
+R clickCreateTeamButton onClickCreateTeamButton 2
+P int - 0
+P number - 0
+R closeDecoration onCloseDecoration 1
+P number - 0
+R collectDyeingWork callbackCollectDyeingWork 3
+P int - 0
+P int - 0
+P boolean - 0
+R completeDelayRaid callbackCompleteDelayRaid 10
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R completeSeasonPassTask callbackCompleteRpgTask 3
+P int - 0
+P int - 0
+P array - 0
+R completeTask callbackCompleteRpgTask 3
+P int - 0
+P int - 0
+P array - 0
+R composeAvatarEquipment callbackComposeAvatarEquipment 5
+P int - 0
+P array - 0
+P boolean - 0
+P int - 0
+P int - 0
+R composeEnvoySoul callbackComposeEnvoySoul 3
+P int - 0
+P array - 0
+P number - 0
+R confirmRefineResult callbackConfirmRefineResult 2
+P number - 0
+P bean bean.RingPropertyBean 9
+F storageId number
+F value int
+F lock boolean
+F level int
+F extraRefineCountAry array
+F refineCountAry array
+F telnetSkillTid int
+F passiveSkillTid int
+F affixes array
+R costGold2StartSixthBattle callbackCostGold2StartSixthBattle 1
+P int - 0
+R createBattleMessage callBackAddBattleMessage 1
+P string - 0
+R createBiochemicalChannelTeam callbackCreateChannelTeam 2
+P int - 0
+P bean common.channel.bean.ChannelTeam 6
+F teamId number
+F capacity int
+F ownerId number
+F teamStatus int
+F roomId number
+F userMap object
+R createChannelTeam callbackCreateChannelTeam 2
+P int - 0
+P bean common.channel.bean.ChannelTeam 6
+F teamId number
+F capacity int
+F ownerId number
+F teamStatus int
+F roomId number
+F userMap object
+R createChannelTeamWithDifficultyId callbackCreateChannelTeam 2
+P int - 0
+P bean common.channel.bean.ChannelTeam 6
+F teamId number
+F capacity int
+F ownerId number
+F teamStatus int
+F roomId number
+F userMap object
+R createCharacter callBackCreateCharacter 2
+P int - 0
+P bean bean.UserInfo 126
+F propertyUnits object
+F loginRet int
+F loginId int
+F operatorId int
+F userId int
+F username string
+F changename string
+F playerName string
+F characterId int
+F rpgBlindCodeMap any
+F challengeBean any
+F secondWeaponMagazineFlag boolean
+F vipLv int
+F goldTotal int
+F rpgTeamlogAry array
+F variantSkillBeanMap object
+F storageArrearsMap object
+F gameCoinArrearsMap object
+F runeBags any
+F runeStorageLimit int
+F buffEffectMap object
+F reputationScore int
+F homelandPropertyBeanMap object
+F wingLastExtractTime int
+F isadult int
+F accountTag int
+F roomChannleId int
+F roomId number
+F timer int
+F observerFlag boolean
+F blockFunctionMap object
+F rpgAbyssUserBean any
+F rollTimer number
+F bonusAttr1 object
+F bonusAttr2 object
+F bonusAttr3 object
+F bonusAttr4 object
+F bonusAttr5 object
+F inGameServer boolean
+F firstLoginTime number
+F readyGame int
+F regTime number
+F loginTime number
+F lastLogoutTime number
+F client object
+F token string
+F lv int
+F maxLv int
+F exp number
+F gold int
+F gp int
+F gift int
+F boomCnt int
+F bagArray array
+F rpgBagArray array
+F globalBag any
+F storageMap object
+F selectedBagIndex int
+F avatarT int
+F avatarTSkin int
+F careerTSkin string
+F avatarCT int
+F avatarCTSkin int
+F careerCTSkin string
+F avatarSH int
+F defaultAvatar uint
+F avatarTLv int
+F avatarCTLv int
+F heroRootAvatarId int
+F p3HeroAvatarId int
+F matched boolean
+F onlineTime uint
+F charMedalBean any
+F raceBattleData any
+F historyReport boolean
+F lastPayTime number
+F tmpPayCount uint
+F firstPayPackFlag uint
+F userStayStep int
+F fastSettingBean any
+F activityIds string
+F closedActivityIdArr array
+F teamId int
+F missionProgressDic any
+F isSignInedToday boolean
+F clientSignInBean any
+F installmentRefundMap object
+F settingBean any
+F charRaceBeanMap object
+F isp string
+F remoteIp string
+F pveProgressList array
+F pluginReporter any
+F allWeaponBattleDataMap object
+F vip4399Bean any
+F clientWeaponStorageBean any
+F holidayStatusObj object
+F rpgTacticalBag any
+F pvpTacticalBag any
+F gameCoinMap object
+F weaponGoldSoul int
+F weaponHeroSoul int
+F weaponSteelPoint int
+F rpgRecoverDataBean any
+F hasSecPsw boolean
+F lastResetSecPsw number
+F lastSecPswErrorTime number
+F wrestleChallengeTaskProgressMap object
+F completedWrestleChallengeTaskIds array
+F FestivalTaskProgressMap object
+F completedFestivalTaskIds array
+F HeroRoleTaskProgressMap object
+F completedHeroRoleTaskIds array
+F RunesTaskProgressMap object
+F completedRunesTaskIds array
+F WelcomeTaskProgressMap object
+F completedWelcomeTaskIds array
+F NewbieTaskProgressMap object
+F completedNewbieTaskIds array
+F selectAvatarBagIndex int
+F avatarBagData array
+F rootAvatarDataT any
+F rootAvatarDataCT any
+F userRpgDataArray array
+F xpSkillBeans array
+F lastChangePlayerName number
+R createExercisesChannelTeam callbackGetExercisesChannelTeamList 3
+P array - 0
+P int - 0
+P int - 0
+R createFestivalChannelTeam callbackChangeFestivalChannelTeam 3
+P int - 0
+P int - 0
+P int - 0
+R createMultipleRpgTeam callbackCreateRpgTeam 2
+P int - 0
+P bean bean.RpgTeamInfo 8
+F teamId number
+F rpgGameDifficultyId int
+F owner any
+F users array
+F teamStatus int
+F capacity int
+F isPswTeam boolean
+F multipleId int
+R createOrJoinChannelTeam callbackCreateOrJoinChannelTeam 2
+P int - 0
+P bean common.channel.bean.TeamLeagueChannelTeam 7
+F difficultyId int
+F teamId number
+F capacity int
+F ownerId number
+F teamStatus int
+F roomId number
+F userMap object
+R createRaceRoom callbackCreateRaceRoom 2
+P bean bean.ClientRaceRoom 4
+F capacity int
+F id number
+F creatorId int
+F status int
+P array - 0
+R createRestrictionRoom callbackJoinRestrictionRoom 1
+P int - 0
+R createRoom callbackCreateRpgRoom 2
+P int - 0
+P array - 0
+R createRpgRestrictionRoom callbackCreateRpgRoom 2
+P int - 0
+P array - 0
+R createRpgRoom callbackCreateRpgRoom 2
+P int - 0
+P array - 0
+R createRpgTeam callbackCreateRpgTeam 2
+P int - 0
+P bean bean.RpgTeamInfo 8
+F teamId number
+F rpgGameDifficultyId int
+F owner any
+F users array
+F teamStatus int
+F capacity int
+F isPswTeam boolean
+F multipleId int
+R createScuffleChannelTeam callbackCreateChannelTeam 2
+P int - 0
+P bean common.channel.bean.ChannelTeam 6
+F teamId number
+F capacity int
+F ownerId number
+F teamStatus int
+F roomId number
+F userMap object
+R createTeam onCreateTeam 2
+P int - 0
+P bean bean.ClientTeamBean 25
+F teamId int
+F name string
+F createCharId int
+F leaderCharId int
+F leaderName string
+F mNumber int
+F mNumberLimit int
+F teamExp int
+F teamLv int
+F declaration string
+F notice string
+F dateline number
+F homepage string
+F qq string
+F yy string
+F rank int
+F isApply boolean
+F battleEndNum int
+F winNum int
+F failNum int
+F rpgTeamTotalBonus int
+F rpgTeamLv int
+F rpgTeamNumber int
+F rpgTeamCapacity int
+F rpgTeamDeclaration string
+R createZoomChannelTeam callbackChangeZoomChannelTeam 4
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+R decodeIntelligenceItems callbackDecodeIntelligenceItems 3
+P int - 0
+P int - 0
+P int - 0
+R decomposeEnvoySoul callbackDecomposeEnvoySoul 3
+P int - 0
+P array - 0
+P array - 0
+R decomposeRunes callbackDecomposeRunes 3
+P int - 0
+P array - 0
+P array - 0
+R defenseLineCostType callbackDefenseLineCostType 1
+P int - 0
+R deleteAllExpiredStorageItem onDeleteStorage 1
+P number - 0
+R deleteBlack onDeleteBlack 1
+P int - 0
+R deleteDivineMark callbackDeleteDivineMark 1
+P array - 0
+R deleteExpiredStorageItem onDeleteStorage 1
+P number - 0
+R deleteFriend onDeleteFriend 1
+P int - 0
+R deleteMail onDeleteMail 2
+P number - 0
+P int - 0
+R deleteStorage onDeleteStorage 1
+P number - 0
+R delistHomelandHallRentItem callbackDelistHomelandHallRentItem 3
+P int - 0
+P int - 0
+P array - 0
+R depositTimeSafeBox callbackDepositTimeSafeBox 3
+P int - 0
+P int - 0
+P bean bean.ClientTimeSafeBoxOrderBean 4
+F id int
+F orderId int
+F createTime int
+F status int
+R disbandPalManpower callbackDisbandPalManpower 2
+P int - 0
+P int - 0
+R disbandTeam onDisbandTeam 1
+P int - 0
+R doRebirth callbackDoRebirth 3
+P int - 0
+P int - 0
+P int - 0
+R donateIntelligenceItems callbackDonateIntelligenceItems 1
+P int - 0
+R doubleBattleExpAndGp onDoubleBattleExpAndGp 4
+P int - 0
+P int - 0
+P number - 0
+P int - 0
+R douwaBuyVipStatus douwaOnBuyVip 3
+P int - 0
+P int - 0
+P bean bean.ClientCharacterVipBean 7
+F cid int
+F endTime number
+F lastTime number
+F point int
+F status int
+F totalDay int
+F totalPoint int
+R douwaGetVipStatus douwaOnGetVipStatus 1
+P bean bean.ClientCharacterVipBean 7
+F cid int
+F endTime number
+F lastTime number
+F point int
+F status int
+F totalDay int
+F totalPoint int
+R douwaUseVipPoint douwaOnUsePoint 3
+P int - 0
+P array - 0
+P bean bean.ClientCharacterVipBean 7
+F cid int
+F endTime number
+F lastTime number
+F point int
+F status int
+F totalDay int
+F totalPoint int
+R dragoonEquip callbackDragoonEquip 3
+P int - 0
+P int - 0
+P number - 0
+R dragoonEquipChip callbackDragoonEquipChip 4
+P int - 0
+P number - 0
+P int - 0
+P number - 0
+R dragoonGetEquipInfo callbackDragoonGetEquipInfo 3
+P number - 0
+P array - 0
+P array - 0
+R dragoonIntoBattle callbackDragoonIntoBattle 2
+P int - 0
+P number - 0
+R dragoonResolve callbackDragoonResolve 2
+P int - 0
+P number - 0
+R dragoonSynthesis callbackDragoonSynthesis 2
+P int - 0
+P bean bean.DragoonBean 4
+F storageId number
+F dragoonId int
+F dragoonChipList array
+F sortValue int
+R dragoonTakeoff callbackDragoonTakeoff 2
+P int - 0
+P number - 0
+R dragoonTakeoffChip callbackDragoonTakeoffChip 3
+P int - 0
+P number - 0
+P int - 0
+R dragoonUnlockBag callbackDragoonUnlockBag 2
+P int - 0
+P int - 0
+R drawStarPray callbackDrawStarPray 2
+P int - 0
+P bean bean.StarPrayDrawResult 11
+F festivalId int
+F poolId int
+F litMask int
+F lineMask int
+F totalDrawCount int
+F ultimateGot boolean
+F draws array
+F ultimateRewardGot boolean
+F ultimateRewardType int
+F ultimateRewardTid int
+F ultimateRewardNum int
+R dropStarProjectBox callBackUpdateStarProjectBox 1
+P bean bean.StarProjectUserDataBean 7
+F id number
+F selectedBoxType int
+F boxId int
+F boxLv int
+F isFetched boolean
+F freeUpgradeCount int
+F randomCount int
+R elevateRuneStorageLimit callbackElevateRuneStorageLimit 2
+P int - 0
+P int - 0
+R enableSlotMachineBuffers callbackEnableSlotMachineBuffers 2
+P int - 0
+P boolean - 0
+R enterChannel callbackEnterChannelServer 4
+P int - 0
+P int - 0
+P bean common.channel.bean.ChannelUser 12
+F gCid number
+F charId int
+F isInGame boolean
+F roomId number
+F camp int
+F vipLv int
+F characterName string
+F lv int
+F careerT string
+F careerCT string
+F rootAvatarDataT any
+F rootAvatarDataCT any
+P array - 0
+R enterChannelServer callbackEnterChannelServer 4
+P int - 0
+P int - 0
+P bean common.channel.bean.ChannelUser 12
+F gCid number
+F charId int
+F isInGame boolean
+F roomId number
+F camp int
+F vipLv int
+F characterName string
+F lv int
+F careerT string
+F careerCT string
+F rootAvatarDataT any
+F rootAvatarDataCT any
+P array - 0
+R enterChatServer callbackEnterChatServer 1
+P int - 0
+R enterHomeland callbackEnterHomeland 1
+P int - 0
+R enterPalRoom callbackEnterPalRoom 7
+P int - 0
+P int - 0
+P object - 0
+P array - 0
+P array - 0
+P array - 0
+P object - 0
+R enterPeakCompetitionGroup callbackEnterPeakCompetitionGroup 2
+P int - 0
+P object - 0
+R enterQuiz onEnterQuiz 6
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P object - 0
+R enterRace callbackEnterRace 9
+P int - 0
+P int - 0
+P array - 0
+P array - 0
+P array - 0
+P array - 0
+P string - 0
+P boolean - 0
+P int - 0
+R enterRpgServer callbackEnterRpgServerSuccess 1
+P boolean - 0
+R equip onEquip 3
+P int - 0
+P number - 0
+P int - 0
+R equipAvatarEquipment callbackEquipAvatarEquipment 3
+P int - 0
+P number - 0
+P int - 0
+R equipBattlePet onEquipBattlePet 1
+P number - 0
+R equipChip onEquipChip 3
+P string - 0
+P string - 0
+P int - 0
+R equipDecoration onEquipDecoration 1
+P number - 0
+R equipDivineMark callbackEquipDivineMark 2
+P int - 0
+P bean bean.ClientDivineMarkBean 4
+F id number
+F itemId int
+F columnAffixMap object
+F equipped boolean
+R equipEmoji callbackEquipEmoji 5
+P int - 0
+P int - 0
+P number - 0
+P int - 0
+P number - 0
+R equipEnvoyAppearance callbackEquipEnvoyAppearance 3
+P int - 0
+P int - 0
+P int - 0
+R equipEnvoySkin callbackEquipEnvoySkin 4
+P int - 0
+P int - 0
+P number - 0
+P number - 0
+R equipGroupRootAvatar callBackEquipRootAvatar 3
+P int - 0
+P array - 0
+P int - 0
+R equipHeroAvatar callbackEquipHeroAvatar 2
+P int - 0
+P int - 0
+R equipModuleItem callbackEquipModuleItem 1
+P bean bean.RpgModuleSysBean 9
+F module int
+F storageIdAry array
+F tidAry array
+F bonus number
+F maxBonus number
+F dateline int
+F output number
+F outputCount int
+F timeLastStartOutput number
+R equipParentAvatar callBackEquipParentAvatar 3
+P int - 0
+P int - 0
+P boolean - 0
+R equipPersonalise callbackEquipPersonalise 3
+P int - 0
+P int - 0
+P int - 0
+R equipPropertyWing callbackEquipPropertyWing 3
+P int - 0
+P int - 0
+P number - 0
+R equipRootAvatar callBackEquipRootAvatar 3
+P int - 0
+P array - 0
+P int - 0
+R equipRootAvatarInfo callBackEquipRootAvatarInfo 4
+P int - 0
+P number - 0
+P number - 0
+P int - 0
+R equipRootAvatarSound callBackEquipRootAvatarSound 4
+P int - 0
+P int - 0
+P number - 0
+P int - 0
+R equipRpgXpSkill callbackEquipRpgXpSkill 2
+P int - 0
+P int - 0
+R equipRune callbackEquipRune 4
+P int - 0
+P number - 0
+P int - 0
+P int - 0
+R equipTacticalWeapon callbackEquipTacticalWeapon 4
+P int - 0
+P number - 0
+P int - 0
+P int - 0
+R equipUltimateAvatar callbackEquipUltimateAvatar 2
+P int - 0
+P array - 0
+R equipUltimateAvatarConfig callbackEquipUltimateAvatarConfig 1
+P int - 0
+R equipWeaponSlot callBackEquipWeaponSlot 4
+P int - 0
+P bean netdata.WeaponSlotBean 4
+F slotType int
+F slotId int
+F slotValue int
+F slotExpiredTime number
+P int - 0
+P bean bean.WeaponSlotReformBean 2
+F storageId number
+F affixMap object
+R etherApplyEthereumActivity callbackEtherApplyEthereumActivity 1
+P int - 0
+R etherCancelBuyOrder callbackEtherCancelBuyOrder 2
+P int - 0
+P number - 0
+R etherCancelSellOrder callbackEtherCancelSellOrder 4
+P int - 0
+P number - 0
+P int - 0
+P array - 0
+R etherFetchEthereumActivity callbackEtherFetchEthereumActivity 1
+P int - 0
+R etherFetchTransactionItem callbackEtherFetchTransactionItem 4
+P int - 0
+P number - 0
+P int - 0
+P array - 0
+R etherGetEthereumActivityInfo callbackEtherGetEthereumActivityInfo 2
+P int - 0
+P bean bean.BillionEthereumActivityBean 8
+F totalEthereumReward number
+F etherStore number
+F lastJoinActivity int
+F lastJoinActivityCount int
+F currentJoinActivityApplyCount int
+F activityHistoryList array
+F totalBillionEthereumStore number
+F billionEthereumActivityHongBaoMap object
+R etherGetMarketOverviewInfo callbackEtherGetMarketOverviewInfo 2
+P int - 0
+P bean bean.EtherUserMarketOverviewInfo 4
+F buyOrders array
+F sellOrders array
+F records array
+F overviewInfo any
+R etherGetMarketPriceHistory callbackEtherGetMarketPriceHistory 4
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R etherGetMarketSellOrderByShelf callbackEtherGetMarketSellOrderByShelfV2 7
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+P int - 0
+R etherGetUserBuyOrderInfo callbackEtherGetUserBuyOrderInfo 1
+P array - 0
+R etherGetUserSellOrderInfo callbackEtherGetUserSellOrderInfo 1
+P array - 0
+R etherGetUserTransactionRecordInfo callbackEtherGetUserTransactionRecordInfo 1
+P array - 0
+R etherOpenEthereumActivityHistoryHongBao callbackEtherOpenEthereumActivityHistoryHongBao 3
+P int - 0
+P int - 0
+P number - 0
+R etherShowItemDetailInfo callbackEtherShowItemDetailInfo 1
+P array - 0
+R etherShowMarketInfo callbackEtherShowMarketInfo 2
+P int - 0
+P array - 0
+R etherShowShelfPriceAndAmount callbackEtherShowShelfPriceAndAmount 2
+P int - 0
+P array - 0
+R etherSubmitEtherBuyOrder callbackEtherSubmitBuyOrder 2
+P int - 0
+P bean bean.EtherBuyOrder 11
+F bail int
+F sellOrderId number
+F id number
+F gcId number
+F type int
+F subType int
+F tag int
+F amount int
+F price int
+F dateline int
+F status int
+R etherSubmitPriorityBuyOrder callbackEtherSubmitPriorityBuyOrder 2
+P int - 0
+P bean bean.EtherBuyOrder 11
+F bail int
+F sellOrderId number
+F id number
+F gcId number
+F type int
+F subType int
+F tag int
+F amount int
+F price int
+F dateline int
+F status int
+R etherSubmitSellOrder callbackEtherSubmitSellOrder 2
+P int - 0
+P bean bean.EtherSellOrder 13
+F itemId number
+F worn int
+F count int
+F info any
+F id number
+F gcId number
+F type int
+F subType int
+F tag int
+F amount int
+F price int
+F dateline int
+F status int
+R etherUseGoldExchangeEther callbackEtherUseGoldExchangeEther 1
+P int - 0
+R exchangePack callbackExchangePack 2
+P int - 0
+P array - 0
+R exchangeSilver onExchangeSilver 3
+P int - 0
+P number - 0
+P boolean - 0
+R exchangeStorageItem onExchangeStorageItem 4
+P int - 0
+P int - 0
+P array - 0
+P array - 0
+R expediteTask callbackExpediteTask 3
+P int - 0
+P int - 0
+P bean bean.ExpeditionTaskBean 3
+F startTime int
+F count int
+F gunSpiritIds array
+R extendTeam onExtendTeam 1
+P int - 0
+R extractWingSlotProperty callbackExtractWingSlotProperty 2
+P int - 0
+P bean bean.WingPropertyUserBean 6
+F storageId number
+F haloStorageId number
+F lv int
+F upgradeCount int
+F centerNooseLv int
+F slotBeans array
+R fastJoinRoom callBackJoinRoom 3
+P int - 0
+P bean bean.RoomInfoEx 31
+F roomId number
+F roomDisplayId number
+F roomName string
+F password string
+F raceType int
+F subRaceType int
+F ruleType int
+F ruleValue int
+F limitNumber int
+F sceneId int
+F status int
+F reLiveTime int
+F createCharacterId number
+F createCharVipLv int
+F isGmCreated boolean
+F onlyGMJoinObserver boolean
+F createCharName string
+F accessNumber int
+F battleNumber int
+F isJoin boolean
+F observerFlag boolean
+F quickStartFlag boolean
+F gameStatus int
+F gameLimitNumber int
+F mateBoomHurtInvalid boolean
+F botLevel int
+F botWeapon int
+F bagDataWeaponSlotScore int
+F customizeWeaponIndexList array
+F customizeWeaponRoundNum int
+F isUnlimitedSpeed boolean
+P any - 0
+R fcm callbackFcm 1
+P int - 0
+R fetchModuleSysOutput callbackFetchModuleSysOutput 2
+P int - 0
+P array - 0
+R fetchRougeAchievementReward callbackFetchRougeAchievementReward 4
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R fetchRpgAdventureReward callbackFetchRpgAdventureReward 4
+P array - 0
+P int - 0
+P array - 0
+P int - 0
+R fetchStarProjectBox callBackFetchStarProjectBox 1
+P array - 0
+R fetchTemporaryStorage onDeleteTemporaryStorage 1
+P number - 0
+R fetchTerritorialTeamReward callbackFetchTerritorialTeamReward 2
+P int - 0
+P object - 0
+R firstOpenTitanium callbackFirstOpenTitanium 1
+P int - 0
+R fix onFix 2
+P number - 0
+P int - 0
+R fixTerritorialContention callbackFixTerritorialContention 1
+P int - 0
+R flipRpgMixture callbackUseRpgMixture 2
+P int - 0
+P object - 0
+R followUser onFollowUser 2
+P int - 0
+P number - 0
+R forbiddenPeakBag callbackForbiddenPeakBag 3
+P int - 0
+P number - 0
+P int - 0
+R forgeEnvoySoul callbackForgeEnvoySoul 3
+P int - 0
+P boolean - 0
+P number - 0
+R forgingExchangeStorage callbackForgingExchangeStorage 4
+P int - 0
+P int - 0
+P array - 0
+P array - 0
+R furnaceUpgrade callbackFurnaceUpgrade 5
+P int - 0
+P number - 0
+P int - 0
+P bean bean.RpgFurnaceUserBean 6
+F storageId number
+F soulExp int
+F soulLv int
+F seniorSoulExp int
+F expertSoulExp int
+F chiefSoulExp int
+P array - 0
+R gameBind callbackGameBindStatus 3
+P int - 0
+P number - 0
+P number - 0
+R gameBindBigReward callbackGameBindReward 3
+P int - 0
+P boolean - 0
+P array - 0
+R gameBindDailyReward callbackGameBindReward 3
+P int - 0
+P boolean - 0
+P array - 0
+R gameBindInfo callbackGameBindInfo 1
+P bean bean.GameBindBean 10
+F uid int
+F bind boolean
+F memberId number
+F globalId number
+F bindErrorCount int
+F bindErrorUnlockTime number
+F bindTime number
+F unbindTime number
+F bigPackTakeTime number
+F dailyPackTakeTime number
+R getAbattoirFirstPassPlayers callbackGetAbattoirFirstPassPlayers 1
+P object - 0
+R getAbattoirUserInfo callbackGetAbattoirUserInfo 1
+P bean bean.clientresult.ClientAbattoirResult 13
+F season int
+F expireTime number
+F diffType int
+F userId int
+F raceType int
+F currentDifficultId int
+F rootAvatarIds array
+F storageIdList array
+F dragoonUsedCount int
+F crashTimeLeft int
+F perfect boolean
+F challengeNum int
+F envoyUsageCount object
+R getAbyssTemperature callbackGetAbyssTemperature 1
+P int - 0
+R getAccomplishment callbackGetAccomplishment 2
+P bean bean.AccomplishmentBean 5
+F charId int
+F claimedRewardList array
+F dateline int
+F allPct int
+F modulePct array
+P object - 0
+R getAcgnUserInfo onGetTeamUserInfo 1
+P bean bean.ClientTeamUserBean 18
+F id int
+F teamId int
+F charId int
+F playerName string
+F lv int
+F teamExp int
+F teamLv int
+F jobFlag int
+F dateline int
+F status int
+F logoutTime number
+F isOnline boolean
+F selected boolean
+F inRpgTeam boolean
+F myself boolean
+F couldInvite boolean
+F rebirth int
+F newMsgNum int
+R getActivityDrawTasks callbackGetActivityDrawTasks 2
+P object - 0
+P array - 0
+R getActivityExtraData callbackGetActivityExtraData 2
+P array - 0
+P array - 0
+R getActivityInfoNew onGetActivityInfoNew 2
+P array - 0
+P object - 0
+R getActivityInfoNewWithType callbackGetActivityInfoNewWithType 0
+R getActivityLevelInfo callbackGetActivityLevelInfo 1
+P object - 0
+R getActivityNewYearInfo callbackGetActivityNewYearInfo 5
+P array - 0
+P int - 0
+P array - 0
+P object - 0
+P number - 0
+R getAllAbyssReport callbackGetAbyssReport 2
+P int - 0
+P array - 0
+R getAllAdventureLogs callbackGetAllAdventureLogs 4
+P array - 0
+P int - 0
+P array - 0
+P int - 0
+R getAllArenaRebirthOverview callbackGetAllArenaRebirthOverview 3
+P int - 0
+P int - 0
+P array - 0
+R getAllRpgExpressionValues onGetAllRpgExpressionValues 1
+P object - 0
+R getAllianceScoreLastRank callbackGetAllianceScoreLastRank 3
+P int - 0
+P int - 0
+P array - 0
+R getAnnounceList callBackGetAnnounceList 1
+P array - 0
+R getApplyJoinRpgTeamList callbackGetApplyJoinRpgTeamList 2
+P int - 0
+P array - 0
+R getApplyJoinTeamList onGetApplyJoinTeamList 1
+P array - 0
+R getApplyList onGetApplyList 1
+P array - 0
+R getArrearsDebufUserBean callbackGetArrearsDebufUserBean 1
+P object - 0
+R getAssistantUserInfo callbackGetAssistantUserInfo 1
+P array - 0
+R getAutomaticEquipInfo callbackGetAutomaticEquiponInfo 2
+P object - 0
+P any - 0
+R getAvailableActivityList onGetAvailableActivityList 5
+P object - 0
+P array - 0
+P object - 0
+P object - 0
+P object - 0
+R getAvailableActivityListWithType callbackGetAvailableActivityListWithType 0
+R getAvailableRentFriends callbackGetAvailableRentFriends 3
+P int - 0
+P int - 0
+P array - 0
+R getAvatarAcgRelationshipUnlockList callbackGetAvatarAcgRelationshipUnlockList 2
+P int - 0
+P array - 0
+R getAvatarDyeing callbackGetAvatarDyeing 2
+P array - 0
+P object - 0
+R getAvatarLimitInfo callbackGetAvatarLimitInfo 1
+P object - 0
+R getAvatarTalentInfo callBackGetAvatarTalentInfo 1
+P object - 0
+R getAvatarWornRank callbackGetAvatarWornRank 5
+P int - 0
+P array - 0
+P int - 0
+P number - 0
+P string - 0
+R getBigData onGetBigData 1
+P bean bean.AnaUserDataBean 15
+F charId int
+F timeCreateChar number
+F totalBattleAmount int
+F totalGameTime int
+F favRaceType int
+F maxWinRaceType int
+F maxOnlineDate string
+F maxOnlineTime int
+F maxKillDate string
+F maxKillAmount int
+F maxRaceLv int
+F maxRankScore int
+F maxSceneId int
+F maxSceneDate string
+F maxSceneCount int
+R getBindAppletInfo callbackGetAppletInfo 2
+P string - 0
+P int - 0
+R getBioChemDefenseLineInfo callbackGetBioChemDefenseLineInfo 1
+P bean bean.BioChemDefenseLineInfo 10
+F uid int
+F state int
+F costType int
+F winNum int
+F totalBattleNum int
+F fiveBattle int
+F refreshStates array
+F plotWeapons array
+F refreshTimes int
+F multiple int
+R getBlindInfo callbackGetBlindInfo 1
+P object - 0
+R getBlueVipPack onGetBlueVipPack 2
+P int - 0
+P array - 0
+R getBountyHallInfo callBackGetBountyHallInfo 1
+P array - 0
+R getBountyHunterInfo callBackGetBountyHunterInfo 3
+P int - 0
+P int - 0
+P int - 0
+R getBountyTask callBackGetBountyTask 1
+P array - 0
+R getCareerTask callbackGetCareerTask 2
+P array - 0
+P object - 0
+R getChallengeAward callbackGetChallengeAward 1
+P array - 0
+R getChallengeStatus onGetChallengeStatus 3
+P boolean - 0
+P int - 0
+P int - 0
+R getChannelRoomList callbackGetChannelRoomList 1
+P array - 0
+R getChannelServerInfoByType callbackGetChannelServerInfo 1
+P object - 0
+R getCharMedalList callbackGetCharMedalList 1
+P array - 0
+R getCharNotinTeam onGetCharNotinTeam 1
+P array - 0
+R getCharNotinTeamByName onGetCharNotinTeam 1
+P array - 0
+R getCharacterBoxInfo callbackGetCharacterBoxInfo 1
+P object - 0
+R getCharacterBoxReward callbackGetCharacterBoxReward 4
+P int - 0
+P int - 0
+P number - 0
+P array - 0
+R getCheatSystemInfo callbackGetCheatSystemInfo 3
+P int - 0
+P int - 0
+P int - 0
+R getClientRogueUserBean callbackGetClientRogueUserBean 1
+P bean bean.ClientRogueUserBean 7
+F autoFire boolean
+F endless boolean
+F job int
+F rootAvatarId int
+F weaponId number
+F diffId int
+F unlockedDiffIds array
+R getClientRpgUserInfo callbackGetClientRpgUserInfo 1
+P bean bean.ClientRpgUserInfo 21
+F rpgBean any
+F kingScuffleBean any
+F rpgTaskProgressMap object
+F rpgCompletedGameDifficultyIdArray array
+F rpgXpSkillBeanMap object
+F rpgWeaponBattleProficiencyRecordBeanMap object
+F firstBloodRpgDiffIdList array
+F userBattleServerData object
+F rpgInfinityRecordMap object
+F weaponSlotsMap object
+F completedTaskSet array
+F rpgSendTaskBeanMap object
+F rpgFurnaceBeanMap object
+F lastSeasonKingScuffleScore int
+F rpgLevelTelnetNodeList array
+F isOpenHomeland boolean
+F welcomeDays int
+F rpgExtBean any
+F foreverLandChallengeNum int
+F rebirth int
+F monthlyCardBean any
+R getClientSignInBean onGetClientSignInBean 2
+P int - 0
+P bean bean.ClientSignInBean 12
+F charId int
+F totalCount int
+F reSignInList array
+F onlineTime int
+F signInList array
+F signGiftStatusBean any
+F username string
+F lv int
+F teamExist boolean
+F mobileSignInList array
+F mobileReSignInList array
+F isDirty boolean
+R getCommonAbilities callbackGetCommonAbilities 1
+P object - 0
+R getCommonCharInfo callBackGetCommonCharInfo 1
+P bean bean.CommonCharInfo 21
+F characterId number
+F globalCharId number
+F vipLv int
+F characterName string
+F lv int
+F teamId int
+F teamName string
+F isOnline boolean
+F friendType int
+F logoutTime number
+F inGameServer boolean
+F dateline number
+F notReadChatNum int
+F onlineIndex int
+F myself boolean
+F socialRelationshipType int
+F couldInvite boolean
+F teamJobFlag int
+F type int
+F rankSect int
+F raceSect int
+R getCustomAvailableActivityList onGetCustomAvailableActivityList 2
+P array - 0
+P array - 0
+R getCycleTask callbackGetCycleTask 3
+P bean bean.CycleTaskBean 2
+F activeValue int
+F claimedRewardList array
+P object - 0
+P array - 0
+R getDailyTaskReward callbackDailyTaskReward 2
+P int - 0
+P int - 0
+R getDangerFactor callbackGetDangerFactor 1
+P object - 0
+R getDecennialUserBean callbackGetDecennialUserBean 1
+P object - 0
+R getDefenseLineWeaponEquipInfo callbackGetDefenseLineWeaponEquipInfo 1
+P bean bean.ClientDefenseLineWeaponBean 2
+F refreshCount int
+F weaponStatusList array
+R getDragoonChipBeanInfo callBackDragoonChipBeanInfo 1
+P object - 0
+R getDragoonChipBreak callBackGetDragoonChipBreak 3
+P int - 0
+P string - 0
+P int - 0
+R getDragoonChipDecompose callBackGetDragoonChipDecompose 2
+P int - 0
+P array - 0
+R getDragoonChipRestructure callBackDragoonChipRestructure 3
+P int - 0
+P int - 0
+P array - 0
+R getDyeingWorkList callbackGetDyeingWorkList 4
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R getEmojiMap callbackGetEmojiMap 1
+P object - 0
+R getEtherHistoryChangeLog callbackGetEtherHistoryChangeLog 4
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R getEtherMarketLockStorageInfo callbackGetEtherMarketLockStorageInfo 1
+P object - 0
+R getExercisesBattleRecords callbackGetExercisesBattleRecords 1
+P object - 0
+R getExercisesChannelRoomList callbackGetExercisesChannelTeamList 3
+P array - 0
+P int - 0
+P int - 0
+R getExercisesChannelTeamList callbackGetExercisesChannelTeamList 3
+P array - 0
+P int - 0
+P int - 0
+R getExercisesDanReward callbackGetExercisesDanReward 3
+P int - 0
+P int - 0
+P array - 0
+R getExistForeverWeapon callBackGetExistForeverWeapon 3
+P int - 0
+P int - 0
+P int - 0
+R getExpeditionTaskBeans callbackGetExpeditionTaskBeans 1
+P object - 0
+R getFavoriteBean callbackGetFavoriteBean 1
+P bean bean.RpgFavoriteBean 4
+F acquiredCatalogList array
+F activedFavoriteList array
+F unactivatedTempFavoriteList array
+F activatedTempFavoriteList array
+R getFestivalCycleBuffer callbackGetFestivalCycleBuffer 3
+P int - 0
+P int - 0
+P array - 0
+R getFestivalCycleUserBean callbackGetFestivalCycleUserBean 2
+P int - 0
+P bean bean.ClientFestivalCycleUserBean 2
+F cycleValueMap object
+F cycleRewardMap object
+R getFestivalDelayRaidData callbackGetFestivalDelayRaidData 1
+P object - 0
+R getFestivalInfo callbackGetFestivalInfo 2
+P bean bean.RpgFestivalUserBean 17
+F festivalId int
+F charId int
+F maxDamageMap object
+F battleSuccessCountMap object
+F maxCoinMap object
+F maxTeamDamageMap object
+F festivalSpanList object
+F damageSum number
+F minBattleTimeMap object
+F pvpDataObj any
+F dangerFactorMap object
+F avatarReplaceCount int
+F openAvatarReplace boolean
+F palMap object
+F palMapDic any
+F bountyArenaData any
+F treeTalents object
+P number - 0
+R getFestivalMarketOtherStore callbackGetFestivalMarketStore 2
+P int - 0
+P bean bean.FestivalMarketStoreInfo 6
+F festivalId int
+F storeCode string
+F priceIncreaseBp number
+F selfSaleRemainNum int
+F visitorSaleRemainNum int
+F selfRefreshRemainNum int
+R getFestivalMarketOwnStore callbackGetFestivalMarketStore 2
+P int - 0
+P bean bean.FestivalMarketStoreInfo 6
+F festivalId int
+F storeCode string
+F priceIncreaseBp number
+F selfSaleRemainNum int
+F visitorSaleRemainNum int
+F selfRefreshRemainNum int
+R getFestivalMarketRandomGiftStatus callbackGetFestivalMarketRandomGiftStatus 2
+P int - 0
+P array - 0
+R getFestivalMarketVisitRecords callbackGetFestivalMarketVisitRecords 2
+P int - 0
+P bean bean.FestivalMarketVisitPage 4
+F total int
+F page int
+F pageSize int
+F records array
+R getFestivalPlayerCount callbackGetFestivalPlayerCount 3
+P int - 0
+P int - 0
+P int - 0
+R getFestivalSpell callbackGetFestivalSpell 1
+P object - 0
+R getFestivalTask callbackGetFestivalTask 2
+P object - 0
+P array - 0
+R getFestivalVipBean callbackGetFestivalVipBean 2
+P object - 0
+P object - 0
+R getForbiddenItemData onGetForbiddenItemData 1
+P object - 0
+R getForeverLandPickBeans callbackGetForeverLandPickBeans 2
+P int - 0
+P array - 0
+R getForeverLandUserBean callbackGetForeverLandUserBean 1
+P bean bean.ClientForeverLandUserBean 5
+F level int
+F num int
+F nextResetTime int
+F pickTime number
+F pickBean any
+R getFriendMailList callbackGetFriendMailList 1
+P array - 0
+R getFriendReceiveCount callbackGetFriendReceiveCount 1
+P object - 0
+R getFriendShip onGetFriendShip 1
+P bean bean.FriendShipUserBean 12
+F charId int
+F isNew boolean
+F newStartTime number
+F isReturn boolean
+F returnStartTime number
+F isMiddle boolean
+F middleStartTime number
+F weekLimit int
+F dayLimit int
+F dayExtLimit int
+F dayRefreshTime number
+F weekRefreshTime number
+R getFuliSort onGetFuliSort 1
+P array - 0
+R getGameActivationRecord callbackGetGameActivationRecord 1
+P object - 0
+R getGameBattleProperty callbackGetGameBattleProperty 1
+P object - 0
+R getGameChannelServerInfo callbackGetGameChannelServerInfo 2
+P int - 0
+P bean com.wooduan.hallserver.services.Endpoint 6
+F id string
+F name string
+F domain string
+F port int
+F type string
+F ip string
+R getGameCoolDownInfo callbackGetGameCoolDownInfo 1
+P array - 0
+R getGameFlowRecoveryInfo callbackGetGameFlowRecoveryInfo 3
+P int - 0
+P array - 0
+P array - 0
+R getGlobalAchv callbackGetGlobalAchv 5
+P int - 0
+P bean bean.GlobalAchvBean 5
+F charId int
+F medalIdList array
+F achvPoint number
+F recentlyCompletedTaskMap object
+F achvTotalCount number
+P object - 0
+P array - 0
+P number - 0
+R getGlobalAchvData callbackGetGlobalAchvData 2
+P int - 0
+P array - 0
+R getGlobalRoomChannel callbackGetGlobalRoomChannel 1
+P array - 0
+R getHallConfig onGetHallConfig 1
+P object - 0
+R getHallServerConfig onGetServerHallConfig 1
+P object - 0
+R getHeroAvatarTasks callbackGetHeroAvatarTasks 2
+P object - 0
+P array - 0
+R getHistoryKingScuffleBattleReport callbackGetHistoryKingScuffleBattleReport 1
+P array - 0
+R getHistoryReport callbackGetHistoryReport 2
+P int - 0
+P array - 0
+R getHomelandBuildData callbackGetHomelandBuildData 1
+P bean bean.ClientHomelandBuildBean 3
+F formulaIds array
+F makingFormulaIds array
+F boxId int
+R getHomelandHallRentData callbackGetHomelandHallRentData 6
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+P int - 0
+P int - 0
+R getHomelandHallRentLimit callbackGetHomelandHallRentLimit 2
+P boolean - 0
+P boolean - 0
+R getHotRecommend callbackGetHotRecommend 2
+P string - 0
+P array - 0
+R getIntelligenceClaimInfo callbackGetIntelligenceClaimInfo 1
+P array - 0
+R getKingScuffleCharInfo callbackGetKingScuffleCharInfo 3
+P bean bean.UserInfo 126
+F propertyUnits object
+F loginRet int
+F loginId int
+F operatorId int
+F userId int
+F username string
+F changename string
+F playerName string
+F characterId int
+F rpgBlindCodeMap any
+F challengeBean any
+F secondWeaponMagazineFlag boolean
+F vipLv int
+F goldTotal int
+F rpgTeamlogAry array
+F variantSkillBeanMap object
+F storageArrearsMap object
+F gameCoinArrearsMap object
+F runeBags any
+F runeStorageLimit int
+F buffEffectMap object
+F reputationScore int
+F homelandPropertyBeanMap object
+F wingLastExtractTime int
+F isadult int
+F accountTag int
+F roomChannleId int
+F roomId number
+F timer int
+F observerFlag boolean
+F blockFunctionMap object
+F rpgAbyssUserBean any
+F rollTimer number
+F bonusAttr1 object
+F bonusAttr2 object
+F bonusAttr3 object
+F bonusAttr4 object
+F bonusAttr5 object
+F inGameServer boolean
+F firstLoginTime number
+F readyGame int
+F regTime number
+F loginTime number
+F lastLogoutTime number
+F client object
+F token string
+F lv int
+F maxLv int
+F exp number
+F gold int
+F gp int
+F gift int
+F boomCnt int
+F bagArray array
+F rpgBagArray array
+F globalBag any
+F storageMap object
+F selectedBagIndex int
+F avatarT int
+F avatarTSkin int
+F careerTSkin string
+F avatarCT int
+F avatarCTSkin int
+F careerCTSkin string
+F avatarSH int
+F defaultAvatar uint
+F avatarTLv int
+F avatarCTLv int
+F heroRootAvatarId int
+F p3HeroAvatarId int
+F matched boolean
+F onlineTime uint
+F charMedalBean any
+F raceBattleData any
+F historyReport boolean
+F lastPayTime number
+F tmpPayCount uint
+F firstPayPackFlag uint
+F userStayStep int
+F fastSettingBean any
+F activityIds string
+F closedActivityIdArr array
+F teamId int
+F missionProgressDic any
+F isSignInedToday boolean
+F clientSignInBean any
+F installmentRefundMap object
+F settingBean any
+F charRaceBeanMap object
+F isp string
+F remoteIp string
+F pveProgressList array
+F pluginReporter any
+F allWeaponBattleDataMap object
+F vip4399Bean any
+F clientWeaponStorageBean any
+F holidayStatusObj object
+F rpgTacticalBag any
+F pvpTacticalBag any
+F gameCoinMap object
+F weaponGoldSoul int
+F weaponHeroSoul int
+F weaponSteelPoint int
+F rpgRecoverDataBean any
+F hasSecPsw boolean
+F lastResetSecPsw number
+F lastSecPswErrorTime number
+F wrestleChallengeTaskProgressMap object
+F completedWrestleChallengeTaskIds array
+F FestivalTaskProgressMap object
+F completedFestivalTaskIds array
+F HeroRoleTaskProgressMap object
+F completedHeroRoleTaskIds array
+F RunesTaskProgressMap object
+F completedRunesTaskIds array
+F WelcomeTaskProgressMap object
+F completedWelcomeTaskIds array
+F NewbieTaskProgressMap object
+F completedNewbieTaskIds array
+F selectAvatarBagIndex int
+F avatarBagData array
+F rootAvatarDataT any
+F rootAvatarDataCT any
+F userRpgDataArray array
+F xpSkillBeans array
+F lastChangePlayerName number
+P int - 0
+P bean bean.ClientRpgUserInfo 21
+F rpgBean any
+F kingScuffleBean any
+F rpgTaskProgressMap object
+F rpgCompletedGameDifficultyIdArray array
+F rpgXpSkillBeanMap object
+F rpgWeaponBattleProficiencyRecordBeanMap object
+F firstBloodRpgDiffIdList array
+F userBattleServerData object
+F rpgInfinityRecordMap object
+F weaponSlotsMap object
+F completedTaskSet array
+F rpgSendTaskBeanMap object
+F rpgFurnaceBeanMap object
+F lastSeasonKingScuffleScore int
+F rpgLevelTelnetNodeList array
+F isOpenHomeland boolean
+F welcomeDays int
+F rpgExtBean any
+F foreverLandChallengeNum int
+F rebirth int
+F monthlyCardBean any
+R getKingScuffleSeasonInfo callbackGetKingScuffleSeasonInfo 2
+P bean common.template.bean.RpgKingScuffleInfo 8
+F season int
+F startTime number
+F endTime number
+F scoreRewardModel int
+F eventPool int
+F rankRewardModel int
+F difficultyId int
+F id int
+P bean common.template.bean.RpgKingScuffleInfo 8
+F season int
+F startTime number
+F endTime number
+F scoreRewardModel int
+F eventPool int
+F rankRewardModel int
+F difficultyId int
+F id int
+R getKingScuffleSimpleCharInfo callbackGetKingScuffleSimpleCharInfo 3
+P int - 0
+P int - 0
+P string - 0
+R getLastExchangeStorageTimestamp onGetLastExchangeStorageTimestamp 2
+P int - 0
+P int - 0
+R getLeagueEngineReward callbackGetLeagueEngineReward 3
+P int - 0
+P int - 0
+P array - 0
+R getLegendCastingInfo callbackGetLegendCastingInfo 1
+P object - 0
+R getLiveChatRoomInfo onGetLiveChatRoomInfo 2
+P bean com.net.thrift.Thrift_LiveRoomChInfo 3
+F status int
+F url string
+F listUrl string
+P object - 0
+R getLostCityInfo callbackGetLostCityInfo 1
+P object - 0
+R getLuckyList callBackGetLuckyList 1
+P array - 0
+R getLuckyWheelData callbackGetLuckyWheelData 1
+P bean bean.LuckyWheelUserData 5
+F season int
+F spinCount int
+F wheelTaskId int
+F wheelTaskStartTime number
+F upgradeAmountMap object
+R getMagicArsenalHistoryLog callbackGetMagicArsenalHistoryLog 2
+P array - 0
+P int - 0
+R getMailGiftById onGetMailGiftById 3
+P int - 0
+P number - 0
+P array - 0
+R getMailList callbackGetMailList 3
+P array - 0
+P int - 0
+P int - 0
+R getMailPackById callbackGetMailPackById 5
+P int - 0
+P number - 0
+P array - 0
+P int - 0
+P int - 0
+R getMapPathNodeOverview callbackGetMapPathNodeOverview 2
+P int - 0
+P bean bean.FestCelebration2025UserBean 11
+F mapNodeTid int
+F nodes array
+F column int
+F status int
+F rpgShopItemList array
+F lockShopItem boolean
+F lockCount int
+F refreshCount int
+F columnNodesMap object
+F rpgGroupEvent object
+F battleCoinThreshold number
+R getMessageByFriendCid onGetMessageByFriendCid 2
+P int - 0
+P array - 0
+R getMessagesByWindowId callbackGetMessagesByWindowId 1
+P array - 0
+R getModuleSysInfo callbackGetModuleSysInfo 1
+P object - 0
+R getMonthTotalSignInReward callbackTotalSignInReward 2
+P int - 0
+P array - 0
+R getMyNearbyAbyssRank callbackGetMyNearbyAbyssRank 5
+P int - 0
+P array - 0
+P int - 0
+P int - 0
+P array - 0
+R getMyRankAndTotalCount callbackGetMyRankAndTotalCount 5
+P int - 0
+P array - 0
+P int - 0
+P number - 0
+P int - 0
+R getMyRankDataInfo callbackGetMyRankDataInfo 3
+P int - 0
+P array - 0
+P any - 0
+R getMyRankNew callbackGetMyRankNew 4
+P int - 0
+P array - 0
+P int - 0
+P number - 0
+R getMyRpgRiskInfo callbackMyRpgRiskRank 1
+P bean bean.ClientRankRpgRiskBean 9
+F userId number
+F charName string
+F rpgLv int
+F costTime number
+F battleScore int
+F dateline number
+F curRank int
+F number int
+F lastRank int
+R getMysteryShopInfo callbackGetMysteryShopInfo 1
+P object - 0
+R getNewSignInInfo callbackNewSignInInfo 2
+P int - 0
+P bean bean.NewClientSignInBean 8
+F uid int
+F username string
+F totalCount int
+F signInInfo int
+F reSignInInfo int
+F totalSignInCount int
+F rewardId int
+F monthRewardsStateList array
+R getNewWeaponFactoryInfo callBackGetNewWeaponFactoryInfo 2
+P int - 0
+P bean bean.NewWeaponFactoryInfo 6
+F factoryId int
+F weaponFactoryInfo string
+F randomPackId int
+F resetCount int
+F ultimateCount int
+F resetStatus boolean
+R getNewWeaponFactoryItem callBackGetNewWeaponFactoryItem 3
+P int - 0
+P bean bean.NewWeaponFactoryInfo 6
+F factoryId int
+F weaponFactoryInfo string
+F randomPackId int
+F resetCount int
+F ultimateCount int
+F resetStatus boolean
+P array - 0
+R getNewbieTaskBean callbackGetNewbieTaskBean 1
+P bean bean.NewbieTaskBean 5
+F charId int
+F startTime int
+F progressValue int
+F claimedRewards array
+F unlockDays array
+R getOnlineFriend onGetOnlineFriend 1
+P array - 0
+R getOnlineTeamMember onGetOnlineTeamMember 1
+P array - 0
+R getOtherGlobalAchv callbackGetGlobalAchv 5
+P int - 0
+P bean bean.GlobalAchvBean 5
+F charId int
+F medalIdList array
+F achvPoint number
+F recentlyCompletedTaskMap object
+F achvTotalCount number
+P object - 0
+P array - 0
+P number - 0
+R getOtherGlobalAchvData callbackGetGlobalAchvData 2
+P int - 0
+P array - 0
+R getOtherReducedRankOverviewInfo callbackGetOtherRankOverviewInfo 4
+P int - 0
+P int - 0
+P int - 0
+P bean bean.RankOverviewInfo 9
+F curRank int
+F total int
+F scoreBean object
+F infoBean object
+F lastChangeDisplayFlag number
+F updateDisplayCount number
+F display boolean
+F prev object
+F next object
+R getPalAllianceRedPackets callbackGetPalAllianceRedPackets 3
+P int - 0
+P array - 0
+P int - 0
+R getPalAllianceTeamInfo callbackGetAllianceTeamInfo 2
+P int - 0
+P bean bean.ClientPalAllianceTeamData 4
+F allianceId int
+F commander any
+F teamDetailAry object
+F teamId int
+R getPalNodeDetail callbackGetPalNodeDetail 2
+P int - 0
+P bean bean.ClientPalNodeDetail 11
+F point any
+F allianceId int
+F occupyTime number
+F monsterClearTime number
+F wallHp int
+F wallRecoveryTime number
+F userNum int
+F troopNum int
+F troops array
+F duels array
+F battleLogs array
+R getPalSignupStatus callbackGetPalSignupStatus 7
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P number - 0
+P number - 0
+P number - 0
+R getPalUserOverviewInfo callbackGetPalUserOverviewInfo 5
+P int - 0
+P int - 0
+P bean bean.PalRoundUserBean 7
+F gcId number
+F uid number
+F name string
+F roomId number
+F allianceId number
+F score number
+F apply int
+P bean bean.ClientPalUserBean 11
+F gCid number
+F roomId int
+F roomIndex number
+F allianceId int
+F groupId int
+F signUpTime number
+F allianceCityMap object
+F hasResource boolean
+F abilityMap object
+F barrackMap object
+F honor int
+P array - 0
+R getPatchca callbackGetPatchca 1
+P object - 0
+R getPeakBags callbackGetPeakBags 2
+P int - 0
+P bean bean.ClientPeakDuelData 3
+F duelDataMap object
+F status int
+F opTime number
+R getPeakCompetitionGroup callbackGetPeakCompetitionGroup 4
+P int - 0
+P int - 0
+P int - 0
+P object - 0
+R getPeakGroups callbackGetPeakGroups 1
+P object - 0
+R getPeakLikes callbackGetPeakLikes 3
+P array - 0
+P object - 0
+P object - 0
+R getPerfectWeaponList callbackGetPerfectWeaponList 1
+P array - 0
+R getPersonalise callbackGetPersonalise 1
+P array - 0
+R getPhoneBindInfo callbackGetPhoneBindInfo 1
+P bean bean.ClientPhoneBindBean 8
+F uid int
+F phone string
+F daySendCodeCount int
+F sendCodeTimestamp number
+F inputCodeErrorCount int
+F bindTimestamp number
+F isNotifySetButton boolean
+F isNotifyScene boolean
+R getPinnacleInfinitySeasonInfo callbackGetPinnacleInfinitySeasonInfo 2
+P int - 0
+P bean bean.RpgPinnacleInfinitySeasonBean 1
+F buffList array
+R getPresetTemplateStatus callbackGetPresetTemplate 2
+P int - 0
+P array - 0
+R getPveAchievement onGetPveAchievement 3
+P int - 0
+P int - 0
+P object - 0
+R getPveAchievementReward onGetPveAchievementReward 5
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R getPveArtifactLuckyRankInfo onGetPveArtifactLuckyRankInfo 2
+P array - 0
+P array - 0
+R getQQVipPack onGetQQVipPack 3
+P int - 0
+P int - 0
+P array - 0
+R getQuizQuestion onGetQuizQuestion 1
+P bean bean.ClientQuizQuestionBean 10
+F questionId int
+F content string
+F option1 string
+F option2 string
+F option3 string
+F option4 string
+F timestamp int
+F correctNum int
+F timeoutNum int
+F incorrectNum int
+R getQuizResult onGetQuizResult 1
+P int - 0
+R getQuizStatus onGetQuizStatus 3
+P boolean - 0
+P int - 0
+P int - 0
+R getRaceActiveTasks callbackGetRaceActiveTasks 2
+P object - 0
+P array - 0
+R getRaceEntertainmentBanGroup callbackGetRaceEntertainmentBanGroup 1
+P array - 0
+R getRaceEntertainmentSeasonInfo callbackGetRaceEntertainmentSeasonInfo 1
+P bean bean.CharRaceEntertainmentBean 15
+F score int
+F lv int
+F sect int
+F fetchLvRwd int
+F fetched int
+F prevScore int
+F prevLv int
+F deadNum int
+F killNum int
+F headKill int
+F startGameNum int
+F totalStartGameNum int
+F historyInfoList array
+F weaponGroups object
+F voteTime number
+R getRaceEntertainmentVoteRank callbackGetRaceEntertainmentVoteRank 4
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R getRaceKingRank callbackGetRaceEntertainmentVoteRank 4
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R getRandomPackInfo onGetRandomPackInfo 3
+P array - 0
+P array - 0
+P array - 0
+R getRandomWeightPackInfo callbackGetRandomWeightPackInfo 1
+P object - 0
+R getRankDisplayInfo callbackGetRankDisplayInfo 5
+P int - 0
+P array - 0
+P int - 0
+P int - 0
+P bean bean.ClientActivityUserDisplayInfo 12
+F charName string
+F career string
+F rootAvatarId int
+F careerColor string
+F careerSkin string
+F careerSkinColor string
+F bagCell array
+F wingCodeName string
+F vipLv int
+F rpgBonus int
+F kingScuffleScore int
+F avatarParts object
+R getRankItemInfo callbackGetRankItemInfo 3
+P int - 0
+P array - 0
+P object - 0
+R getRankList onGetRankList 1
+P array - 0
+R getRankNew callbackGetRankNew 6
+P int - 0
+P array - 0
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R getRankSliceGroupMap callbackGetRankSliceGroupMap 1
+P object - 0
+R getRankUserDisplayInfo callbackGetUserDisplayInfo 3
+P int - 0
+P int - 0
+P bean bean.ClientActivityUserDisplayInfo 12
+F charName string
+F career string
+F rootAvatarId int
+F careerColor string
+F careerSkin string
+F careerSkinColor string
+F bagCell array
+F wingCodeName string
+F vipLv int
+F rpgBonus int
+F kingScuffleScore int
+F avatarParts object
+R getRealmExchangeBeans callbackGetRealmExchangeBeans 2
+P array - 0
+P bean bean.RealmExchangeHistoryBean 2
+F group int
+F refundMap object
+R getRealmExchangeRefund callbackGetRealmExchangeRefund 4
+P int - 0
+P bean bean.ClientRealmExchangeBean 5
+F group int
+F season int
+F lv int
+F historyLv int
+F bargainLv int
+P array - 0
+P object - 0
+R getRebirthOverview callbackGetRebirthOverview 1
+P object - 0
+R getReceiveRewardInfo callbackGetReceiveRewardInfo 1
+P bean bean.ReceiveRewardBean 5
+F charId int
+F teamBoxReceiveCount int
+F friendReceiveCount int
+F activityMap object
+F dateline number
+R getReducedRankByPage callbackGetReducedRankByPage 6
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+P int - 0
+R getReducedRankOverviewInfo callbackGetOtherRankOverviewInfo 4
+P int - 0
+P int - 0
+P int - 0
+P bean bean.RankOverviewInfo 9
+F curRank int
+F total int
+F scoreBean object
+F infoBean object
+F lastChangeDisplayFlag number
+F updateDisplayCount number
+F display boolean
+F prev object
+F next object
+R getReputationBean callbackGetReputationBean 1
+P bean bean.ReputationBean 6
+F charId int
+F score int
+F exp int
+F lv int
+F rewardMap object
+F recentlyLogList array
+R getRogueIllustration callbackGetRogueIllustration 1
+P array - 0
+R getRoomChannel callbackGetGlobalRoomChannel 1
+P array - 0
+R getRougeAchievementInfo callbackGetRougeAchievementInfo 3
+P int - 0
+P array - 0
+P int - 0
+R getRpgAdventureEvent callbackGetRpgAdventureEvent 1
+P object - 0
+R getRpgArenaInfo callBackGetRpgArenaInfo 1
+P bean bean.clientresult.ClientRpgArenaResult 10
+F userId int
+F raceType int
+F currentDifficultId int
+F rootAvatarIds array
+F storageIdList array
+F dragoonUsedCount int
+F crashTimeLeft int
+F perfect boolean
+F challengeNum int
+F envoyUsageCount object
+R getRpgAvatarInfo callbackGetRpgAvatarInfo 1
+P array - 0
+R getRpgChannel callbackGetRpgChannel 1
+P bean bean.RpgChannelInfo 2
+F serverDomain string
+F port int
+R getRpgCoreSystemInfo callbackGetRpgCoreSystemInfo 1
+P object - 0
+R getRpgDailyTaskInfo callbackRpgDailyTaskInfo 3
+P array - 0
+P int - 0
+P array - 0
+R getRpgDivineMarkBeans callbackGetRpgDivineMarkBeans 2
+P array - 0
+P object - 0
+R getRpgEndlessShopInfo callbackGetRpgEndlessShopInfo 1
+P object - 0
+R getRpgExploreQueueInfo callBackGetRpgExploreQueueInfo 1
+P array - 0
+R getRpgExpressionValues onGetRpgExpressionValues 1
+P object - 0
+R getRpgMagicArsenalInfo callbackGetMagicArsenalInfo 1
+P bean bean.UserRpgMagicArsenal 4
+F magicFinalId int
+F step int
+F lastStep int
+F magicArsenalCellInfoArray array
+R getRpgMixture callbackGetRpgMixture 1
+P object - 0
+R getRpgNewbieTasks callbackGetRpgNewbieTasks 2
+P object - 0
+P array - 0
+R getRpgRandomChallengeBean callbackGetRpgRandomChallengeBean 1
+P object - 0
+R getRpgReconstructionMap callbackGetRpgReconstructionMap 2
+P array - 0
+P int - 0
+R getRpgRiskRank callbackGetRpgRiskRank 5
+P int - 0
+P array - 0
+P int - 0
+P int - 0
+P array - 0
+R getRpgRoomList callbackGetRpgRoomList 1
+P array - 0
+R getRpgShopBuyLimit callbackGetRpgShopBuyLimit 2
+P int - 0
+P object - 0
+R getRpgShopInfo callbackGetRpgShopInfo 2
+P object - 0
+P int - 0
+R getRpgTaskDataList callbackGetRpgTaskDataList 4
+P int - 0
+P object - 0
+P array - 0
+P array - 0
+R getRpgTeamHistoryLog callbackGetRpgTeamHistoryLog 5
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R getRpgTeamInfo callbackGetRpgTeamInfo 4
+P int - 0
+P bean bean.RpgTeamBean 11
+F exp int
+F lv int
+F declaration string
+F notice string
+F contribute int
+F money int
+F weeklyMoney int
+F technologyMap object
+F badgeSum string
+F clientTeamLeagueBean any
+F reviveCoin int
+P array - 0
+P array - 0
+R getRpgTeamLeagueWeekData callbackGetRpgTeamLeagueWeekData 1
+P bean bean.RpgTeamLeagueBean 6
+F winCount int
+F lostCount int
+F score int
+F contribute int
+F resetCount int
+F enginePropertyMap object
+R getRpgTeamList callbackGetRpgTeamList 1
+P array - 0
+R getRpgWelcomeTasks callbackGetRpgWelcomeTasks 2
+P object - 0
+P array - 0
+R getRpgZoomUserBean callbackGetRpgZoomUserBean 1
+P bean bean.RpgZoomUserBean 10
+F charId int
+F zoomId int
+F mainIndex int
+F mainCurDanger int
+F mainDanger int
+F rewardRate int
+F claimed boolean
+F pointMap object
+F propertyMap object
+F lastResetTime int
+R getRuneBagTasks callbackGetRuneBagTasks 2
+P object - 0
+P array - 0
+R getScratchOffUserBean callbackGetScratchOffUserBean 2
+P int - 0
+P bean bean.ClientScratchOffUserBean 5
+F bossDiffId int
+F cells array
+F scrapeNum int
+F _allBuffStr string
+F _buffArray array
+R getScuffleEquipConfig callbackGetScuffleEquipConfig 1
+P array - 0
+R getScuffleOneOnOneReport callbackGetScuffleOneOnOneReport 1
+P array - 0
+R getSeasonPassInfo callbackGetSeasonPasInfo 5
+P bean bean.SeasonPassUserBean 5
+F charId int
+F level int
+F teamAssistUsedCount int
+F teamAssistOpenFlag int
+F activeRewardGrade int
+P object - 0
+P object - 0
+P object - 0
+P array - 0
+R getSecretPrizePackLuckyCount callbackGetSecretPrizePackLuckyCount 2
+P int - 0
+P object - 0
+R getShopBuyInfo callbackGetShopBuyInfo 1
+P object - 0
+R getShopOverviewInfo callbackGetShopOverviewInfo 5
+P int - 0
+P object - 0
+P array - 0
+P int - 0
+P int - 0
+R getSlotMachineUserBean callbackGetSlotMachineUserBean 2
+P int - 0
+P bean bean.ClientSlotMachineUserBean 10
+F diffType int
+F luckyValue int
+F roulettes array
+F subscripts array
+F pullCount int
+F buffers array
+F superPrizes object
+F eligible boolean
+F badges array
+F enableBuffers boolean
+R getStarPrayData callbackGetStarPrayData 2
+P int - 0
+P bean bean.StarPrayData 3
+F festivalId int
+F timestamp number
+F pools array
+R getStarProjectInfo callBackGetStarProjectInfo 3
+P bean bean.StarProjectUserDataBean 7
+F id number
+F selectedBoxType int
+F boxId int
+F boxLv int
+F isFetched boolean
+F freeUpgradeCount int
+F randomCount int
+P number - 0
+P number - 0
+R getStorageStoreList callbackGetStorageStoreList 2
+P int - 0
+P array - 0
+R getTeamImpeachInfo callbackGetTeamImpeachInfo 2
+P int - 0
+P bean bean.ClientTeamImpeachBean 6
+F dateline number
+F charId int
+F charName string
+F total int
+F voteYes int
+F hasVote boolean
+R getTeamInfo onGetTeamInfo 1
+P bean bean.ClientTeamBean 25
+F teamId int
+F name string
+F createCharId int
+F leaderCharId int
+F leaderName string
+F mNumber int
+F mNumberLimit int
+F teamExp int
+F teamLv int
+F declaration string
+F notice string
+F dateline number
+F homepage string
+F qq string
+F yy string
+F rank int
+F isApply boolean
+F battleEndNum int
+F winNum int
+F failNum int
+F rpgTeamTotalBonus int
+F rpgTeamLv int
+F rpgTeamNumber int
+F rpgTeamCapacity int
+F rpgTeamDeclaration string
+R getTeamLeagueInfo callbackGetTeamLeagueInfo 1
+P bean bean.ClientTeamLeagueBean 9
+F leagueSignUpStatus int
+F leagueSumScore number
+F signUpMemberMap object
+F teamLeagueMemberMap object
+F rpgTeamLeagueBean any
+F scoreLines array
+F rpgTeamLeagueUserBean any
+F intelligenceClaimMap any
+F leagueEngineUserBean any
+R getTeamLegionStorage callbackGetTeamLegionStorage 3
+P object - 0
+P object - 0
+P int - 0
+R getTeamLegionTechnology callbackGetTeamLegionTechnology 1
+P object - 0
+R getTeamList onGetTeamList 3
+P array - 0
+P int - 0
+P int - 0
+R getTeamListByName onGetTeamList 3
+P array - 0
+P int - 0
+P int - 0
+R getTeamMember onGetTeamMember 1
+P array - 0
+R getTeamTreasureBox callbackGetTeamTreasureBox 1
+P int - 0
+R getTeamUserInfo onGetTeamUserInfo 1
+P bean bean.ClientTeamUserBean 18
+F id int
+F teamId int
+F charId int
+F playerName string
+F lv int
+F teamExp int
+F teamLv int
+F jobFlag int
+F dateline int
+F status int
+F logoutTime number
+F isOnline boolean
+F selected boolean
+F inRpgTeam boolean
+F myself boolean
+F couldInvite boolean
+F rebirth int
+F newMsgNum int
+R getTerritorialContentionInfo callbackGetTerritorialContentionInfo 1
+P array - 0
+R getTerritorialContentionInfoOne callbackGetTerritorialContentionInfo 1
+P array - 0
+R getTerritorialTeamBean callbackGetTerritorialTeamBean 2
+P bean bean.ClientTeamTerritorialBean 4
+F teamId int
+F occupyMap object
+F technologyMap object
+F contribution number
+P bean bean.ClientTeamTerritorialUserBean 3
+F occupyMap object
+F contribution number
+F completed boolean
+R getTgpVipPack onGetYellowVipPack 2
+P int - 0
+P string - 0
+R getTimeSafeBoxOrderBean callbackGetTimeSafeBoxOrderBean 1
+P array - 0
+R getTimeSafeBoxesBean callbackGetTimeSafeBoxOrderBean 1
+P array - 0
+R getTotalSignInReward callbackTotalSignInReward 2
+P int - 0
+P array - 0
+R getTrialTowerInfo callbackGetTrialTowerInfo 3
+P int - 0
+P bean bean.TrialTowerUserBean 6
+F level int
+F lvlIndex int
+F selected array
+F rewardCount int
+F rewards array
+F ready boolean
+P bean bean.TrialTowerRandomData 3
+F cellsMap object
+F levelsMap object
+F buffsMap object
+R getTriggerActivityList callbackGetTriggerActivityList 4
+P object - 0
+P array - 0
+P object - 0
+P object - 0
+R getUltimateAvatarInfo callbackGetUltimateAvatarInfo 1
+P bean bean.UltimateAvatarBean 5
+F gender int
+F head number
+F upperBody number
+F lowerBody number
+F ultimateAvatarConfigVector array
+R getUltimateReward callBackGetUltimateReward 3
+P int - 0
+P int - 0
+P array - 0
+R getUpgradeDragoonChip callBackUpgradeDragoonChip 5
+P int - 0
+P string - 0
+P int - 0
+P number - 0
+P int - 0
+R getUpgradeDragoonChipByExp callBackGetUpgradeDragoonChipByExp 1
+P int - 0
+R getUpgradeInfo callbackGetUpgradeInfo 2
+P string - 0
+P array - 0
+R getUserDataByLogin callBackGetUserDataByLogin 1
+P bean bean.UserInfo 126
+F propertyUnits object
+F loginRet int
+F loginId int
+F operatorId int
+F userId int
+F username string
+F changename string
+F playerName string
+F characterId int
+F rpgBlindCodeMap any
+F challengeBean any
+F secondWeaponMagazineFlag boolean
+F vipLv int
+F goldTotal int
+F rpgTeamlogAry array
+F variantSkillBeanMap object
+F storageArrearsMap object
+F gameCoinArrearsMap object
+F runeBags any
+F runeStorageLimit int
+F buffEffectMap object
+F reputationScore int
+F homelandPropertyBeanMap object
+F wingLastExtractTime int
+F isadult int
+F accountTag int
+F roomChannleId int
+F roomId number
+F timer int
+F observerFlag boolean
+F blockFunctionMap object
+F rpgAbyssUserBean any
+F rollTimer number
+F bonusAttr1 object
+F bonusAttr2 object
+F bonusAttr3 object
+F bonusAttr4 object
+F bonusAttr5 object
+F inGameServer boolean
+F firstLoginTime number
+F readyGame int
+F regTime number
+F loginTime number
+F lastLogoutTime number
+F client object
+F token string
+F lv int
+F maxLv int
+F exp number
+F gold int
+F gp int
+F gift int
+F boomCnt int
+F bagArray array
+F rpgBagArray array
+F globalBag any
+F storageMap object
+F selectedBagIndex int
+F avatarT int
+F avatarTSkin int
+F careerTSkin string
+F avatarCT int
+F avatarCTSkin int
+F careerCTSkin string
+F avatarSH int
+F defaultAvatar uint
+F avatarTLv int
+F avatarCTLv int
+F heroRootAvatarId int
+F p3HeroAvatarId int
+F matched boolean
+F onlineTime uint
+F charMedalBean any
+F raceBattleData any
+F historyReport boolean
+F lastPayTime number
+F tmpPayCount uint
+F firstPayPackFlag uint
+F userStayStep int
+F fastSettingBean any
+F activityIds string
+F closedActivityIdArr array
+F teamId int
+F missionProgressDic any
+F isSignInedToday boolean
+F clientSignInBean any
+F installmentRefundMap object
+F settingBean any
+F charRaceBeanMap object
+F isp string
+F remoteIp string
+F pveProgressList array
+F pluginReporter any
+F allWeaponBattleDataMap object
+F vip4399Bean any
+F clientWeaponStorageBean any
+F holidayStatusObj object
+F rpgTacticalBag any
+F pvpTacticalBag any
+F gameCoinMap object
+F weaponGoldSoul int
+F weaponHeroSoul int
+F weaponSteelPoint int
+F rpgRecoverDataBean any
+F hasSecPsw boolean
+F lastResetSecPsw number
+F lastSecPswErrorTime number
+F wrestleChallengeTaskProgressMap object
+F completedWrestleChallengeTaskIds array
+F FestivalTaskProgressMap object
+F completedFestivalTaskIds array
+F HeroRoleTaskProgressMap object
+F completedHeroRoleTaskIds array
+F RunesTaskProgressMap object
+F completedRunesTaskIds array
+F WelcomeTaskProgressMap object
+F completedWelcomeTaskIds array
+F NewbieTaskProgressMap object
+F completedNewbieTaskIds array
+F selectAvatarBagIndex int
+F avatarBagData array
+F rootAvatarDataT any
+F rootAvatarDataCT any
+F userRpgDataArray array
+F xpSkillBeans array
+F lastChangePlayerName number
+R getUserDyeingWorks callbackGetUserDyeingWorks 2
+P array - 0
+P array - 0
+R getUserGameData callbackGetUserGameData 2
+P array - 0
+P string - 0
+R getUserIpRegion callbackGetUserIpRegion 1
+P string - 0
+R getUserLocationData onGetUserLocationData 5
+P int - 0
+P string - 0
+P number - 0
+P boolean - 0
+P boolean - 0
+R getVariantSkillInfo callBackGetVariantSkillInfo 1
+P object - 0
+R getVariationItemLimitInfo callBackGetVariationItemLimitInfo 1
+P array - 0
+R getVariationWarDetailInfo callBackGetVariationWarDetailInfo 1
+P bean bean.ClientVariationWarData 6
+F uid int
+F playingAvatarList array
+F heroItemList array
+F variationItemList array
+F variationScore int
+F parentRootAvatarId int
+R getVerificationCode callbackGetVerificationCode 1
+P int - 0
+R getVipReturnWeaponInfo callBackGetVipReturnWeaponInfo 1
+P object - 0
+R getVoteWeaponResult callbackGetVoteWeaponResult 2
+P object - 0
+P object - 0
+R getWarLetterBean callbackGetWarLetterBean 1
+P bean bean.ClientWarLetterBean 5
+F group int
+F diffId int
+F buffs array
+F diffRecordMap object
+F status int
+R getWeaponBattleData callbackGetWeaponBattleData 2
+P string - 0
+P object - 0
+R getWeaponCalibrationBeans callbackGetWeaponCalibrationBeans 1
+P object - 0
+R getWeaponFactoryInfo onGetWeaponFactoryInfo 3
+P int - 0
+P int - 0
+P string - 0
+R getWeaponFactoryItem onGetWeaponFactoryItem 3
+P int - 0
+P int - 0
+P string - 0
+R getWeaponForbiddenDetail callbackGetWeaponForbiddenDetail 2
+P int - 0
+P object - 0
+R getWeaponForbiddenRank callbackGetWeaponForbiddenRank 2
+P int - 0
+P object - 0
+R getWeaponForbiddenUserVotes callbackGetWeaponForbiddenUserVotes 2
+P int - 0
+P bean bean.WeaponForbiddenUserBean 2
+F gCid number
+F rankId int
+R getWeaponGroupSkinData callbackGetWeaponGroupSkinData 1
+P object - 0
+R getWeaponSlotInfo callBackGetWeaponSlotInfo 1
+P object - 0
+R getWeaponStorageInfo callBackGetWeaponStorageInfo 1
+P bean bean.ClientWeaponStorageBean 21
+F silverStorageEnergy int
+F eliteStorageEnergy int
+F goldStorageEnergy int
+F heroStorageEnergy int
+F silverStorageSiphonZr int
+F eliteStorageSiphonZr int
+F goldStorageSiphonZr int
+F heroStorageSiphonZr int
+F silverStorageSiphonFb int
+F eliteStorageSiphonFb int
+F goldStorageSiphonFb int
+F heroStorageSiphonFb int
+F silverStorageSiphonFbRes string
+F eliteStorageSiphonFbRes string
+F goldStorageSiphonFbRes string
+F heroStorageSiphonFbRes string
+F superSilverStorageSiphon int
+F superEliteStorageSiphon int
+F superGoldStorageSiphon int
+F superHeroStorageSiphon int
+F superGoldStorageDrawTid int
+R getWeaponTreasureLuckyInfo onGetWeaponTreasureLuckyInfo 2
+P int - 0
+P array - 0
+R getWeekTaskReward callbackWeekTaskReward 2
+P int - 0
+P int - 0
+R getWeeklyActiveTask callbackGetWeeklyActiveTask 1
+P bean bean.WeeklyActiveTaskBean 4
+F charId int
+F activeValue int
+F rewardValueList array
+F weeklyActiveTaskList array
+R getWeeklyActiveTaskItemReward callbackWeeklyActiveTaskItemReward 4
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R getWeeklyActiveTaskReward callbackWeeklyActiveTaskReward 4
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R getWeiDuanPack onGeWeiDuanPack 2
+P int - 0
+P string - 0
+R getWishTeamBean callbackGetWishTeamBean 4
+P int - 0
+P bean bean.ClientWishTeamBean 4
+F teamId int
+F leaderGCid number
+F contribution int
+F users array
+P object - 0
+P number - 0
+R getYellowVipPack onGetYellowVipPack 2
+P int - 0
+P string - 0
+R giftAwayLegionItem callbackGiftAwayLegionItem 1
+P object - 0
+R giftLegionCoin callbackGiftLegionCoin 1
+P number - 0
+R giveGift onGiveGift 3
+P int - 0
+P int - 0
+P array - 0
+R giveRpgGift callbackGiveRpgGift 3
+P int - 0
+P int - 0
+P array - 0
+R giveUpLuckyWheelTask callbackGiveUpLuckyWheelTask 1
+P int - 0
+R giveUpTask callBackGiveUpTask 1
+P int - 0
+R giveUpTaskBySeasonId callbackGiveUpTaskBySeasonId 2
+P int - 0
+P int - 0
+R globalRoomChannelAvaliable onGlobalRoomChannelAvaliable 2
+P int - 0
+P int - 0
+R handInTeamBadge callbackHandInTeamBadge 1
+P int - 0
+R handleWishTeamInvitation callbackHandleWishTeamInvitation 4
+P int - 0
+P int - 0
+P boolean - 0
+P number - 0
+R identifyDivineMarkStone callbackIdentifyDivineStone 2
+P int - 0
+P array - 0
+R impeachTeamLeader callbackImpeachTeamLeader 2
+P int - 0
+P bean bean.ClientTeamImpeachBean 6
+F dateline number
+F charId int
+F charName string
+F total int
+F voteYes int
+F hasVote boolean
+R inactiveFavorite callbackInactiveFavorite 2
+P int - 0
+P int - 0
+R inactivePersonalise callbackInactivePersonalise 2
+P int - 0
+P int - 0
+R inviteJoinChannelTeam callbackInviteJoinChannelTeam 1
+P int - 0
+R inviteJoinInRpgTeam callbackInviteJoinInRpgTeam 1
+P int - 0
+R inviteJoinRoom onInviteJoinRoom 3
+P int - 0
+P string - 0
+P bean bean.ClientRoom 34
+F roomName string
+F roomId number
+F roomDisplayId number
+F raceType int
+F subRaceType int
+F limitNumber int
+F accessNumber int
+F battleNumber int
+F sceneId int
+F status int
+F isJoin boolean
+F isEncrypt boolean
+F isGmCreated boolean
+F onlyGMJoinObserver boolean
+F gameStatus int
+F ruleType int
+F ruleValue int
+F reLiveTime int
+F createCharacterId number
+F createCharName string
+F gameLimitNumber int
+F battleTeamName string
+F observerFlag boolean
+F friendNumber int
+F teamRelateFlag boolean
+F priority int
+F botLevel int
+F botWeapon int
+F createCharVipLv int
+F bagDataWeaponSlotScore int
+F customizeWeaponIndexList array
+F customizeWeaponRoundNum int
+F channelId int
+F isUnlimitedSpeed boolean
+R inviteJoinRpgTeam callbackInviteJoinRpgTeam 1
+P int - 0
+R inviteJoinTeam onInviteJoinTeam 1
+P object - 0
+R inviteJoinTeamResult onInviteJoinTeamResult 1
+P int - 0
+R inviteJoinWishTeam callbackInviteJoinWishTeam 4
+P int - 0
+P int - 0
+P int - 0
+P number - 0
+R isAutomaticEquip callbackIsAutomaticEquip 3
+P boolean - 0
+P int - 0
+P any - 0
+R joinChannelTeam callbackJoinChannelTeam 2
+P int - 0
+P bean common.channel.bean.ChannelTeam 6
+F teamId number
+F capacity int
+F ownerId number
+F teamStatus int
+F roomId number
+F userMap object
+R joinPalAllianceTeam callbackJoinPalAllianceTeam 2
+P int - 0
+P int - 0
+R joinRaceRoom callbackJoinRaceRoom 2
+P bean bean.ClientRaceRoom 4
+F capacity int
+F id number
+F creatorId int
+F status int
+P array - 0
+R joinRestrictionRoom callbackJoinRestrictionRoom 1
+P int - 0
+R joinRoom callBackJoinRoom 3
+P int - 0
+P bean bean.RoomInfoEx 31
+F roomId number
+F roomDisplayId number
+F roomName string
+F password string
+F raceType int
+F subRaceType int
+F ruleType int
+F ruleValue int
+F limitNumber int
+F sceneId int
+F status int
+F reLiveTime int
+F createCharacterId number
+F createCharVipLv int
+F isGmCreated boolean
+F onlyGMJoinObserver boolean
+F createCharName string
+F accessNumber int
+F battleNumber int
+F isJoin boolean
+F observerFlag boolean
+F quickStartFlag boolean
+F gameStatus int
+F gameLimitNumber int
+F mateBoomHurtInvalid boolean
+F botLevel int
+F botWeapon int
+F bagDataWeaponSlotScore int
+F customizeWeaponIndexList array
+F customizeWeaponRoundNum int
+F isUnlimitedSpeed boolean
+P any - 0
+R joinRpgRestrictionRoom callbackJoinRpgRoom 2
+P int - 0
+P array - 0
+R joinRpgRoom callbackJoinRpgRoom 2
+P int - 0
+P array - 0
+R joinRpgTeam callbackJoinRpgTeam 2
+P int - 0
+P bean bean.RpgTeamInfo 8
+F teamId number
+F rpgGameDifficultyId int
+F owner any
+F users array
+F teamStatus int
+F capacity int
+F isPswTeam boolean
+F multipleId int
+R kickOutRpgTeam callbackKickOutRpgTeam 2
+P int - 0
+P array - 0
+R kickOutTeam onKickOutTeam 1
+P int - 0
+R kickOutTeamMember callbackKickOutTeamMember 1
+P number - 0
+R kickOutWishTeam callbackKickOutWishTeam 1
+P int - 0
+R kickRaceUser callbackRaceUserLeave 2
+P int - 0
+P int - 0
+R kingScuffleStartAfk callbackStartKingScuffleAfk 2
+P int - 0
+P number - 0
+R kingScuffleStopAfk callbackStopKingScuffleAfk 4
+P int - 0
+P int - 0
+P int - 0
+P number - 0
+R leaveChannelTeam callbackLeaveChannelTeam 0
+R leaveRaceRoom callbackLeaveRaceRoom 1
+P int - 0
+R leaveRoom callBackLeaveRoom 0
+R leaveRpgTeam callbackLeaveRpgTeam 0
+R legendCasting callbackLegendCasting 3
+P int - 0
+P array - 0
+P int - 0
+R likeDyeingWork callbackLikeDyeingWork 3
+P int - 0
+P number - 0
+P boolean - 0
+R likePeakCompetitor callbackLikePeakCompetitor 4
+P int - 0
+P int - 0
+P number - 0
+P bean bean.ClientCompetitionGroup 3
+F id int
+F state int
+F competitors array
+R listHomelandHallRentItem callbackListHomelandHallRentItem 2
+P int - 0
+P array - 0
+R loadUltTalentSkill callbackLoadUltTalentSkill 2
+P int - 0
+P int - 0
+R loanRepayment callbackLoanRepayment 2
+P int - 0
+P bean bean.ClientCreditBillBean 8
+F id number
+F rpgShopId int
+F storageId number
+F status int
+F stageStatus array
+F createTime int
+F finishedTime int
+F index int
+R lockEnchantmentSlot callbackLockEnchantmentSlot 3
+P int - 0
+P int - 0
+P int - 0
+R lockRingAffix callbackLockRingAffix 4
+P int - 0
+P number - 0
+P int - 0
+P boolean - 0
+R lockRunes callbackLockRunes 2
+P array - 0
+P boolean - 0
+R lockSlavePropertyRecord callbackLockSlavePropertyRecord 3
+P int - 0
+P number - 0
+P bean bean.SecondPropertyBean 4
+F index int
+F propertyName string
+F value int
+F propertyLock boolean
+R login onFriendLogin 1
+P int - 0
+R loginBattle callbackLoginBattle 1
+P string - 0
+R loginV3 callBackLoginV3 1
+P int - 0
+R lookupFriendshipRooms callbackLookupFriendshipRooms 5
+P int - 0
+P string - 0
+P int - 0
+P boolean - 0
+P array - 0
+R luckyDrawBulk callBackLuckyDrawBulk 4
+P int - 0
+P int - 0
+P string - 0
+P int - 0
+R luckyDrawMulti callBackLuckyDrawMulti 3
+P int - 0
+P string - 0
+P int - 0
+R luckyDrawSingle callBackLuckyDrawSingle 4
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+R luckyDrawStartup callBackLuckyDrawStartup 3
+P int - 0
+P int - 0
+P int - 0
+R luckyDrawStartupSuper callBackLuckyDrawStartupSuper 2
+P int - 0
+P int - 0
+R makeHomelandFormula callbackMakeHomelandFormula 2
+P int - 0
+P int - 0
+R makeLeagueEngine callbackMakeLeagueEngine 2
+P int - 0
+P int - 0
+R markDragoonChip callBackMarkDragoonChip 1
+P bean bean.RpgChipDataBean 6
+F storageId number
+F uid int
+F chipLv int
+F chipExp number
+F chipMaxLv int
+F garbageFlag int
+R markPalNodePointFlag callbackMarkPalNodePointFlag 3
+P int - 0
+P bean coordinate.HexPoint 2
+F x int
+F y int
+P int - 0
+R marketGetItemDetailInfo callbackGetRankItemInfo 3
+P int - 0
+P array - 0
+P object - 0
+R marketGetUserBuyOrderInfo callbackMarketGetUserBuyOrderInfo 1
+P array - 0
+R marketGetUserMarketOverviewInfo callbackMarketGetUserMarketOverviewInfo 1
+P bean bean.ClientUserMarketOverviewInfo 3
+F buyOrders array
+F sellOrders array
+F overviewInfo any
+R marketGetUserSellOrderInfo callbackMarketGetUserSellOrderInfo 1
+P array - 0
+R marketShowComplexSellingOrderListWithPage callbackMarketShowComplexSellingOrderListWithPage 5
+P int - 0
+P array - 0
+P array - 0
+P int - 0
+P int - 0
+R marketShowHistoryAvgFinalPrice callbackMarketShowHistoryAvgFinalPrice 3
+P int - 0
+P int - 0
+P array - 0
+R marketShowOverviewInfo callbackMarketShowOverviewInfo 2
+P int - 0
+P array - 0
+R marketShowSellingOrderListWithPage callbackMarketShowSellingOrderListWithPage 5
+P int - 0
+P int - 0
+P array - 0
+P int - 0
+P int - 0
+R marketShowShelfDetailInfo callbackMarketShowShelfDetailInfo 2
+P int - 0
+P array - 0
+R marketSubmitBuyOrder callbackMarketSubmitBuyOrder 2
+P int - 0
+P bean bean.BuyOrderDTO 15
+F originAmount int
+F userId string
+F orderNo string
+F groupNo string
+F commodityCode string
+F price int
+F amount int
+F status int
+F createTimestamp number
+F expiredTimestamp number
+F delayMills number
+F bail int
+F expireBail int
+F settleMode int
+F verify int
+R marketSubmitSellOrder callbackMarketSubmitSellOrder 2
+P int - 0
+P bean bean.SellOrderDTO 15
+F extraKeyArray array
+F userId string
+F orderNo string
+F groupNo string
+F commodityCode string
+F price int
+F amount int
+F status int
+F createTimestamp number
+F expiredTimestamp number
+F delayMills number
+F bail int
+F expireBail int
+F settleMode int
+F verify int
+R marketSubmitSellOrderV3 callbackMarketSubmitSellOrder 2
+P int - 0
+P bean bean.SellOrderDTO 15
+F extraKeyArray array
+F userId string
+F orderNo string
+F groupNo string
+F commodityCode string
+F price int
+F amount int
+F status int
+F createTimestamp number
+F expiredTimestamp number
+F delayMills number
+F bail int
+F expireBail int
+F settleMode int
+F verify int
+R marketSubmitSellOrderWithSystemMode callbackMarketSubmitSellOrder 2
+P int - 0
+P bean bean.SellOrderDTO 15
+F extraKeyArray array
+F userId string
+F orderNo string
+F groupNo string
+F commodityCode string
+F price int
+F amount int
+F status int
+F createTimestamp number
+F expiredTimestamp number
+F delayMills number
+F bail int
+F expireBail int
+F settleMode int
+F verify int
+R marketTryCancelBuyOrder callbackMarketTryCancelBuyOrder 3
+P int - 0
+P int - 0
+P string - 0
+R marketTryCancelSellOrder callbackMarketTryCancelSellOrder 3
+P int - 0
+P int - 0
+P string - 0
+R marketTryFetchBuyOrder callbackMarketTryFetchBuyOrder 2
+P int - 0
+P bean bean.BuyOrderDTO 15
+F originAmount int
+F userId string
+F orderNo string
+F groupNo string
+F commodityCode string
+F price int
+F amount int
+F status int
+F createTimestamp number
+F expiredTimestamp number
+F delayMills number
+F bail int
+F expireBail int
+F settleMode int
+F verify int
+R marketTryFetchSellOrder callbackMarketTryFetchSellOrder 2
+P int - 0
+P bean bean.SellOrderDTO 15
+F extraKeyArray array
+F userId string
+F orderNo string
+F groupNo string
+F commodityCode string
+F price int
+F amount int
+F status int
+F createTimestamp number
+F expiredTimestamp number
+F delayMills number
+F bail int
+F expireBail int
+F settleMode int
+F verify int
+R marketTryRefundBuyOrder callbackMarketTryRefundBuyOrder 2
+P int - 0
+P string - 0
+R marketTryRefundSellOrder callbackMarketTryRefundSellOrder 2
+P int - 0
+P string - 0
+R matchGlobalRoom onMatchGlobalRoom 1
+P object - 0
+R mergeSkin callbackMergeSkin 2
+P int - 0
+P array - 0
+R militaryExchangeStorage callbackMilitaryExchangeStorage 4
+P int - 0
+P int - 0
+P array - 0
+P array - 0
+R modifyRpgAdventureLogRewardList callbackModifyRpgAdventureLogRewardList 3
+P int - 0
+P int - 0
+P int - 0
+R mountGrid callbackMountGrid 4
+P int - 0
+P string - 0
+P string - 0
+P bean bean.MountUserBean 3
+F mountId string
+F targetId string
+F subType string
+R mountGrids callbackMountGrids 3
+P string - 0
+P string - 0
+P object - 0
+R mounts callbackMounts 3
+P string - 0
+P string - 0
+P object - 0
+R newSignIn callbackNewSignIn 3
+P int - 0
+P array - 0
+P array - 0
+R notUsePlotWeapon callbackNotUsePlotWeapon 1
+P int - 0
+R onCallRankList onGetRankList 1
+P array - 0
+R onGameCoolDownCompleted onGameCoolDownChanged 2
+P int - 0
+P bean bean.GameCoolDownBean 5
+F tid int
+F dateline number
+F status int
+F param string
+F _startTime string
+R onGiveTitaniumGift callbackGiveTitaniumGift 1
+P int - 0
+R onInvitationRankList callbackInvitationRankList 2
+P array - 0
+P int - 0
+R onTitaniumCode callbackOnTitaniumCode 1
+P int - 0
+R onTitaniumTaskInfo callbackTitaniumTaskInfo 1
+P object - 0
+R onUserEtherBeanInfo callbackUserEtherBeanInfo 1
+P bean bean.UserEtherBean 20
+F gCid number
+F operatorId int
+F loginId int
+F ether number
+F etherOrigin number
+F lv int
+F dailyBattleCount int
+F fruitList array
+F fruits string
+F fruitSize int
+F timeLastLogin int
+F timeInvitedMonth string
+F invitePlayer int
+F recallFriend int
+F dateline int
+F inviteGcId int
+F type int
+F inviteCode string
+F extBean any
+F isCalcEtherRunning boolean
+R openBlind callbackOpenBlind 3
+P int - 0
+P bean bean.RpgBlindPackBean 5
+F charId int
+F packId int
+F blindItemIndexList array
+F gotItemIndexList array
+F refresh int
+P array - 0
+R openCard callbackOpenCard 1
+P int - 0
+R openCreditAccount callbackOpenCreditAccount 2
+P int - 0
+P bean bean.ClientCreditAccountBean 5
+F loanLimit int
+F status int
+F loanLimitUpdate boolean
+F loanLimitUpdateTime int
+F unlockTime int
+R openDecoration onOpenDecoration 1
+P number - 0
+R openHomeland callbackOpenHomeland 2
+P int - 0
+P boolean - 0
+R openSkinBox callbackOpenSkinBox 3
+P int - 0
+P int - 0
+P string - 0
+R openVariationBox callBackOpenVariationBox 2
+P int - 0
+P array - 0
+R operateFestCelebration2025Shop callbackLockFestCelebration2025Shop 2
+P int - 0
+P bean bean.FestCelebration2025UserBean 11
+F mapNodeTid int
+F nodes array
+F column int
+F status int
+F rpgShopItemList array
+F lockShopItem boolean
+F lockCount int
+F refreshCount int
+F columnNodesMap object
+F rpgGroupEvent object
+F battleCoinThreshold number
+R operateMapPathNode callbackOperateMapPathNode 3
+P int - 0
+P int - 0
+P bean bean.FestCelebration2025UserBean 11
+F mapNodeTid int
+F nodes array
+F column int
+F status int
+F rpgShopItemList array
+F lockShopItem boolean
+F lockCount int
+F refreshCount int
+F columnNodesMap object
+F rpgGroupEvent object
+F battleCoinThreshold number
+R operaterBountyTask callBackOperaterBountyTask 3
+P int - 0
+P number - 0
+P int - 0
+R organizeStorage callbackOrganizeStorageComplete 0
+R palMarch callbackPalMarch 3
+P int - 0
+P int - 0
+P bean bean.PalTroop 16
+F gCid number
+F name string
+F roomIndex int
+F point any
+F nextPoint any
+F target any
+F type int
+F num int
+F atk int
+F allianceId int
+F isQuick boolean
+F autoSupply boolean
+F opTime number
+F isGarrison boolean
+F isInBattle boolean
+F killStreak int
+R palQuickMarch callbackPalQuickMarch 3
+P int - 0
+P int - 0
+P bean bean.PalTroop 16
+F gCid number
+F name string
+F roomIndex int
+F point any
+F nextPoint any
+F target any
+F type int
+F num int
+F atk int
+F allianceId int
+F isQuick boolean
+F autoSupply boolean
+F opTime number
+F isGarrison boolean
+F isInBattle boolean
+F killStreak int
+R pickForeverLandItem callbackPickForeverLandItem 3
+P int - 0
+P bean bean.ClientPickBean 6
+F pickId int
+F pickGCid number
+F pickLevel number
+F pickName string
+F pickTime number
+F pickedNum int
+P bean bean.ClientPickBean 6
+F pickId int
+F pickGCid number
+F pickLevel number
+F pickName string
+F pickTime number
+F pickedNum int
+R playActivityNew callbackPlayActivityNew 4
+P int - 0
+P int - 0
+P int - 0
+P object - 0
+R playActivityNewWithType callbackPlayActivityNewWithType 0
+R prepareScufflePeak callbackPrepareScufflePeak 2
+P int - 0
+P number - 0
+R pullSlotMachine callbackPullSlotMachine 4
+P int - 0
+P int - 0
+P array - 0
+P bean bean.ClientSlotMachineUserBean 10
+F diffType int
+F luckyValue int
+F roulettes array
+F subscripts array
+F pullCount int
+F buffers array
+F superPrizes object
+F eligible boolean
+F badges array
+F enableBuffers boolean
+R queryAcgLuckyDrawProcess callbackQueryAcgLuckyDrawProcess 2
+P int - 0
+P int - 0
+R queryCompletedQuestionnaires callbackQueryCompletedQuestionnaires 1
+P array - 0
+R queryCreditAccount callbackQueryCreditAccount 3
+P bean bean.ClientCreditAccountBean 5
+F loanLimit int
+F status int
+F loanLimitUpdate boolean
+F loanLimitUpdateTime int
+F unlockTime int
+P int - 0
+P int - 0
+R queryEnvoyLingFuData callbackQueryEnvoyLingFuData 6
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+P array - 0
+P string - 0
+R queryExpeditionConditions callbackQueryExpeditionConditions 1
+P object - 0
+R queryFriendInfo callbackQueryFriendInfo 2
+P int - 0
+P bean bean.ClientFriendInfoBean 6
+F battleReport array
+F singleBattleReport array
+F rankBean any
+F onlineTime uint
+F exp int
+F vipMap object
+R queryHistoryBill callbackQueryHistoryBill 3
+P int - 0
+P array - 0
+P int - 0
+R queryMonitorInfo callbackQueryMonitorInfo 4
+P int - 0
+P array - 0
+P int - 0
+P number - 0
+R queryOngoingBill callbackQueryOngoingBill 1
+P array - 0
+R queryUserHistoryRecord callbackQueryUserHistoryRecord 5
+P string - 0
+P array - 0
+P array - 0
+P int - 0
+P int - 0
+R quitRpgTeam callbackQuitRpgTeam 1
+P int - 0
+R quitTeam onQuitTeam 1
+P int - 0
+R quitWishTeam callbackQuitWishTeam 1
+P int - 0
+R raidRpgBattleField callbackRaidRpgBattleField 9
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R raidSlotMachine callbackRaidSlotMachine 3
+P int - 0
+P int - 0
+P array - 0
+R randomPlayerName onRandomPlayerName 2
+P int - 0
+P string - 0
+R randomStarProjectBox callBackUpdateStarProjectBox 1
+P bean bean.StarProjectUserDataBean 7
+F id number
+F selectedBoxType int
+F boxId int
+F boxLv int
+F isFetched boolean
+F freeUpgradeCount int
+F randomCount int
+R reNewSignIn callbackReNewSignIn 3
+P int - 0
+P array - 0
+P array - 0
+R reSignInOncePerDay onSignInByDay 3
+P int - 0
+P int - 0
+P int - 0
+R readAndFetchAllMail callbackReadAndFetchAllMail 2
+P int - 0
+P array - 0
+R realTimeNotice callBackRealTimeNotice 1
+P array - 0
+R recallRpgWeaponBattleSlv callbackRecallRpgWeaponBattleSlv 3
+P int - 0
+P number - 0
+P array - 0
+R receiveLingYunReward callbackReceiveLingYunReward 3
+P int - 0
+P int - 0
+P array - 0
+R receiveReward callbackReceiveReward 4
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+R receiveTask callBackReceiveTask 2
+P int - 0
+P int - 0
+R receiveTaskBySeasonId callbackReceiveTaskBySeasonId 2
+P int - 0
+P int - 0
+R reconnectGame callbackReconnectGameFail 0
+R refineRing callbackRefineRing 2
+P int - 0
+P bean bean.RingRefineResult 4
+F storageId number
+F telnetSkillTid int
+F passiveSkillTid int
+F affixes array
+R reformUnequippedWeaponSlot callBackReformUnequippedWeaponSlot 7
+P int - 0
+P number - 0
+P number - 0
+P int - 0
+P int - 0
+P int - 0
+P bean bean.WeaponSlotReformAffix 7
+F tid int
+F value int
+F expiredTime number
+F type int
+F isNew boolean
+F lastValue int
+F exprValues array
+R reformWeaponSlot callBackReformWeaponSlot 6
+P int - 0
+P number - 0
+P int - 0
+P int - 0
+P int - 0
+P bean bean.WeaponSlotReformAffix 7
+F tid int
+F value int
+F expiredTime number
+F type int
+F isNew boolean
+F lastValue int
+F exprValues array
+R refreshBlind callbackRefreshBlind 2
+P int - 0
+P bean bean.RpgBlindPackBean 5
+F charId int
+F packId int
+F blindItemIndexList array
+F gotItemIndexList array
+F refresh int
+R refreshDailyTask callbackRefreshDailyTask 5
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+R refreshDefenseLineWeapon callbackRefreshDefenseLineWeapon 4
+P int - 0
+P int - 0
+P array - 0
+P array - 0
+R refreshDefenseLineWeaponEquipInfo callbackRefreshDefenseLineWeaponEquipInfo 2
+P int - 0
+P bean bean.ClientDefenseLineWeaponBean 2
+F refreshCount int
+F weaponStatusList array
+R refreshFestivalMarketPrice callbackRefreshFestivalMarketPrice 2
+P int - 0
+P bean bean.FestivalMarketRefreshResult 1
+F priceIncreaseBp number
+R refreshMysteryShop callbackRefreshMysteryShop 2
+P int - 0
+P int - 0
+R refreshRecommandFriendList onRefreshRecommandFriend 1
+P array - 0
+R refreshRoomStatus onRefreshRoomStatus 1
+P array - 0
+R refreshRpgShop callbackRefreshRpgShop 3
+P int - 0
+P object - 0
+P int - 0
+R refreshTimeSafeBox callbackRefreshTimeSafeBox 3
+P int - 0
+P int - 0
+P bean bean.ClientTimeSafeBoxesBean 3
+F onlineRefreshNum int
+F rechargeRefreshNum int
+F boxes array
+R refreshWarLetterBuff callbackRefreshWarLetterBuff 4
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R refundPerMonth onRefundPerMonth 2
+P int - 0
+P object - 0
+R relicEnchantment callbackRelicEnchantment 5
+P int - 0
+P int - 0
+P bean bean.EnchantmentBean 3
+F type int
+F value int
+F lock boolean
+P boolean - 0
+P boolean - 0
+R relicLvBreakMaxLv callbackRelicLvBreakMaxLv 2
+P int - 0
+P int - 0
+R relicSystemInfo callbackRelicSystemInfo 1
+P bean bean.ClientArmorCoreBean 6
+F uid int
+F relicLv int
+F relicExp int
+F slv int
+F enchantmentSlot array
+F systemConsumeAmount int
+R remouldRune callbackRemouldRune 2
+P int - 0
+P bean bean.RunePropertyBean 7
+F storageId number
+F affixes array
+F amplifiedCount int
+F lock boolean
+F runeAffixLen int
+F sublime boolean
+F xlvValue int
+R removeAllHaveReadMail callbackRemoveAllHaveReadMail 1
+P int - 0
+R removeEnvoyFromLingFu callbackRemoveEnvoyFromLingFu 2
+P int - 0
+P number - 0
+R removeMyDyeingWork callbackRemoveMyDyeingWork 2
+P int - 0
+P number - 0
+R rentHomelandHallItem callbackRentHomelandHallItem 2
+P int - 0
+P array - 0
+R rerandomStarProjectBox callBackUpdateStarProjectBox 1
+P bean bean.StarProjectUserDataBean 7
+F id number
+F selectedBoxType int
+F boxId int
+F boxLv int
+F isFetched boolean
+F freeUpgradeCount int
+F randomCount int
+R resetCalibrateCount callbackResetCalibrateCount 2
+P int - 0
+P number - 0
+R resetNewWeaponFactory callBackGetNewWeaponFactoryItem 3
+P int - 0
+P bean bean.NewWeaponFactoryInfo 6
+F factoryId int
+F weaponFactoryInfo string
+F randomPackId int
+F resetCount int
+F ultimateCount int
+F resetStatus boolean
+P array - 0
+R resetRpgArenaData callbackResetRpgArenaData 2
+P int - 0
+P bean bean.clientresult.ClientRpgArenaResult 10
+F userId int
+F raceType int
+F currentDifficultId int
+F rootAvatarIds array
+F storageIdList array
+F dragoonUsedCount int
+F crashTimeLeft int
+F perfect boolean
+F challengeNum int
+F envoyUsageCount object
+R resetRpgInfinity callbackResetRpgInfinity 1
+P boolean - 0
+R resetRpgMagicArsenal callbackResetRpgMagicArsenal 1
+P bean bean.UserRpgMagicArsenal 4
+F magicFinalId int
+F step int
+F lastStep int
+F magicArsenalCellInfoArray array
+R resetSecPsw callbackResetSecPsw 1
+P int - 0
+R resetTeamLeague callbackResetTeamLeague 1
+P int - 0
+R resetWeaponPrecision callbackResetWeaponPrecision 3
+P int - 0
+P number - 0
+P bean bean.ClientWeaponCalibrationBean 3
+F lv int
+F calibrationNum int
+F precision int
+R resumeRaceGame startRaceGame 6
+P string - 0
+P int - 0
+P number - 0
+P number - 0
+P string - 0
+P string - 0
+R retrievalStorageBean callbackRetrievalStorageBean 2
+P int - 0
+P number - 0
+R rewardBioChemDefenseLine callbackRewardBioChemDefenseLine 2
+P int - 0
+P array - 0
+R rewardRetrieve callbackRewardRetrieve 3
+P int - 0
+P int - 0
+P int - 0
+R rollbackUpgrade callbackRollbackUpgrade 4
+P int - 0
+P array - 0
+P array - 0
+P object - 0
+R roomList callBackShowRoomList 2
+P any - 0
+P int - 0
+R rpgExploreQuickComplete callBackRpgExploreQuickComplete 2
+P int - 0
+P array - 0
+R rpgGetExploreReward callBackRpgGetExploreReward 2
+P int - 0
+P array - 0
+R rpgHardTrain callbackRpgHardTrain 1
+P int - 0
+R rpgMagicArsenalMove callbackRpgMagicArsenalMove 1
+P array - 0
+R rpgMagicArsenalMove10 callbackRpgMagicArsenalMove10 1
+P array - 0
+R rpgReceiveEndlessReward callbackRpgReceiveEndlessReward 6
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R rpgStartExplore callBackRpgStartExplore 2
+P int - 0
+P int - 0
+R saveAvatarDyeing callbackSaveAvatarDyeing 3
+P int - 0
+P number - 0
+P bean bean.AvatarDyeingBean 2
+F storageId number
+F colors array
+R saveQuestionnaire callbackSaveQuestionnaire 3
+P int - 0
+P int - 0
+P array - 0
+R saveUltimateAvatarConfigInfo callbackSaveUltimateAvatarConfigInfo 2
+P int - 0
+P bean bean.UltimateAvatarConfigBean 3
+F head number
+F upperBody number
+F lowerBody number
+R scrapeScratchOffCell callbackScrapeScratchOffCell 4
+P int - 0
+P int - 0
+P array - 0
+P array - 0
+R searchCharacterByName onSearchCharacterByName 1
+P bean bean.CommonCharInfo 21
+F characterId number
+F globalCharId number
+F vipLv int
+F characterName string
+F lv int
+F teamId int
+F teamName string
+F isOnline boolean
+F friendType int
+F logoutTime number
+F inGameServer boolean
+F dateline number
+F notReadChatNum int
+F onlineIndex int
+F myself boolean
+F socialRelationshipType int
+F couldInvite boolean
+F teamJobFlag int
+F type int
+F rankSect int
+F raceSect int
+R searchHomelandBox callbackAcquireHomelandBox 2
+P int - 0
+P array - 0
+R searchNotInRpgTeam callbackSearchNotInRpgTeam 2
+P array - 0
+P int - 0
+R searchRoomListAllChannel onSearchRoomListAllChannel 1
+P array - 0
+R selectAbattoirDiffType callbackSelectAbattoirDiffType 2
+P int - 0
+P int - 0
+R selectAvatarBag callBackSelectAvatarBag 3
+P int - 0
+P int - 0
+P int - 0
+R selectAvatarJoinVariationWar callBackSelectAvatarJoinVariationWar 2
+P int - 0
+P int - 0
+R selectBag onSelectBag 1
+P int - 0
+R selectCalibrateResult callbackSelectCalibrateResult 2
+P number - 0
+P object - 0
+R selectItem onSelectItem 1
+P number - 0
+R selectItemJoinVariationWar callBackSelectItemJoinVariationWar 4
+P int - 0
+P number - 0
+P int - 0
+P int - 0
+R selectOrdinaryVariant callbackSelectOrdinaryVariant 3
+P int - 0
+P int - 0
+P boolean - 0
+R selectPeakBag callbackSelectPeakBag 3
+P int - 0
+P number - 0
+P int - 0
+R selectRandomChallengeTask callbackSelectRandomChallengeTask 4
+P int - 0
+P int - 0
+P int - 0
+P bean bean.ClientRandomChallengeColumnBean 4
+F status int
+F taskId int
+F taskSelected boolean
+F items object
+R selectRealmExchangeWeapon callbackSelectRealmExchangeWeapon 3
+P int - 0
+P int - 0
+P bean bean.ClientRealmExchangeBean 5
+F group int
+F season int
+F lv int
+F historyLv int
+F bargainLv int
+R selectRogueAvatar callbackSelectRogueAvatar 2
+P int - 0
+P int - 0
+R selectRogueDiffId callbackSelectRogueDiffId 2
+P int - 0
+P int - 0
+R selectRogueJob callbackSelectRogueJob 2
+P int - 0
+P int - 0
+R selectRogueWeapon callbackSelectRogueWeapon 2
+P int - 0
+P number - 0
+R selectRuneBag callbackSelectRuneBag 1
+P int - 0
+R selectScratchOff callbackSelectScratchOff 3
+P int - 0
+P int - 0
+P bean bean.ClientScratchOffUserBean 5
+F bossDiffId int
+F cells array
+F scrapeNum int
+F _allBuffStr string
+F _buffArray array
+R selectSlotMachine callbackSelectSlotMachine 3
+P int - 0
+P int - 0
+P bean bean.ClientSlotMachineUserBean 10
+F diffType int
+F luckyValue int
+F roulettes array
+F subscripts array
+F pullCount int
+F buffers array
+F superPrizes object
+F eligible boolean
+F badges array
+F enableBuffers boolean
+R selectUltTalentBag callbackSelectUltTalentBag 1
+P int - 0
+R selectZoom callbackSelectZoom 2
+P int - 0
+P int - 0
+R sellChip onSellChip 1
+P array - 0
+R sellFestivalMarketItems callbackSellFestivalMarketItems 2
+P int - 0
+P array - 0
+R sellLegionItem callbackSellLegionItem 2
+P int - 0
+P object - 0
+R sendBountyTask callBackSendBountyTask 2
+P int - 0
+P int - 0
+R sendMessage callbackSendMessage 3
+P int - 0
+P string - 0
+P number - 0
+R sendMessageByBugleType onSendMessageByBugleType 3
+P int - 0
+P int - 0
+P int - 0
+R sendMessageWithExtra callbackSendMessage 3
+P int - 0
+P string - 0
+P number - 0
+R setAutoStored callbackSetAutoStored 3
+P int - 0
+P number - 0
+P boolean - 0
+R setAvatarSupportCaptain callbackSetAvatarSupportCaptain 2
+P int - 0
+P int - 0
+R setBuyLegionGoods callbackSetBuyLegionGoods 2
+P int - 0
+P object - 0
+R setEnvoySoulFavor callbackSetEnvoySoulFavor 3
+P int - 0
+P string - 0
+P boolean - 0
+R setHomelandHallRentLimit callbackSetHomelandHallRentLimit 2
+P boolean - 0
+P boolean - 0
+R setRogueSwitch callbackSetRogueSwitch 2
+P boolean - 0
+P boolean - 0
+R setRpgMagicArsenalInfo callbackSetMagicArsenalInfo 1
+P bean bean.UserRpgMagicArsenal 4
+F magicFinalId int
+F step int
+F lastStep int
+F magicArsenalCellInfoArray array
+R setSecPsw callbackSetSecPsw 1
+P int - 0
+R setWarriorTeamAssist callbackSetWarriorTeamAssist 3
+P int - 0
+P int - 0
+P int - 0
+R show3366Vip onShow3366Vip 1
+P boolean - 0
+R showBlack onShowBlack 1
+P array - 0
+R showBlueVip onShowBlueVip 1
+P object - 0
+R showCharacterBattleReport callBackShowCharacterBattleReport 1
+P array - 0
+R showFriend onShowFriend 1
+P array - 0
+R showHallAnnounce callBackShowHallAnnounce 1
+P bean bean.HallAnnounceInfo 3
+F long number
+F content string
+F id number
+R showLogRecentBattleBean onShowLogRecentBattleBean 2
+P array - 0
+P array - 0
+R showQQVipPacks onShowQQVipPacks 1
+P object - 0
+R showRaceUserOverviewInfo callbackShowRaceUserOverviewInfo 1
+P bean bean.ClientRaceUserOverviewInfo 9
+F cId int
+F winNum int
+F runNum int
+F killNum int
+F deadNum int
+F headKillNum int
+F battleNum int
+F battleEndNum int
+F seasonStartGameNum int
+R showRecommandFriendList onShowRecommandFriend 1
+P array - 0
+R showServerVersion callbackShowVersionAnnounce 2
+P string - 0
+P int - 0
+R showSingleBattleReport callBackShowSingleBattleReport 1
+P array - 0
+R showTgpVip onShowTgpVip 1
+P object - 0
+R showVersionAnnounce callbackShowVersionAnnounce 2
+P string - 0
+P int - 0
+R showWeaponUnlock callBackShowWeaponUnlock 1
+P array - 0
+R showWeiDuan onShowWeiDuan 1
+P bean bean.ClientQQWeiDuanBean 4
+F newPackFlag boolean
+F dayClientLoginPackFlag boolean
+F dayAutoLaunchPackFlag boolean
+F dayAutoLaunchWithStartupPackFlag boolean
+R showYellowVip onShowYellowVip 1
+P bean bean.ClientQQYellowVipBean 7
+F newPackFlag int
+F lv10PackFlag int
+F lv20PackFlag int
+F lv30PackFlag int
+F lv40PackFlag int
+F dayYellowPackFlag int
+F dayYellowYearPackFlag int
+R signInPerDay onSignInByDay 3
+P int - 0
+P int - 0
+P int - 0
+R signUpTeamLeague callbackSignUpTeamLeague 3
+P int - 0
+P int - 0
+P bean bean.RpgTeamLeagueUserBean 8
+F signUpStatus int
+F signUpDateline int
+F checkerJob int
+F charId int
+F decodeDateline int
+F decodeNum int
+F decodeRewards array
+F reviveCoinBuyCount int
+R spinLuckyWheel callbackSpinLuckyWheel 5
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P bean bean.LuckyWheelUserData 5
+F season int
+F spinCount int
+F wheelTaskId int
+F wheelTaskStartTime number
+F upgradeAmountMap object
+R startDelayRaid callbackStartDelayRaid 1
+P bean bean.RpgFestivalDelayRaidData 7
+F charId int
+F difficultyId int
+F raidCount int
+F startTime int
+F needTime int
+F usedTime int
+F timeCnt int
+R startGame callBackStartGame 7
+P number - 0
+P number - 0
+P string - 0
+P int - 0
+P string - 0
+P string - 0
+P string - 0
+R startPresetTemplate callbackStartPresetTemplate 1
+P int - 0
+R startRaceMatch startRaceGame 6
+P string - 0
+P int - 0
+P number - 0
+P number - 0
+P string - 0
+P string - 0
+R startRpgMatch callBackStartRpgGame 5
+P string - 0
+P string - 0
+P int - 0
+P string - 0
+P string - 0
+R stopPalMarch callbackStopPalMarch 3
+P int - 0
+P int - 0
+P bean bean.PalTroop 16
+F gCid number
+F name string
+F roomIndex int
+F point any
+F nextPoint any
+F target any
+F type int
+F num int
+F atk int
+F allianceId int
+F isQuick boolean
+F autoSupply boolean
+F opTime number
+F isGarrison boolean
+F isInBattle boolean
+F killStreak int
+R storageAwake callbackStorageAwake 2
+P int - 0
+P array - 0
+R storeStorageBean callbackStoreStorageBean 2
+P int - 0
+P bean bean.StorageStoreModel 5
+F id number
+F type int
+F tid int
+F autoStored boolean
+F data string
+R strengthCoreLv callbackStrengthCoreLv 2
+P int - 0
+P bean bean.ClientCoreSystemBean 4
+F coreId int
+F coreLv int
+F reconstructLv int
+F reconstructExp int
+R supplyPalSoldier callbackSupplyPalSoldier 2
+P int - 0
+P bean bean.PalTroop 16
+F gCid number
+F name string
+F roomIndex int
+F point any
+F nextPoint any
+F target any
+F type int
+F num int
+F atk int
+F allianceId int
+F isQuick boolean
+F autoSupply boolean
+F opTime number
+F isGarrison boolean
+F isInBattle boolean
+F killStreak int
+R switchEnvoyLingFu callbackSwitchEnvoyLingFu 4
+P int - 0
+P int - 0
+P array - 0
+P string - 0
+R switchLingYunElementType callbackSwitchLingYunElementType 2
+P int - 0
+P string - 0
+R switchWingHalo callbackSwitchWingHalo 2
+P int - 0
+P bean bean.WingPropertyUserBean 6
+F storageId number
+F haloStorageId number
+F lv int
+F upgradeCount int
+F centerNooseLv int
+F slotBeans array
+R syncBattleBioEquip callbackSyncBattleBioEquip 1
+P int - 0
+R syncLegionTechnologyProperty onSyncBattleProperty 2
+P int - 0
+P object - 0
+R syncServerTime callBackSyncServerTime 2
+P number - 0
+P number - 0
+R takeSettlementGameCoin callbackTakeSettlementGameCoin 3
+P int - 0
+P int - 0
+P object - 0
+R takeTeamTreasureBox callbackTakeTeamTreasureBox 2
+P int - 0
+P array - 0
+R teamLeaveMessage onTeamLeaveMessage 1
+P int - 0
+R titaniumPanelOpen callbackTitaniumPanelOpen 1
+P int - 0
+R unEquipBattlePet onUnEquipBattlePet 1
+P number - 0
+R unEquipDivineMark callbackUnEquipDivineMark 2
+P int - 0
+P bean bean.ClientDivineMarkBean 4
+F id number
+F itemId int
+F columnAffixMap object
+F equipped boolean
+R unEquipGroupRootAvatar callBackUnEquipRootAvatarInfo 4
+P int - 0
+P array - 0
+P number - 0
+P int - 0
+R unEquipModuleItem callbackUnEquipModuleItem 1
+P bean bean.RpgModuleSysBean 9
+F module int
+F storageIdAry array
+F tidAry array
+F bonus number
+F maxBonus number
+F dateline int
+F output number
+F outputCount int
+F timeLastStartOutput number
+R unEquipPersonalise callbackUnEquipPersonalise 2
+P int - 0
+P int - 0
+R unEquipPropertyWing callbackUnEquipPropertyWing 3
+P int - 0
+P int - 0
+P number - 0
+R unEquipRootAvatarInfo callBackUnEquipRootAvatarInfo 4
+P int - 0
+P array - 0
+P number - 0
+P int - 0
+R unEquipRune callbackUnEquipRune 3
+P int - 0
+P int - 0
+P int - 0
+R unEquipTacticalWeapon callbackUnEquipTacticalWeapon 3
+P int - 0
+P number - 0
+P int - 0
+R unLockWarriorMedal callbackUnLockWarriorMedal 2
+P int - 0
+P int - 0
+R unMatchGlobalRoom onMatchGlobalRoom 1
+P object - 0
+R unSelectAvatarJoinVariationWar callBackUnSelectAvatarJoinVariationWar 2
+P int - 0
+P int - 0
+R unSelectItem onUnSelectItem 1
+P number - 0
+R unSelectItemJoinVariationWar callBackUnSelectItemJoinVariationWar 2
+P int - 0
+P int - 0
+R unbindApplet callbackUnbindApplet 1
+P int - 0
+R unequip onUnequip 2
+P int - 0
+P number - 0
+R unequipAvatarEquipment callbackUnequipAvatarEquipment 3
+P int - 0
+P number - 0
+P int - 0
+R unequipChip onUnequipChip 2
+P string - 0
+P string - 0
+R unequipChipByWeapon onUnequipChipByWeapon 2
+P string - 0
+P array - 0
+R unequipDecoration onUnequipDecoration 1
+P number - 0
+R unequipRootAvatarSound callBackUnequipRootAvatarSound 3
+P int - 0
+P int - 0
+P number - 0
+R unequipRpgXpSkill callbackUnequipRpgXpSkill 1
+P int - 0
+R unequipUltimateAvatar callbackUnequipUltimateAvatar 1
+P array - 0
+R unequipWeaponSlot callBackUnequipWeaponSlot 5
+P int - 0
+P number - 0
+P int - 0
+P int - 0
+P bean bean.WeaponSlotReformBean 2
+F storageId number
+F affixMap object
+R unloadUltTalentSkill callbackUnloadUltTalentSkill 2
+P array - 0
+P int - 0
+R unlockAssistantAbility callbackUnlockAssistantAbility 3
+P int - 0
+P int - 0
+P int - 0
+R unlockAvatarAcgRelationship callbackUnlockAvatarAcgRelationship 3
+P int - 0
+P int - 0
+P int - 0
+R unlockAvatarDyeing callbackUnlockAvatarDyeing 2
+P int - 0
+P number - 0
+R unlockCreditAccount callbackUnlockCreditAccount 2
+P int - 0
+P int - 0
+R unlockDyeingColor callbackUnlockDyeingColor 2
+P int - 0
+P number - 0
+R unlockEnchantmentSlot callbackUnlockEnchantmentSlot 1
+P int - 0
+R unlockFestivalTalent callbackUnlockFestivalTalent 5
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+P array - 0
+R unlockModuleSys callbackUnlockModuleSys 1
+P bean bean.RpgModuleSysBean 9
+F module int
+F storageIdAry array
+F tidAry array
+F bonus number
+F maxBonus number
+F dateline int
+F output number
+F outputCount int
+F timeLastStartOutput number
+R unlockNewbieTask callbackUnlockNewbieTask 2
+P int - 0
+P int - 0
+R unlockPersonalise callbackUnlockPersonalise 2
+P int - 0
+P bean bean.UserPersonaliseBean 3
+F tid int
+F equipIndex int
+F expired number
+R unlockPersonaliseWithStorageId callbackUnlockPersonalise 2
+P int - 0
+P bean bean.UserPersonaliseBean 3
+F tid int
+F equipIndex int
+F expired number
+R unlockRpgReconstructionTalentSkill callbackUnlockRpgReconstructionTalentSkill 1
+P number - 0
+R unlockSlavePropertyRecord callbackUnlockSlavePropertyRecord 2
+P number - 0
+P bean bean.SecondPropertyBean 4
+F index int
+F propertyName string
+F value int
+F propertyLock boolean
+R unlockTalent callbackUnlockTalent 0
+R unmountGrid callbackUnmountGrid 4
+P int - 0
+P string - 0
+P string - 0
+P bean bean.MountUserBean 3
+F mountId string
+F targetId string
+F subType string
+R unmountGrids callbackUnmountGrids 3
+P string - 0
+P string - 0
+P array - 0
+R updateChipExp callBackUpdateChipExp 1
+P number - 0
+R updateDefenseLineWeaponEquipStatus callbackUpdateDefenseLineWeaponEquipStatus 2
+P int - 0
+P boolean - 0
+R updateReducedRankDisplayFlag callbackUpdateReducedRankDisplayFlag 3
+P int - 0
+P int - 0
+P bean bean.RankDisplayFlag 3
+F lastChangeDisplayFlag number
+F updateDisplayCount number
+F display boolean
+R updateRoom callbackUpdateRpgRoom 1
+P bean bean.ClientRpgRoomInfo 18
+F label string
+F icon string
+F roomId number
+F rpgGameDifficultyId int
+F capacity int
+F currentUserCount int
+F roomStatus int
+F isPswRoom boolean
+F isVipRoom boolean
+F bonus int
+F rpgLevel int
+F isFriend boolean
+F isTeamMember boolean
+F isBlackList boolean
+F cardNum int
+F ownerTeamName string
+F multipleId int
+F id int
+R updateRpgBody onUpdateRpgBody 3
+P string - 0
+P int - 0
+P boolean - 0
+R updateRpgEquipment onUpdateRpgEquipment 1
+P int - 0
+R updateRpgEquipmentBatchStrengthen onUpdateRpgEquipmentBatchStrengthen 2
+P int - 0
+P int - 0
+R updateRpgKingScuffleRankDisplayFlag callbackUpdateRpgKingScuffleRankDisplayFlag 2
+P int - 0
+P bean bean.RankDisplayFlag 3
+F lastChangeDisplayFlag number
+F updateDisplayCount number
+F display boolean
+R updateRpgWeaponBattleSlv callbackRecallRpgWeaponBattleSlv 3
+P int - 0
+P number - 0
+P array - 0
+R updateRpgWeaponMasteryLv callbackUpdateWeaponMasteryLv 3
+P number - 0
+P int - 0
+P int - 0
+R updateRpgXpSkillLv callbackUpdateRpgXpSkillLv 1
+P bean netdata.RpgXpSkillBean 3
+F id int
+F lv int
+F slv int
+R updateRpgXpSkillSlv callbackUpdateRpgXpSkillSlv 1
+P bean netdata.RpgXpSkillBean 3
+F id int
+F lv int
+F slv int
+R updateTaskLobbyInfo callBackUpdateTaskLobbyInfo 1
+P object - 0
+R upgrade callbackUpgrade 3
+P int - 0
+P string - 0
+P bean bean.UpgradeUserBean 4
+F expLine int
+F subId string
+F exp int
+F level int
+R upgradeAvatarAcgLevel callbackUpgradeAvatarAcgLevel 3
+P int - 0
+P int - 0
+P int - 0
+R upgradeAvatarLv callbackUpgradeAvatarLv 2
+P int - 0
+P int - 0
+R upgradeAvatarTalent callBackUpgradeAvatarTalent 4
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+R upgradeEnvoySoul callbackUpgradeEnvoySoul 3
+P int - 0
+P number - 0
+P int - 0
+R upgradeLegionTechnology callbackUpgradeLegionTechnology 4
+P int - 0
+P int - 0
+P int - 0
+P number - 0
+R upgradeLuckyWheelReward callbackUpgradeLuckyWheelReward 4
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+R upgradeRingLevel callbackUpgradeRingLevel 3
+P int - 0
+P number - 0
+P bean bean.RingPropertyBean 9
+F storageId number
+F value int
+F lock boolean
+F level int
+F extraRefineCountAry array
+F refineCountAry array
+F telnetSkillTid int
+F passiveSkillTid int
+F affixes array
+R upgradeRpgReconstructionLv callbackUpgradeRpgReconstructionLv 5
+P string - 0
+P int - 0
+P int - 0
+P int - 0
+P int - 0
+R upgradeRpgTeamTechnology callbackUpgradeRpgTeamTechnology 2
+P int - 0
+P int - 0
+R upgradeRpgUltTalentLv callbackUpgradeRpgUltTalentLv 3
+P int - 0
+P int - 0
+P int - 0
+R upgradeSkinCoordinationLv callbackUpgradeSkinCoordination 3
+P int - 0
+P number - 0
+P bean bean.SkinPropertyBean 2
+F slv int
+F effectIndex int
+R upgradeStarProjectBox callBackUpdateStarProjectBox 1
+P bean bean.StarProjectUserDataBean 7
+F id number
+F selectedBoxType int
+F boxId int
+F boxLv int
+F isFetched boolean
+F freeUpgradeCount int
+F randomCount int
+R upgradeTalent callbackUpgradeTalent 0
+R upgradeTerritorialTechnology callbackUpgradeTerritorialTechnology 4
+P int - 0
+P int - 0
+P int - 0
+P number - 0
+R upgradeUnequippedWeaponSlot callbackUpgradeUnequippedWeaponSlot 5
+P int - 0
+P number - 0
+P number - 0
+P int - 0
+P bean bean.WeaponSlotReformBean 2
+F storageId number
+F affixMap object
+R upgradeWeaponCalibration callbackUpgradeWeaponCalibration 3
+P int - 0
+P number - 0
+P bean bean.ClientWeaponCalibrationBean 3
+F lv int
+F calibrationNum int
+F precision int
+R upgradeWeaponGroupSkinLv callbackUpgradeWeaponGroupSkinLv 3
+P int - 0
+P int - 0
+P int - 0
+R upgradeWeaponSlot callbackUpgradeWeaponSlot 2
+P int - 0
+P bean netdata.WeaponSlotBean 4
+F slotType int
+F slotId int
+F slotValue int
+F slotExpiredTime number
+R upgradeWingSlot callbackUpgradeWingSlot 2
+P int - 0
+P bean bean.WingPropertyUserBean 6
+F storageId number
+F haloStorageId number
+F lv int
+F upgradeCount int
+F centerNooseLv int
+F slotBeans array
+R upgradeWingSlotProperty callbackUpgradeWingSlotProperty 2
+P int - 0
+P bean bean.WingPropertyUserBean 6
+F storageId number
+F haloStorageId number
+F lv int
+F upgradeCount int
+F centerNooseLv int
+F slotBeans array
+R uploadDyeingWork callbackUploadDyeingWork 2
+P int - 0
+P bean bean.DyeingWorkUploadResult 4
+F ret int
+F sign string
+F workId number
+F dateline number
+R useAbyssGainItem callbackUseAbyssGainItem 2
+P int - 0
+P int - 0
+R useAbyssItem callbackUseAbyssItem 1
+P int - 0
+R useCharMedal callbackUseCharMedal 1
+P int - 0
+R useChosenBoxMulti callbackUseChosenBox 2
+P int - 0
+P array - 0
+R useFestivalExtraItem callbackUseFestivalExtraItem 3
+P int - 0
+P int - 0
+P int - 0
+R useKingBlessItem callbackUseKingBlessItem 1
+P int - 0
+R useOptionalPack callbackUseOptionalPack 3
+P int - 0
+P array - 0
+P string - 0
+R useRpgMixture callbackUseRpgMixture 2
+P int - 0
+P object - 0
+R useRpgRandomChallengeItem callbackUseRpgRandomChallengeItem 3
+P int - 0
+P int - 0
+P bean bean.ClientRandomChallengeBean 1
+F columnBeanMap object
+R useScuffleSuperDesperateFightFlag callbackScuffleSuperDesperateFightFlag 2
+P bean bean.UserKingScuffleBean 14
+F score int
+F extraScore int
+F curRank int
+F scoreReward int
+F dailyFreeFlagBattleCount int
+F fireDailyFreeFlagIndex int
+F winCount int
+F loseCount int
+F actionCost int
+F blessCost int
+F oneOnOneScore int
+F sliceGroup int
+F timeStartAfk number
+F totalAfkScore int
+P int - 0
+R useSkinEffect callbackUseSkinEffect 3
+P int - 0
+P number - 0
+P bean bean.SkinPropertyBean 2
+F slv int
+F effectIndex int
+R useStorageChipPack callBackUseStorageChipPack 2
+P int - 0
+P array - 0
+R useStorageItem callBackUseStorageItem 1
+P int - 0
+R useStoragePack onUseStoragePack 2
+P int - 0
+P array - 0
+R useStorageRunePack callbackUseStorageRunePack 2
+P int - 0
+P array - 0
+R useStorageSkin callbackUseStorageSkin 2
+P int - 0
+P array - 0
+R usedItemToRelic callbackUsedItemToRelic 3
+P int - 0
+P int - 0
+P int - 0
+R validateSecPsw callbackValidateSecPsw 3
+P int - 0
+P int - 0
+P string - 0
+R variantSkillUpgrade callBackVariantSkillUpgrade 2
+P int - 0
+P bean netdata.VariantSkillBean 4
+F id number
+F uid int
+F skillId int
+F skillLv int
+R vipReturnWeaponGold callBackReturnWeaponGold 2
+P int - 0
+P int - 0
+R voteRaceEntertainmentWeapon callbackVoteRaceEntertainmentWeapon 2
+P int - 0
+P array - 0
+R voteTeamImpeach callbackVoteTeamImpeach 1
+P int - 0
+R voteVideo callbackVoteVideo 2
+P int - 0
+P bean bean.VideoDataLite 10
+F id number
+F raceType int
+F sceneId int
+F killNum int
+F deadNum int
+F assistsNum int
+F targetGcId number
+F url string
+F confirmResult int
+F userVoteMap object
+R voteWeapon callbackVoteWeapon 3
+P int - 0
+P int - 0
+P bean bean.WeaponForbiddenUserBean 2
+F gCid number
+F rankId int
+R watchGame callbackWatchGame 1
+P int - 0
+R weaponEquipSkin callbackEquipTacticalWeapon 4
+P int - 0
+P number - 0
+P int - 0
+P int - 0
+R weaponUnLockClick callBackWeaponUnLock 1
+P object - 0
+R wingExchangeStorage callbackWingExchangeStorage 4
+P int - 0
+P int - 0
+P array - 0
+P array - 0
+R withdrawScufflePeak callbackWithdrawScufflePeak 1
+P int - 0

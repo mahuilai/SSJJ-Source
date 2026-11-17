@@ -1,0 +1,155 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <NoWarn>CS0108;CS0114;CS0169;CS0414;CS0649;CS1591;CS0162;CS0219;CS0067</NoWarn>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="D:\逆向\SSJJ双塔惊魂\Game-SSJJ-Source\Assets\Decompiled\**\*.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\..\Game-SSJJ-Source\Assets\OfflineTrainingPanelBackground.jpg">
+      <LogicalName>OfflineTrainingPanelBackground.jpg</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ArabicSupport"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\ArabicSupport.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Assembly-CSharp-firstpass"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="DOTween"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\DOTween.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="DOTween43"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\DOTween43.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="DOTween46"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\DOTween46.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="DOTween50"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\DOTween50.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="DebugUtils"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\DebugUtils.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Entitas.Blueprints"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\Entitas.Blueprints.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Entitas.CodeGeneration.Attributes"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\Entitas.CodeGeneration.Attributes.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Entitas.Unity"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\Entitas.Unity.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Entitas.Utils"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\Entitas.Utils.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Entitas.VisualDebugging.Unity"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\Entitas.VisualDebugging.Unity.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Entitas"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\Entitas.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="ICSharpCode.SharpZipLib"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\ICSharpCode.SharpZipLib.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Ionic.Zlib.CF"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\Ionic.Zlib.CF.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="LZ4"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\LZ4.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Loxodon.Framework.Binding"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\Loxodon.Framework.Binding.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Loxodon.Framework.Localizations"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\Loxodon.Framework.Localizations.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Loxodon.Framework.View"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\Loxodon.Framework.View.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Loxodon.Framework"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\Loxodon.Framework.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Loxodon.Log"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\Loxodon.Log.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Newtonsoft.Json"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\Newtonsoft.Json.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Novell.Directory.Ldap"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\Novell.Directory.Ldap.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Pri.LongPath"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\Pri.LongPath.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="RenderHeads.AVProMovieCapture.Demos"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\RenderHeads.AVProMovieCapture.Demos.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="RenderHeads.AVProMovieCapture.Runtime"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\RenderHeads.AVProMovieCapture.Runtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SSJJ.Contract.Serializer"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJ.Contract.Serializer.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SSJJ.Contract"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJ.Contract.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SSJJAnim_Library"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJAnim_Library.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SSJJAssetBundleSystem_Library"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJAssetBundleSystem_Library.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SSJJAsset_Library"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJAsset_Library.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SSJJAvater_Library"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJAvater_Library.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SSJJBase_Library"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJBase_Library.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SSJJEntitas_Library"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJEntitas_Library.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SSJJIK_Library"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJIK_Library.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SSJJMath_Library"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJMath_Library.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SSJJNetworking_Library"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJNetworking_Library.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SSJJPhysics_Library"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJPhysics_Library.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SSJJRunTimeDataSample_Library"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJRunTimeDataSample_Library.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SSJJSceneLoader_Library"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJSceneLoader_Library.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SSJJSpine_Library"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJSpine_Library.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SSJJUIEditor_Library"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJUIEditor_Library.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SSJJUf3d_Library"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJUf3d_Library.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SSJJUniRx_Library"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJUniRx_Library.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SSJJUnityMaps_Library"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJUnityMaps_Library.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="SSJJUserCmd_Library"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJUserCmd_Library.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Postprocessing.Runtime"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\Unity.Postprocessing.Runtime.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Timeline"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\Unity.Timeline.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="base.net"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\base.net.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="configNet"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\configNet.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="fabl.Appenders"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\fabl.Appenders.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="fabl"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\fabl.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="itween.net"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\itween.net.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="log4net"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\log4net.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="physics.net"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\physics.net.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="protobuf-net"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\protobuf-net.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="ssjj.net"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\ssjj.net.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="weaponPredicateNet.net"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\weaponPredicateNet.net.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="zlib.net"><HintPath>D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\zlib.net.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="ExCSS.Unity"><HintPath>D:\Unity\Editor\Data\Managed\ExCSS.Unity.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Cecil.Mdb"><HintPath>D:\Unity\Editor\Data\Managed\Unity.Cecil.Mdb.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Cecil.Pdb"><HintPath>D:\Unity\Editor\Data\Managed\Unity.Cecil.Pdb.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Cecil.Rocks"><HintPath>D:\Unity\Editor\Data\Managed\Unity.Cecil.Rocks.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Cecil"><HintPath>D:\Unity\Editor\Data\Managed\Unity.Cecil.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.CecilTools"><HintPath>D:\Unity\Editor\Data\Managed\Unity.CecilTools.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.CompilationPipeline.Common"><HintPath>D:\Unity\Editor\Data\Managed\Unity.CompilationPipeline.Common.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.Legacy.NRefactory"><HintPath>D:\Unity\Editor\Data\Managed\Unity.Legacy.NRefactory.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.SerializationLogic"><HintPath>D:\Unity\Editor\Data\Managed\Unity.SerializationLogic.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEditor.Graphs"><HintPath>D:\Unity\Editor\Data\Managed\UnityEditor.Graphs.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEditor"><HintPath>D:\Unity\Editor\Data\Managed\UnityEditor.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.AIModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.AIModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.ARModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.ARModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.AccessibilityModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.AccessibilityModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.AndroidJNIModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.AndroidJNIModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.AnimationModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.AnimationModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.AssetBundleModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.AssetBundleModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.AudioModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.AudioModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.ClothModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.ClothModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.ClusterInputModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.ClusterInputModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.ClusterRendererModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.ClusterRendererModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.CoreModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.CrashReportingModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.CrashReportingModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.DSPGraphModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.DSPGraphModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.DirectorModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.DirectorModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.GameCenterModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.GameCenterModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.GridModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.GridModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.HotReloadModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.HotReloadModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.IMGUIModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.IMGUIModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.ImageConversionModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.ImageConversionModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.InputLegacyModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.InputLegacyModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.InputModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.InputModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.JSONSerializeModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.JSONSerializeModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.LocalizationModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.LocalizationModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.ParticleSystemModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.PerformanceReportingModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.PerformanceReportingModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.Physics2DModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.Physics2DModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.PhysicsModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.PhysicsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.ProfilerModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.ProfilerModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.ScreenCaptureModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.ScreenCaptureModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.SharedInternalsModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.SharedInternalsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.SpriteMaskModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.SpriteMaskModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.SpriteShapeModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.SpriteShapeModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.StreamingModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.StreamingModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.SubstanceModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.SubstanceModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.SubsystemsModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.SubsystemsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.TLSModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.TLSModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.TerrainModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.TerrainModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.TerrainPhysicsModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.TerrainPhysicsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.TextCoreModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.TextCoreModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.TextRenderingModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.TextRenderingModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.TilemapModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.TilemapModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UIElementsModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.UIElementsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UIModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.UIModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UNETModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.UNETModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UmbraModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.UmbraModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UnityAnalyticsModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.UnityAnalyticsModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UnityConnectModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.UnityConnectModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UnityTestProtocolModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.UnityTestProtocolModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UnityWebRequestAudioModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.UnityWebRequestAudioModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UnityWebRequestModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.UnityWebRequestModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UnityWebRequestTextureModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.UnityWebRequestTextureModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UnityWebRequestWWWModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.UnityWebRequestWWWModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.VFXModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.VFXModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.VRModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.VRModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.VehiclesModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.VehiclesModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.VideoModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.VideoModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.WindModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.WindModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.XRModule"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.XRModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine"><HintPath>D:\Unity\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.UI"><HintPath>D:\Unity\Editor\Data\Resources\PackageManager\ProjectTemplates\libcache\com.unity.template.3d-4.2.8\ScriptAssemblies\UnityEngine.UI.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEditor.VR"><HintPath>D:\Unity\Editor\Data\UnityExtensions\Unity\UnityVR\Editor\UnityEditor.VR.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEditor.iOS.Extensions.Xcode"><HintPath>D:\Unity\Editor\Data\UnityExtensions\Unity\UnityVR\Editor\UnityEditor.iOS.Extensions.Xcode.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,41 @@
+<component size="900,521">
+  <controller name="campC" pages="0,red,1,blue" selected="0"/>
+  <displayList>
+    <image id="n0_ltex" name="skillBg1" src="ltex3z" xy="300,142"/>
+    <image id="n1_ltex" name="skillBg2" src="ltex40" xy="597,142"/>
+    <image id="n2_ltex" name="skillBg3" src="ltex41" xy="300,248"/>
+    <image id="n3_ltex" name="skillBg4" src="ltex42" xy="597,248"/>
+    <image id="n4_ltex" name="skillBg5" src="ltex43" xy="345,66"/>
+    <image id="n5_ltex" name="skillBg6" src="ltex44" xy="576,66"/>
+    <image id="n6_ltex" name="skillBg7" src="ltex45" xy="345,305"/>
+    <image id="n7_ltex" name="skillBg8" src="ltex46" xy="576,305"/>
+    <image id="n27_pqhi" name="skillBg9" src="ltex47" xy="499,359"/>
+    <component id="n9_ltex" name="legendItem5" src="ltex4c" xy="358,69"/>
+    <component id="n10_ltex" name="legendItem1" src="ltex4c" xy="311,146"/>
+    <component id="n11_ltex" name="legendItem3" src="ltex4c" xy="312,309"/>
+    <component id="n12_ltex" name="legendItem7" src="ltex4c" xy="358,389"/>
+    <component id="n13_ltex" name="legendItem9" src="ltex4c" xy="522,364"/>
+    <component id="n14_ltex" name="legendItem8" src="ltex4c" xy="681,389"/>
+    <component id="n15_ltex" name="legendItem4" src="ltex4c" xy="729,310"/>
+    <component id="n16_ltex" name="legendItem2" src="ltex4c" xy="727,145"/>
+    <component id="n17_ltex" name="legendItem6" src="ltex4c" xy="682,70"/>
+    <component id="n20_ltex" name="redBtn" src="ltex4p" xy="560,436">
+      <Button checked="true" controller="campC" page="0"/>
+    </component>
+    <component id="n21_ltex" name="blueBtn" src="ltex4o" xy="452,436">
+      <Button controller="campC" page="1"/>
+    </component>
+    <component id="n22_ltex" name="castBtn" src="ltex4t" xy="483,476"/>
+    <loader id="n23_ltex" name="nameLoader" xy="454,0" size="202,59" url="ui://rn0gspbxltex4u" autoSize="true"/>
+    <component id="n25_ltex" name="lvUI" src="ltex5a" xy="460,417"/>
+    <list id="n26_ltex" name="list" xy="0,6" size="208,514" overflow="scroll" scrollBarFlags="4" scrollBarRes="ui://l5eynmwjt1bk28," lineGap="2" defaultItem="ui://rn0gspbxpqhi5j">
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+      <item/>
+    </list>
+  </displayList>
+</component>

@@ -1,0 +1,7 @@
+<component size="315,55">
+  <displayList>
+    <image id="n0_sdsda" name="n0" src="97zjd" xy="0,-6"/>
+    <text id="n1_sdsda" name="txt" xy="45,9" size="218,65" fontSize="12" color="#ffffff" align="center" ubb="true" autoSize="none" text="偏向娱乐的竞技对抗玩法&#xA;支持所有武器、支持所有竞技模式"/>
+    <image id="n2_sdsda" name="icon" src="97zje" xy="20,6"/>
+  </displayList>
+</component>

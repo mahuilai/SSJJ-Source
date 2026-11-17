@@ -1,0 +1,15 @@
+<packageDescription id="2ffwy78z" name="Main">
+  <resources>
+    <component id="enfce" name="Button1" path="/" size="30,16"/>
+    <component id="g4ij1" name="TriggerItem" path="/" size="60,63"/>
+    <component id="g4ij0" name="TriggerActivity" path="/" size="68,344" exported="true"/>
+    <image id="enfc7" name="收起-常态" path="/img/" size="30,16" exported="true" file="enfc7.png"/>
+    <image id="enfc8" name="收起-点击" path="/img/" size="30,16" exported="true" file="enfc8.png"/>
+    <image id="enfc9" name="收起-悬停" path="/img/" size="30,16" exported="true" file="enfc9.png"/>
+    <image id="enfca" name="展开-常态" path="/img/" size="30,16" exported="true" file="enfca.png"/>
+    <image id="enfcb" name="展开-点击" path="/img/" size="30,16" exported="true" file="enfcb.png"/>
+    <image id="enfcc" name="展开-悬停" path="/img/" size="30,16" exported="true" file="enfcc.png"/>
+    <image id="enfcd" name="侧边活动列表-70x376" path="/img/" size="70,101" exported="true" scale="9grid" scale9grid="18,26,36,52" gridTile="16" file="enfcd.png"/>
+    <image id="g4ij3" name="aaaa" path="/img/" size="60,60" exported="true" file="g4ij3.png"/>
+  </resources>
+</packageDescription>

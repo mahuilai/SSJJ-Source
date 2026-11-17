@@ -1,0 +1,26 @@
+<actions>
+	<action name="TORSO_STAND" start="0" end="0" loop="true" reverse="false"/>
+	<action name="TORSO_WALK" start="1" end="25" loop="true" reverse="false"/>
+	<action name="TORSO_ATTACK" start="571" end="606" loop="false" reverse="false"/>
+	<action name="TORSO_RAISE" start="26" end="40" eventName="awm_legend_t_raise" loop="false" reverse="false"/>
+	<action name="TORSO_DIE" start="0" end="0" loop="false" reverse="false"/>
+	<action name="TORSO_RELOAD" start="41" end="116" eventName="awm_legend_t_reload" loop="false" reverse="false"/>
+	<action name="TORSO_PULL_CHARGER" start="0" end="0" loop="false" reverse="false"/>
+	<action name="TORSO_KNIFE_ATTACK" start="128" end="138" eventName="awm_legend_t_sec_fire" loop="false" reverse="false"/>
+	<action name="TORSO_ATTACK_RAISE" start="138" end="156" loop="false" reverse="false"/>
+	<action name="TORSO_KNIFE_ATTACK1" start="167" end="178" eventName="awm_legend_t_sec_fire" loop="false" reverse="false"/>
+	<action name="TORSO_ATTACK_RAISE1" start="178" end="195" loop="false" reverse="false"/>
+	<action name="TORSO_KNIFE_ATTACK2" start="217" end="228" eventName="awm_legend_t_sec_fire" loop="false" reverse="false"/>
+	<action name="TORSO_ATTACK_RAISE2" start="228" end="240" loop="false" reverse="false"/>
+	<action name="TORSO_KNIFE_ATTACK3" start="273" end="286" eventName="awm_legend_t_sec_fire" loop="false" reverse="false"/>
+	<action name="TORSO_ATTACK_RAISE3" start="286" end="298" loop="false" reverse="false"/>
+	<action name="TORSO_KNIFE_ATTACK4" start="344" end="369" eventName="awm_legend_t_skill2" loop="false" reverse="false"/>
+	<action name="TORSO_ATTACK_RAISE4" start="369" end="382" loop="false" reverse="false"/>
+	<action name="TORSO_SECONDARY_ATTACK" start="383" end="417" eventName="awm_legend_t_sec_fire" loop="false" reverse="false"/>
+	<action name="TORSO_NORMAL_TO_SPECIAL" start="418" end="425" eventName="awm_legend_t_change" loop="false" reverse="false"/>
+	<action name="TORSO_SPECIAL_TO_NORMAL" start="462" end="469" eventName="awm_legend_t_change2" loop="false" reverse="false"/>
+	<action name="TORSO_SPECIAL_STAND" start="426" end="426" loop="true" reverse="false"/>
+	<action name="TORSO_SPECIAL_WALK" start="427" end="451" loop="true" reverse="false"/>
+	<action name="TORSO_SPECIAL_ATTACK_END" start="610" end="646" eventName="awm_legend_t_fire3" loop="true" reverse="false" />
+	<action name="TORSO_SHOWGUN" start="470" end="570" loop="true" reverse="false" />
+</actions>

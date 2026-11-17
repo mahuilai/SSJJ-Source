@@ -1,0 +1,7 @@
+<component size="60,60">
+  <displayList>
+    <loader id="n2_l8r2" name="gradeLoader" xy="-3,-3" size="66,66" url="ui://l5eynmwj8zad0" fill="scale"/>
+    <loader id="n3_l8r2" name="iconLoader" xy="0,0" pivot="0.5,0.5" size="60,60" url="ui://l5eynmwjcvvd44" align="center" vAlign="middle" fill="scale"/>
+    <richtext id="n4_xvz2" name="numTxt" xy="-6,43" size="84,22" scale="0.8,0.8" fontSize="12" color="#ffffff" align="right" vAlign="middle" ubb="true" autoSize="none" strokeColor="#000000" strokeSize="0" text="1234567890"/>
+  </displayList>
+</component>

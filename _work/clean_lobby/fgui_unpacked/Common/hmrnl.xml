@@ -1,0 +1,18 @@
+<component size="13,20" extention="Button">
+  <Button/>
+  <controller name="button" pages="0,up,1,down,2,over,3,selectedOver"/>
+  <displayList>
+    <image id="n0_hmrn" src="hmrng" name="n0" xy="0,3">
+      <gearDisplay controller="button" pages="0"/>
+    </image>
+    <image id="n1_hmrn" src="hmrnh" name="n1" xy="0,3">
+      <gearDisplay controller="button" pages="1"/>
+    </image>
+    <image id="n2_hmrn" src="hmrng" name="n2" xy="0,3">
+      <gearDisplay controller="button" pages="2"/>
+    </image>
+    <image id="n3_hmrn" src="hmrnh" name="n3" xy="0,3">
+      <gearDisplay controller="button" pages="3"/>
+    </image>
+  </displayList>
+</component>

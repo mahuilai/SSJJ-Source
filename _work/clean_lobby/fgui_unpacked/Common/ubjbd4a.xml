@@ -1,0 +1,22 @@
+<component size="400,100">
+  <displayList>
+    <image id="n2_ubjb" name="n2" src="ubjbd4c" xy="0,0"/>
+    <image id="n5_ubjb" name="n5" src="ubjbd4e" xy="65,-82" pivot="0.5,0.5" scale="2,1" blend="add"/>
+    <text id="n3_ubjb" name="nameTxt" xy="140,48" size="156,21" fontSize="12" color="#ffffff" autoSize="none" text="我的名字哦"/>
+    <swf id="n1_ubjb" name="mc" src="ubjbd4b" xy="0,0" playing="false"/>
+  </displayList>
+  <transition name="t0">
+    <item time="0" type="Alpha" target="n3_ubjb" tween="true" startValue="0" endValue="1" duration="10"/>
+    <item time="0" type="Alpha" target="n5_ubjb" tween="true" startValue="0" endValue="1" duration="5"/>
+    <item time="0" type="Color" target="n2_ubjb" tween="true" startValue="#ffffff" endValue="#ffdd33" duration="5"/>
+    <item time="0" type="Color" target="n5_ubjb" value="#ff6600"/>
+    <item time="0" type="ColorFilter" target="n2_ubjb" tween="true" startValue="0.00,0.00,0.00,0.00" endValue="0.74,0.00,0.74,0.00" duration="5"/>
+    <item time="0" type="Scale" target="n5_ubjb" tween="true" startValue="2,1" endValue="4,2" duration="5"/>
+    <item time="5" type="Alpha" target="n5_ubjb" tween="true" startValue="1" endValue="0" duration="5"/>
+    <item time="5" type="Color" target="n2_ubjb" tween="true" startValue="#ffdd33" endValue="#ffffff" duration="5"/>
+    <item time="5" type="ColorFilter" target="n2_ubjb" tween="true" startValue="0.74,0.00,0.74,0.00" endValue="0.00,0.00,0.00,0.00" duration="5"/>
+    <item time="5" type="Scale" target="n5_ubjb" tween="true" startValue="4,2" endValue="6,3" duration="5"/>
+    <item time="58" type="Alpha" target="n2_ubjb" tween="true" startValue="1" endValue="0" duration="10"/>
+    <item time="58" type="Alpha" target="n3_ubjb" tween="true" startValue="1" endValue="0" duration="10"/>
+  </transition>
+</component>

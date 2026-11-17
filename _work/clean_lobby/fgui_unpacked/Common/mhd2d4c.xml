@@ -1,0 +1,24 @@
+<component size="127,26" extention="ComboBox">
+  <controller name="button" pages="0,up,1,down,2,over,3,selectedOver" selected="0"/>
+  <displayList>
+    <image id="n0_kdhs" name="n0" src="mhd2d4d" xy="0,0" size="127,26">
+      <gearDisplay controller="button" pages="2,3"/>
+      <relation target="" sidePair="width-width,height-height"/>
+    </image>
+    <image id="n1_kdhs" name="n1" src="mhd2d4e" xy="0,0" size="127,26">
+      <gearDisplay controller="button" pages="0"/>
+      <relation target="" sidePair="width-width,height-height"/>
+    </image>
+    <image id="n4_djec" name="n4" src="mhd2d4f" xy="0,0" size="127,26">
+      <gearDisplay controller="button" pages="1"/>
+      <relation target="" sidePair="width-width,height-height"/>
+    </image>
+    <text id="n2_kdhs" name="title" xy="7,3" size="93,21" font="微软雅黑" fontSize="12" color="#c1d7ee" vAlign="middle" autoSize="none" singleLine="true" text="排序规则测试">
+      <relation target="" sidePair="width-width,height-height"/>
+    </text>
+    <image id="n3_kdhs" name="n3" src="mhd2d4g" xy="106,9" size="16,10">
+      <relation target="" sidePair="right-right,middle-middle"/>
+    </image>
+  </displayList>
+  <ComboBox dropdown="ui://l5eynmwjmhd2d4h"/>
+</component>

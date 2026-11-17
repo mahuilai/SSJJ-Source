@@ -1,0 +1,7 @@
+<component size="315,57">
+  <displayList>
+    <image id="n0_sdsda" name="n0" src="97zjd" xy="0,-6"/>
+    <text id="n1_sdsda" name="txt" xy="22,7" size="276,54" fontSize="12" color="#ffffff" align="center" autoSize="none" text=""/>
+    <image id="n2_sdsda" name="icon" src="97zjg" xy="20,17"/>
+  </displayList>
+</component>

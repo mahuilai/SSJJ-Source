@@ -1,0 +1,29 @@
+<component size="224,103" extention="Button">
+  <controller name="button" pages="0,up,1,down,2,over,3,selectedOver" selected="0"/>
+  <displayList>
+    <image id="n14_ltex" name="n14" src="ltex2u" xy="0,0">
+      <gearDisplay controller="button" pages="0"/>
+    </image>
+    <image id="n15_ltex" name="n15" src="ltex2v" xy="0,0">
+      <gearDisplay controller="button" pages="2"/>
+    </image>
+    <image id="n16_ltex" name="n16" src="ltex2w" xy="0,0">
+      <gearDisplay controller="button" pages="1,3"/>
+    </image>
+    <loader id="n28_992s" name="qualityLoader" xy="0,0" size="222,77" url="ui://rn0gspbx992s65" autoSize="true"/>
+    <loader id="n3_ltex" name="iconLoader" xy="19,11" size="175,55" touchable="false" url="ui://rn0gspbxltex2r" autoSize="true"/>
+    <loader id="n21_c435" name="nameBgLoader" xy="4,56" size="99,19" url="ui://rn0gspbxltex2y" autoSize="true"/>
+    <loader id="n6_ltex" name="tagLoader" xy="174,-3" size="48,25" url="ui://rn0gspbxltex3c" autoSize="true"/>
+    <text id="n0_ltex" name="nameTxt" xy="4,56" size="197,25" fontSize="12" color="#ffffff" autoSize="none" text="武器名称"/>
+    <loader id="n8_ltex" name="moneyTypeLoader" xy="4,81" size="28,14" url="ui://rn0gspbxltex2s" autoSize="true"/>
+    <richtext id="n19_c435" name="priceTxt" xy="39,79" size="26,21" touchable="false" fontSize="12" color="#cc9900" text="111"/>
+    <richtext id="n20_c435" name="oldPriceTxt" xy="125,66" size="92,25" touchable="false" fontSize="12" color="#cc9900" align="right" autoSize="none" text="原价"/>
+    <image id="n18_c435" name="oldMoneyLineImage" src="c4355f" xy="188,75" size="25,2"/>
+    <component id="n10_ltex" name="buyBtn" src="ltex3m" xy="185,81"/>
+    <component id="n24_c435" name="lockItem" src="c4355h" xy="20,4"/>
+    <image id="n25_992s" name="flagImage" src="992s5x" xy="6,0"/>
+    <image id="n26_992s" name="spcialImage" src="992s5y" xy="140,40"/>
+    <component id="n27_992s" name="previewBtn" src="992s63" xy="159,83"/>
+  </displayList>
+  <Button mode="Radio"/>
+</component>

@@ -1,0 +1,6 @@
+{
+  "namespace": "ssjj",
+  "dependencies": {
+    "minecraft": "[1.21.1]"
+  }
+}

@@ -1,0 +1,4 @@
+<soundConfig>
+   <config eventId="10047" url="sound/weapon/awm_legend_ct_fire.mp3" vol="1" loop="0" point="0" scale="10000" />
+   <config eventId="10048" url="sound/weapon/awm_legend_ct_skill.mp3" vol="1" loop="0" point="0" scale="10000" />
+</soundConfig>

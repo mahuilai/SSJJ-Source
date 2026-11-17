@@ -1,0 +1,15 @@
+<component size="323,139" overflow="hidden">
+  <displayList>
+    <list id="n8_q496" name="list" xy="0,0" size="323,139" layout="row" overflow="scroll" scroll="horizontal" colGap="10" defaultItem="ui://yb6s62jcq4961j">
+      <item/>
+      <item/>
+    </list>
+    <component id="n9_q496" name="btnPre" src="97zj2" xy="4,41"/>
+    <component id="n10_q496" name="btnNext" src="97zj5" xy="280,41"/>
+    <list id="n11_q496" name="switchList" xy="7,119" size="313,18" layout="row" colGap="21" defaultItem="ui://yb6s62jcq4961m" align="center" vAlign="middle">
+      <item/>
+      <item/>
+      <item/>
+    </list>
+  </displayList>
+</component>

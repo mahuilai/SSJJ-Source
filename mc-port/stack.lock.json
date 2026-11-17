@@ -1,0 +1,124 @@
+{
+  "schema": "ssjj-mc-port/stack-lock/1",
+  "decided_at": "2026-11-07",
+  "decision": "不写 Java 模组，只做 TaCZ 枪包 + Figura 角色包 + 地图 schematic。版本由开源底座反推，不先挑 MC 版本。",
+
+  "target": {
+    "game": "Minecraft Java Edition",
+    "mc_version": "1.21.1",
+    "loader": "NeoForge",
+    "side": "client + server",
+    "java": "21",
+    "reason": "TaCZ 官方 LTS 分支 1.21.1 + tag 1.2.0-neoforge-1.21.1；GeckoLib 4.9.2 有 NeoForge 1.21.1 构建；Figura 0.1.5/0.1.6 有 1.21.1 NeoForge/Forge/Fabric jar；WorldEdit / Litematica 有对应新版。"
+  },
+
+  "primary_engine": {
+    "name": "TaCZ (Timeless & Classics Guns: Zero)",
+    "repo": "https://github.com/MCModderAnchor/TACZ",
+    "branch": "1.21.1",
+    "tag": "1.2.0-neoforge-1.21.1",
+    "branch_head": "7f5b112301afeb41a9f98b0cce2e1b2a75651511",
+    "mod_version": "1.2.0",
+    "license_code": "GPL-3.0",
+    "license_assets": "CC BY-NC-ND 4.0",
+    "role": "枪械运行时：3D 模型、第一/第三人称动画、开镜、换弹、拉栓、后坐、配件、弹药、伤害、Lua 脚本",
+    "constraint": "只用引擎，不复制 tacz_default_gun 的任何模型/贴图/音效（资产是 ND 禁演绎 + 非商业）。全部资源从 SSJJ 自行转换后新建独立枪包。"
+  },
+
+  "fallback": {
+    "name": "原作者 LTS 线",
+    "mc_version": "1.20.1",
+    "loader": "Forge",
+    "forge_version": "1.20.1-47.3.19",
+    "tacz_branch": "1.20.1",
+    "tacz_tag": "1.2.0-forge-mc1.20.1",
+    "branch_head": "618c927fe4b1a41ddbbfd11dfcb8af638ac570f0",
+    "verified_from": "raw.githubusercontent.com/MCModderAnchor/TACZ/1.20.1/gradle.properties",
+    "use_when": "1.21.1 依赖链踩坑、或需要 tacwiki 上最全的 1.20.1 枪包文档与社区样例"
+  },
+
+  "companion_mods": [
+    {
+      "name": "Figura",
+      "repo": "https://github.com/FiguraMC/Figura",
+      "artifact": "0.1.5+1.21.1-neoforge / 0.1.6+1.21.1-minecraftforge",
+      "license": "PolyForm Noncommercial 1.0.0",
+      "side": "client",
+      "role": "角色还原：Blockbench 骨骼模型替换玩家模型，Lua 控制动画、隐藏 vanilla_model、发光贴图",
+      "note": "服务端无需安装，其他装了 Figura 的玩家也能看到；非商业许可，自用可以，公开发布需看条款"
+    },
+    {
+      "name": "GeckoLib",
+      "repo": "https://github.com/bernie-g/geckolib",
+      "artifact": "4.9.2 (NeoForge 1.21.1)",
+      "license": "MIT",
+      "role": "自定义实体 / BOT：把 SSJJ 人物做成可召唤实体，AnimationController 驱动 idle/run/fire 状态机",
+      "optional": true
+    },
+    {
+      "name": "WorldEdit",
+      "repo": "https://github.com/EngineHub/WorldEdit",
+      "role": "地图：批量放置方块、导入 schematic"
+    },
+    {
+      "name": "Litematica",
+      "repo": "https://github.com/maruohon/litematica",
+      "license": "LGPL-3.0",
+      "role": "地图：投影对齐、分段施工、导出 schematic"
+    }
+  ],
+
+  "toolchain": [
+    { "name": "AssetRipper", "repo": "https://github.com/AssetRipper/AssetRipper", "license": "GPL-3.0", "role": "批量解 AssetBundle：Mesh / SkinnedMesh / AnimationClip / Texture2D / AudioClip / Prefab" },
+    { "name": "UnityPy", "role": "按 bundle 精确读取与重打，本仓库已部署 1.25.4" },
+    { "name": "Blender", "role": "减面、骨骼对齐、坐标系转换（SSJJ 厘米 -> MC 方块/米）" },
+    { "name": "Blockbench", "repo": "https://github.com/JannisX11/blockbench", "license": "GPL-3.0", "role": "导出 Bedrock Model (*_geo.json) 与 *.animation.json" },
+    { "name": "bsp43_export.py", "path": "Game-SSJJ/tools/bsp43_export.py", "role": "私有 BSP -> OBJ/MTL（地图几何起点）" },
+    { "name": "bsp_common.py", "path": "Game-SSJJ/tools/bsp_common.py", "role": "BSP 解析，IBSP 17 lump Q3 变体" }
+  ],
+
+  "gunpack_format": {
+    "source": "https://tacwiki.mcma.club/gunpack/",
+    "root_namespace": "ssjj",
+    "model": "models/gun/<name>_geo.json  (Bedrock Entity 格式，仅此一种)",
+    "animation": "animations/<name>.animation.json 或 <name>.gltf",
+    "texture_png": "textures/gun/uv/<name>.png, textures/gun/slot/<name>.png, textures/gun/hud/<name>.png",
+    "sound_ogg": "sounds/<name>/<name>_shoot.ogg  (仅 ogg)",
+    "gun_index": "guns/index/<name>.json",
+    "gun_data": "guns/data/<name>_data.json  (伤害/射速/弹匣/后坐/开镜)",
+    "gun_display": "guns/display/<name>_display.json",
+    "logic": "Lua 脚本驱动射击/装填/拉栓/拔枪",
+    "pack_meta": "pack.json, tab.json",
+    "distribution": "文件夹或 zip，支持 namespace:resource_path 跨包引用，可热重载"
+  },
+
+  "asset_mapping": [
+    { "ssjj": "Texture2D (DXT1, 512x512)", "target": "textures/gun/uv/*.png", "loss": "mip / PBR 参数丢弃" },
+    { "ssjj": "Mesh / SkinnedMeshRenderer", "target": "models/gun/*_geo.json", "loss": "高模减面、UV 重排" },
+    { "ssjj": "AnimationClip / AnimatorController", "target": "animations/*.animation.json", "loss": "状态机按 Lua + AnimationController 重写" },
+    { "ssjj": "AudioClip (sound/player, sound/weapon)", "target": "sounds/**/*.ogg", "loss": "采样率统一" },
+    { "ssjj": "weapon config / CsvLoader 表", "target": "guns/data/*_data.json", "loss": "字段人工映射" },
+    { "ssjj": "model.bsp.raw.bytes", "target": "WorldEdit schematic / 体素化", "loss": "曲面、斜面、lightmap、原碰撞全丢" }
+  ],
+
+  "alternatives_evaluated": [
+    { "way": "纯资源包 + 数据包（无模组）", "compile": false, "verdict": "只能静态模型 + CustomModelData，做不出骨骼动画状态机，否" },
+    { "way": "自写 Fabric/NeoForge 模组 + GeckoLib", "compile": true, "verdict": "自由度最高，但要重写全部枪械玩法，TaCZ 已实现，不重复造轮子，否" },
+    { "way": "Bedrock Add-on", "compile": false, "verdict": "需实验开关、禁用成就、attachable render controller 有长期未修限制，否" },
+    { "way": "Paper 插件 + 资源包", "compile": true, "verdict": "多人分发方便但客户端动画能力弱，可作为后续服务器方案" }
+  ],
+
+  "next_steps": [
+    "1) 跑 fetch_upstream.py 拉 TaCZ 1.21.1 源码与默认枪包结构做参考（不进产物）",
+    "2) 资产盘点：统计含 SkinnedMesh / AnimationClip / AudioClip 的 bundle 与贴图格式",
+    "3) 选第一把枪（建议 m4a1_legend2），跑通 Mesh->geo.json + Texture->PNG + Audio->OGG",
+    "4) 生成 ssjj 枪包最小可运行版，在 1.21.1 NeoForge 实例里加载验证",
+    "5) 角色用 Figura 包还原，地图用 WorldEdit/Litematica 施工"
+  ],
+
+  "unverified": [
+    "TaCZ 1.21.1 分支的 gradle 依赖清单未在本次读取（build.gradle 路径变更，404）；1.20.1 分支已确认 forge_version=1.20.1-47.3.19 及 player_animation_lib 等依赖",
+    "各 companion mod 的 1.21.1 具体 jar 版本来自 Modrinth/CurseForge 页面，未逐个下载校验",
+    "未实际安装 Minecraft / NeoForge / 模组，也未运行任何构建"
+  ]
+}

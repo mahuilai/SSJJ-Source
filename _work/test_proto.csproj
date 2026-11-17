@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="test_proto.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="SSJJ.Contract">
+      <HintPath>D:\SSJJ\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJ.Contract.dll</HintPath>
+    </Reference>
+    <Reference Include="SSJJ.Contract.Serializer">
+      <HintPath>D:\SSJJ\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\SSJJ.Contract.Serializer.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>D:\SSJJ\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data\Managed\protobuf-net.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

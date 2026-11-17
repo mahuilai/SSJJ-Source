@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "ssjjport",
+  "version": "${version}",
+  "name": "SSJJ Port",
+  "description": "SSJJ (生死狙击) 原版枪械手感与视模型 1:1 移植，独立于 TaCZ",
+  "authors": [
+    "ssjj-port"
+  ],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.ssjj.port.SsjjPort"
+    ],
+    "client": [
+      "com.ssjj.port.SsjjPortClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "~1.21.1",
+    "java": ">=21"
+  },
+  "mixins": [
+    "ssjjport.mixins.json"
+  ],
+  "recommends": {
+    "gemrender": ">=0.1.0"
+  }
+}

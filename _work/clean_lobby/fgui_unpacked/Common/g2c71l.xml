@@ -1,0 +1,11 @@
+<component size="120,30">
+  <displayList>
+    <image id="n0_x2w3" name="n0" src="g2c71m" xy="12,3" size="90,20">
+      <relation target="" sidePair="rightext-right"/>
+    </image>
+    <loader id="n3_x2w3" name="iconLoader" xy="0,0" pivot="0.5,0.5" size="26,26" url="ui://l5eynmwjg2c71r" align="center" vAlign="middle" fill="scale"/>
+    <text id="n2_x2w3" name="numTxt" xy="31,4" size="61,24" fontSize="14" color="#ffd674" align="right" vAlign="middle" letterSpacing="-1" autoSize="none" text="999999">
+      <relation target="" sidePair="rightext-right"/>
+    </text>
+  </displayList>
+</component>

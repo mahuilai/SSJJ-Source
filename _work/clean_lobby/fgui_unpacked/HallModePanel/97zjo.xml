@@ -1,0 +1,8 @@
+<component size="651,293">
+  <displayList>
+    <image id="n0_sdsda" name="n0" src="97zjp" xy="0,0"/>
+    <image id="n1_sdsda" name="n1" src="97zjq" xy="-29,75"/>
+    <image id="n2_sdsda" name="selectedImage" src="97zjr" xy="0,0"/>
+    <swf id="n3_sdsda" name="entraceMc" src="97zjs" xy="-301,-57"/>
+  </displayList>
+</component>

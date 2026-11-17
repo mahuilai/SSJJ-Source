@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>SSJJ_Server</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="protobuf-net">
+      <HintPath>Assets\Plugins\Managed\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="SSJJ.Contract">
+      <HintPath>Assets\Plugins\Managed\SSJJ.Contract.dll</HintPath>
+    </Reference>
+    <Reference Include="SSJJ.Contract.Serializer">
+      <HintPath>Assets\Plugins\Managed\SSJJ.Contract.Serializer.dll</HintPath>
+    </Reference>
+    <Reference Include="base.net">
+      <HintPath>Assets\Plugins\Managed\base.net.dll</HintPath>
+    </Reference>
+    <Reference Include="configNet">
+      <HintPath>Assets\Plugins\Managed\configNet.dll</HintPath>
+    </Reference>
+    <Reference Include="physics.net">
+      <HintPath>Assets\Plugins\Managed\physics.net.dll</HintPath>
+    </Reference>
+    <Reference Include="weaponPredicateNet.net">
+      <HintPath>Assets\Plugins\Managed\weaponPredicateNet.net.dll</HintPath>
+    </Reference>
+    <Reference Include="ssjj.net">
+      <HintPath>Assets\Plugins\Managed\ssjj.net.dll</HintPath>
+    </Reference>
+    <Reference Include="itween.net">
+      <HintPath>Assets\Plugins\Managed\itween.net.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <!-- 自动将 Native x86_64 DLL 拷贝到输出目录以便 P/Invoke 运行时定位 -->
+  <ItemGroup>
+    <None Include="Assets\Plugins\x86_64\*.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Data\Maps\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

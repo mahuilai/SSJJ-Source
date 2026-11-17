@@ -1,0 +1,6 @@
+<component size="252,60">
+  <displayList>
+    <component id="n0_sdsda" name="preBtn" src="97zj2" xy="3,2"/>
+    <component id="n1_sdsda" name="nextBtn" src="97zj5" xy="210,2"/>
+  </displayList>
+</component>

@@ -1,0 +1,64 @@
+<packageDescription id="yb6s62jc" name="HallModePanel">
+  <resources>
+    <component id="97zj1" name="Pager" path="/" size="252,60"/>
+    <component id="97zj2" name="btnPre" path="/" size="42,58"/>
+    <component id="97zj5" name="btnNext" path="/" size="42,58"/>
+    <component id="97zj8" name="HallModeItem" path="/" size="323,139"/>
+    <component id="97zjc" name="HallModeTips" path="/" size="315,55"/>
+    <component id="97zjf" name="HallModeLockTips" path="/" size="315,57"/>
+    <component id="97zji" name="HallBig2ModeItem" path="/" size="323,353"/>
+    <component id="97zjj" name="KingItemBase" path="/" size="100,100"/>
+    <component id="97zjm" name="HallBigModeItem" path="/" size="315,212"/>
+    <component id="97zjn" name="HallEntraceUI" path="/" size="652,575"/>
+    <component id="97zjo" name="HallEntraceItem1" path="/" size="651,293"/>
+    <component id="97zjt" name="HallEntraceItem2" path="/" size="652,293"/>
+    <component id="q4961f" name="bigActivityButton" path="/" size="233,121"/>
+    <component id="q4961i" name="bigActivity" path="/modes/" size="233,121"/>
+    <component id="q4961j" name="HallModeSubItem" path="/" size="323,139"/>
+    <component id="q4961k" name="HallBig2ModeSubItem" path="/" size="323,353"/>
+    <component id="q4961l" name="HallBigModeSubItem" path="/" size="315,212"/>
+    <component id="q4961m" name="switchButton" path="/" size="40,15"/>
+    <image id="97zj3" name="btn_left_1" path="/image/" size="42,58" file="97zj3.png"/>
+    <image id="97zj4" name="btn_left_2" path="/image/" size="42,58" file="97zj4.png"/>
+    <image id="97zj6" name="btn_right_1" path="/image/" size="42,58" file="97zj6.png"/>
+    <image id="97zj7" name="btn_right_2" path="/image/" size="42,58" file="97zj7.png"/>
+    <image id="97zjb" name="unity_icon" path="/image/" size="132,68" file="97zjb.png"/>
+    <image id="97zjd" name="mode_tips" path="/image/" size="315,61" file="97zjd.png"/>
+    <image id="97zje" name="tips_icon2" path="/image/" size="14,16" file="97zje.png"/>
+    <image id="97zjg" name="tips_icon1" path="/image/" size="13,18" file="97zjg.png"/>
+    <image id="97zjh" name="select_2" path="/image/" size="55,50" scale="9grid" scale9grid="14,13,28,26" file="97zjh.png"/>
+    <image id="97zjk" name="king_info_1" path="/image/" size="157,123" file="97zjk.png"/>
+    <image id="97zjl" name="rpg_welcome_1" path="/image/" size="140,132" file="97zjl.png"/>
+    <image id="97zjp" name="acg_Entrace" path="/image/" size="646,284" file="97zjp.png"/>
+    <image id="97zjq" name="acg_Entrace_txt" path="/image/" size="426,128" file="97zjq.png"/>
+    <image id="97zjr" name="selected" path="/image/" size="646,284" file="97zjr.png"/>
+    <image id="97zju" name="ssjj_Entrace" path="/image/" size="646,284" file="97zju.png"/>
+    <image id="97zjv" name="ssjj_Entrace_txt" path="/image/" size="426,128" file="97zjv.png"/>
+    <image id="q4961g" name="cylx_2" path="/modes/" size="233,121" file="q4961g.png"/>
+    <image id="q4961h" name="cylx_1" path="/modes/" size="233,121" file="q4961h.png"/>
+    <swf id="97zja" name="effect" path="/image/" size="343,139" file="97zja.swf"/>
+    <swf id="97zjs" name="acg_entrace_effect" path="/image/" size="1023,640" file="97zjs.swf"/>
+    <component id="97zj0" name="HallModePanel" path="/" size="669,564" exported="true"/>
+    <image id="br5e1o" name="mode_2" path="/modes/" size="312,341" exported="true" file="br5e1o.png"/>
+    <image id="noy51n" name="mode_20" path="/modes/" size="312,130" exported="true" file="noy51n.png"/>
+    <image id="o4cr1p" name="mode_21" path="/modes/" size="312,130" exported="true" file="o4cr1p.png"/>
+    <image id="q49610" name="mode_5" path="/modes/" size="312,130" exported="true" file="q49610.png"/>
+    <image id="q49611" name="mode_6" path="/modes/" size="312,130" exported="true" file="q49611.png"/>
+    <image id="q49612" name="mode_7" path="/modes/" size="312,130" exported="true" file="q49612.png"/>
+    <image id="q49613" name="mode_8" path="/modes/" size="312,130" exported="true" file="q49613.png"/>
+    <image id="q49614" name="mode_9" path="/modes/" size="312,130" exported="true" file="q49614.png"/>
+    <image id="q49615" name="mode_10" path="/modes/" size="312,130" exported="true" file="q49615.png"/>
+    <image id="q49616" name="mode_11" path="/modes/" size="312,130" exported="true" file="q49616.png"/>
+    <image id="q49617" name="mode_12" path="/modes/" size="312,130" exported="true" file="q49617.png"/>
+    <image id="q49618" name="mode_13" path="/modes/" size="312,130" exported="true" file="q49618.png"/>
+    <image id="q49619" name="mode_14" path="/modes/" size="312,130" exported="true" file="q49619.png"/>
+    <image id="q4961a" name="mode_15" path="/modes/" size="312,130" exported="true" file="q4961a.png"/>
+    <image id="q4961b" name="mode_16" path="/modes/" size="315,130" exported="true" file="q4961b.png"/>
+    <image id="q4961c" name="mode_17" path="/modes/" size="312,130" exported="true" file="q4961c.png"/>
+    <image id="q4961d" name="mode_18" path="/modes/" size="312,130" exported="true" file="q4961d.png"/>
+    <image id="q4961e" name="mode_19" path="/modes/" size="312,130" exported="true" file="q4961e.png"/>
+    <image id="q496w" name="mode_1" path="/modes/" size="312,200" exported="true" file="q496w.png"/>
+    <image id="q496y" name="mode_3" path="/modes/" size="312,130" exported="true" file="q496y.png"/>
+    <image id="q496z" name="mode_4" path="/modes/" size="312,130" exported="true" file="q496z.png"/>
+  </resources>
+</packageDescription>

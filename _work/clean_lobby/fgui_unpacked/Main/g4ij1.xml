@@ -1,0 +1,6 @@
+<component size="60,63">
+  <displayList>
+    <loader id="n1_g4ij" name="icon" xy="0,0" size="60,60" url="ui://2ffwy78zg4ij3"/>
+    <text id="n0_g4ij" name="timeTxt" xy="0,41" size="57,21" fontSize="12" color="#ffffff" align="center" autoSize="none" text="00:00:00"/>
+  </displayList>
+</component>

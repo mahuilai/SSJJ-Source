@@ -1,0 +1,16 @@
+<component size="180,54">
+  <controller name="c1" pages="0,,1,,2," selected="0"/>
+  <displayList>
+    <component id="n0_ltex" name="n0" src="ltex57" xy="0,0">
+      <Button controller="c1" page="0"/>
+    </component>
+    <image id="n1_ltex" name="n1" src="ltex5b" xy="48,21"/>
+    <component id="n2_ltex" name="n2" src="ltex58" xy="65,0">
+      <Button controller="c1" page="1"/>
+    </component>
+    <component id="n3_ltex" name="n3" src="ltex59" xy="130,0">
+      <Button controller="c1" page="2"/>
+    </component>
+    <image id="n4_ltex" name="n4" src="ltex5b" xy="117,21"/>
+  </displayList>
+</component>

@@ -1,0 +1,21 @@
+<component size="68,344" opaque="false">
+  <controller name="c1" pages="0,打开,1,,2,,3,,4,,5," selected="0"/>
+  <displayList>
+    <image id="n7_enfc" name="n7" src="enfcd" xy="-1,0" size="70,92">
+      <gearSize controller="c1" pages="0,1,2,3,4,5" values="70,92,1,1|70,92,1,1|70,150,1,1|70,214,1,1|70,277,1,1|70,343,1,1"/>
+    </image>
+    <list id="n0_g4ij" name="list" xy="3,4" size="63,64" overflow="scroll" defaultItem="ui://2ffwy78zg4ij1" align="center">
+      <gearSize controller="c1" pages="0,1,2,3,4" values="63,64,1,1|63,64,1,1|63,122,1,1|63,186,1,1|63,250,1,1" default="63,316,1,1"/>
+    </list>
+    <component id="n8_ogvt" name="openBtn" src="enfce" xy="19,85" scale="1,-1">
+      <gearDisplay controller="c1" pages="0"/>
+      <gearXY controller="c1" pages="0,1,2,3,4,5" values="19,85|19,68|19,125|18,189|19,253|18,318"/>
+      <gearSize controller="c1" pages="1,2,3,4,5" values="30,16,1,1|30,16,1,1|30,16,1,1|30,16,1,1|30,16,1,1" default="30,16,1,-1"/>
+    </component>
+    <component id="n3_g4ij" name="closeBtn" src="enfce" xy="19,85" scale="1,-1">
+      <gearDisplay controller="c1" pages="1,2,3,4,5"/>
+      <gearXY controller="c1" pages="0,1,2,3,4,5" values="19,85|19,68|19,125|18,189|19,253|18,318"/>
+      <gearSize controller="c1" pages="1,2,3,4,5" values="30,16,1,1|30,16,1,1|30,16,1,1|30,16,1,1|30,16,1,1" default="30,16,1,-1"/>
+    </component>
+  </displayList>
+</component>

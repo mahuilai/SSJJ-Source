@@ -1,0 +1,9 @@
+<component size="42,42" extention="Button">
+  <Button/>
+  <controller name="button" pages="0,up,1,down,2,over,3,selectedOver"/>
+  <displayList>
+    <image id="n0_p6r0" pkg="34tmjf9c" src="p6r0u" name="n0" xy="0,0">
+      <relation target="" sidePair="width,height"/>
+    </image>
+  </displayList>
+</component>

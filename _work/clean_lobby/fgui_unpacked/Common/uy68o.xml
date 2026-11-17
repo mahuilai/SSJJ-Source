@@ -1,0 +1,9 @@
+<component size="167,25">
+  <displayList>
+    <text id="n5_kfpz" name="pageTxt" xy="0,0" size="167,25" fontSize="16" color="#ffffff" align="center" vAlign="middle" autoSize="none"/>
+    <component id="n6_uy68" name="endBtn" src="uy6819" xy="137,2" size="24,21"/>
+    <component id="n7_uy68" name="firstBtn" src="uy681a" xy="-2,2"/>
+    <component id="n8_uy68" name="nextBtn" src="uy681b" xy="119,2"/>
+    <component id="n9_uy68" name="preBtn" src="uy681c" xy="21,2"/>
+  </displayList>
+</component>

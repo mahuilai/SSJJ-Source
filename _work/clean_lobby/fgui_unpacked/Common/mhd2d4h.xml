@@ -1,0 +1,11 @@
+<component size="150,200">
+  <displayList>
+    <image id="n0_kdhs" src="mhd2d4i" name="n0" xy="0,0" size="150,200">
+      <relation target="" sidePair="width,height"/>
+    </image>
+    <list id="n1_kdhs" name="list" xy="0,0" size="150,200" overflow="scroll" defaultItem="ui://l5eynmwjmhd2d4j">
+      <relation target="" sidePair="width"/>
+    </list>
+  </displayList>
+  <relation target="n1_kdhs" sidePair="height"/>
+</component>

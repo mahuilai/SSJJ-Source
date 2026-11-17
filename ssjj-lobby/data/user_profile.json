@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "nickname": "你来时冬至",
+  "level": 91,
+  "vip": 18,
+  "gp": 91,
+  "gold": 91,
+  "server": "联通一区",
+  "bagIndex": 1,
+  "bags": [
+    {
+      "id": 1,
+      "master": "m4a1",
+      "secondary": "deagle",
+      "melee": "guqin_trans_sword",
+      "grenade": "",
+      "role": "监察者"
+    },
+    {
+      "id": 2,
+      "master": "",
+      "secondary": "",
+      "melee": "",
+      "grenade": "",
+      "role": ""
+    },
+    {
+      "id": 3,
+      "master": "",
+      "secondary": "",
+      "melee": "",
+      "grenade": "",
+      "role": ""
+    },
+    {
+      "id": 4,
+      "master": "",
+      "secondary": "",
+      "melee": "",
+      "grenade": "",
+      "role": ""
+    },
+    {
+      "id": 5,
+      "master": "",
+      "secondary": "",
+      "melee": "",
+      "grenade": "",
+      "role": ""
+    }
+  ]
+}
