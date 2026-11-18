@@ -67,15 +67,18 @@ SSJJ-Source/
 
 ## 快速开始（开发者）
 
-1. **环境要求**：`.NET 10 SDK`、`Python 3.10+`、`Java 17+`（AIR 大厅）。
-2. **编译服务端 & 运行 E2E 测试**：
+1. **环境要求**：`.NET 10 SDK`、`Python 3.10+`（可选安装 `pip install pillow` 用于动态图标兜底）、`Java 17+`（AIR 大厅）。
+2. **准备原版依赖 DLL（重要）**：
+   - 因版权原因，仓库不含原厂二进制文件。请从原版《生死狙击》战斗客户端复制所需共享程序集（`protobuf-net.dll`、`SSJJ.Contract.dll`、`SSJJ.Contract.Serializer.dll`、`base.net.dll`、`configNet.dll`、`physics.net.dll`、`weaponPredicateNet.net.dll`、`ssjj.net.dll`、`itween.net.dll`）到 `SSJJ-Server\Assets\Plugins\Managed\`，以及原生 x64 DLL（`WizzardEngine.dll`、`PhysX3*.dll` 等）到 `SSJJ-Server\Assets\Plugins\x86_64\`。
+3. **编译服务端 & 运行 E2E 测试**：
    ```powershell
    dotnet build SSJJ-Server\SSJJ-Server.csproj -v minimal
    dotnet run --project _work\VerifyE2E\VerifyE2E.csproj
    ```
-3. **启动大厅**：
+4. **启动大厅**：
    ```powershell
    python -u _work\launch_lobby.py
    ```
+   （启动器会自动检测并调用 `javac` 编译 `_work\lobby_host\java\*.java`。）
 
 > **版权说明**：本仓库**不包含**任何原厂客户端二进制文件、美术模型、贴图或加密资源包，仅开源自主编写的服务端框架、大厅桥接与工具脚本源码。

@@ -83,6 +83,8 @@ namespace SSJJ.Server.Snapshot
         public bool SpecialMode { get; set; } = false;
         public long NextSkillTimer { get; set; } = 0;
         public long ReloadEndTime { get; set; } = 0;
+        public bool IsStartReload { get; set; } = false;
+        public int ViewAnimRemainMs { get; set; } = 0;
         public float LegsSpeedAnimTime { get; set; } = 0f;
         public float TorsoAnimStartTime { get; set; } = 0f;
         public float TorsoAnimationTimer { get; set; } = 0f;

@@ -241,6 +241,7 @@ namespace SSJJ.Server.Snapshot
                 MaxPower2 = livePlayer != null ? livePlayer.WeaponMaxPower2 : 100,
                 SpecialMode = livePlayer != null && livePlayer.SpecialMode,
                 NextSkillTimer = livePlayer != null ? livePlayer.NextSkillTimer : 0,
+                IsStartReload = livePlayer != null && livePlayer.IsStartReload,
                 ReloadEndTime = livePlayer != null ? livePlayer.ReloadEndTime : 0
             };
             return bw;
@@ -271,6 +272,7 @@ namespace SSJJ.Server.Snapshot
                 TorsoAnimationTimer = (int)(p.TorsoAnimationTimer * 1000f),
                 ViewAnim = p.ViewAnim > 0 ? p.ViewAnim : 13,
                 ViewAnimSpeed = p.ViewAnimSpeed > 0f ? p.ViewAnimSpeed : 1f,
+                ViewAnimationTimer = Math.Max(0, p.ViewAnimRemainMs),
                 LeftViewAnim = p.LeftViewAnim > 0 ? p.LeftViewAnim : 13,
                 LeftViewAnimSpeed = p.LeftViewAnimSpeed > 0f ? p.LeftViewAnimSpeed : 1f,
                 Alpha = alpha,

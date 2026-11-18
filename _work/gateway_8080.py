@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 """SSJJ Master HTTP Resource Gateway (8080) - 100% Offline Zero-Latency Mode"""
 import http.server, socketserver, urllib.parse, os, sys, time, threading, re, json, io, socket, zlib, struct, hashlib
-from PIL import Image
+try:
+    from PIL import Image
+except ImportError:
+    Image = None
 
-ROOT_DIR = r"D:\逆向\SSJJ双塔惊魂"
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HTTP_PORT = 8080
 CACHE = os.path.join(ROOT_DIR, "_work", "lobby_host", "cache")
 # Generated icon SWFs live here so the official cached assets are never overwritten.
@@ -430,7 +433,7 @@ def _swf_parses(data):
         return False
 
 def make_weapon_swf(png_path, export_name=None):
-    if not TPL_BYTES: return None
+    if not TPL_BYTES or Image is None: return None
     try:
         im = Image.open(png_path).convert('RGBA')
         canvas = Image.new('RGBA', (175, 55), (0, 0, 0, 0))

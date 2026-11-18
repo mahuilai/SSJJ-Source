@@ -190,6 +190,14 @@ def ensure_services():
 
     # 2. Check Java AMF3 Lobby Server :2000
     if not is_port_listening(LOGIN_PORT):
+        cls_path = os.path.join(JAVA_DIR, "LobbyLoginServer.class")
+        java_files = [os.path.join(JAVA_DIR, f) for f in os.listdir(JAVA_DIR) if f.endswith(".java")]
+        need_compile = not os.path.isfile(cls_path) or any(
+            os.path.getmtime(jf) > os.path.getmtime(cls_path) for jf in java_files
+        )
+        if need_compile and java_files:
+            print("[Lobby] Compiling Java AMF3 LobbyLoginServer...", flush=True)
+            subprocess.run(["javac", "-encoding", "UTF-8", "-d", JAVA_DIR] + java_files, check=True)
         print("[Lobby] Starting Java AMF3 LobbyLoginServer on :2000...", flush=True)
         srv_log_path = os.path.join(ROOT, "Game-SSJJ-logs", "server.log")
         srv_log = open(srv_log_path, "a", encoding="utf-8", buffering=1)

@@ -406,17 +406,15 @@ namespace SSJJ.Server.Physics
             try
             {
                 // 与客户端 PlayerMovePredicationSystem + PlayerSpeedUtil.GetPlayerSpeed 1:1 对齐
+                // 客户端先以当前 DuckState 计算速度并执行 pmove.SetMove，再在 MovePredication 末尾调用 DuckManager.Duck
                 int speed = weaponMaxSpeed;
                 if (adapter.DuckState == 0 || adapter.DuckState == 1)
                     speed = share.constant.PlayerConf.CrouchMoveSpeed(); // 203
                 else if (cmd.IsWalk)
                     speed = share.constant.PlayerConf.WalkSpeed();       // 305
 
-                _weEngine.GetDuckManager()?.Duck(adapter, adapter, cmd);
-                // Duck 状态变化后再重新对齐一次速度（与客户端 先Duck 后/同帧Move 一致）
-                if (adapter.DuckState == 0 || adapter.DuckState == 1)
-                    speed = share.constant.PlayerConf.CrouchMoveSpeed();
                 _weEngine.GetPmove()?.SetMove(adapter, cmd, speed);
+                _weEngine.GetDuckManager()?.Duck(adapter, adapter, cmd);
                 _weEngine.GetEntityManager()?.UpdateEntityNormalBrush(2, adapter);
             }
             catch (Exception ex)

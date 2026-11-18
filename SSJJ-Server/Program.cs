@@ -452,6 +452,13 @@ namespace SSJJ.Server
             p.ShotsFired = 0;
             p.DecreaseShotsFired = 0;
             p.DelayFire = false;
+            p.IsStartReload = false;
+            p.ReloadEndTime = 0;
+            p.ViewAnim = 16; // Raise
+            p.LeftViewAnim = 16;
+            p.ViewAnimRemainMs = 600;
+            p.NextAttackTimer = p.ClientTime + 600;
+            p.NextSecondaryAttackTimer = p.ClientTime + 600;
         }
 
         private static float WrapAngle180(float angle)
@@ -518,15 +525,42 @@ namespace SSJJ.Server
             }
 
             var wDef = tables.GetWeapon(p.CurrentWeaponName);
-            if (isReload && p.MaxClip > 0 && p.CurrentClip < p.MaxClip && p.CurrentCarryClip > 0)
+            if (p.ViewAnimRemainMs > 0)
             {
-                int need = Math.Min(p.MaxClip - p.CurrentClip, p.CurrentCarryClip);
-                p.CurrentClip += need;
-                p.CurrentCarryClip -= need;
+                p.ViewAnimRemainMs = Math.Max(0, p.ViewAnimRemainMs - rawFrameMs);
+                if (p.ViewAnimRemainMs == 0 && p.ViewAnim != 13)
+                {
+                    p.ViewAnim = 13;
+                    p.LeftViewAnim = 13;
+                }
+            }
+
+            if (p.IsStartReload && p.ClientTime >= p.ReloadEndTime)
+            {
+                p.IsStartReload = false;
+                if (p.MaxClip > 0 && p.CurrentClip < p.MaxClip && p.CurrentCarryClip > 0)
+                {
+                    int need = Math.Min(p.MaxClip - p.CurrentClip, p.CurrentCarryClip);
+                    p.CurrentClip += need;
+                    p.CurrentCarryClip -= need;
+                }
+            }
+            else if (isReload && !p.IsStartReload && p.MaxClip > 0 && p.CurrentClip < p.MaxClip && p.CurrentCarryClip > 0)
+            {
+                p.IsStartReload = true;
+                p.ReloadEndTime = p.ClientTime + 1400;
+                p.NextAttackTimer = p.ClientTime + 1400;
+                p.ViewAnim = 17;
+                p.ViewAnimRemainMs = 1400;
             }
 
             if (weReady)
             {
+                // 与 PlayerMovePredicationSystem.DefaultDetermine/CommonDetermine 一致：在 SetMove 前判定 Moving
+                double prevSpeed3d = Math.Sqrt((double)p.VelX * p.VelX + (double)p.VelY * p.VelY + (double)p.VelZ * p.VelZ);
+                if (isForward || isBackward || isLeft || isRight) p.Moving = true;
+                if (p.Moving && prevSpeed3d < 0.1) p.Moving = false;
+
                 int maxSpd = wDef.MaxSpeed;
                 var pyCmd = new ServerPyCmd
                 {
@@ -565,22 +599,28 @@ namespace SSJJ.Server
                     p.GroundEntityNum = gNum;
                     p.Velocity2D = v2d;
                     p.Stamina = stamina;
-                    // 与 PlayerMovePredicationSystem.CommonDetermine 对齐
-                    double speed3d = Math.Sqrt((double)vx * vx + (double)vy * vy + (double)vz * vz);
-                    if (isForward || isBackward || isLeft || isRight) p.Moving = true;
-                    if (p.Moving && speed3d < 0.1) p.Moving = false;
-                    // 与 LegPredictionUtility 对齐
-                    if (p.Moving)
+                    // 与 LegPredictionUtility + PlayerLegPredictionSystem 1:1 对齐
+                    int prevLegsAnim = p.LegsAnim;
+                    if (!og)
+                    {
+                        p.LegsAnim = 5;
+                    }
+                    else if (p.Moving)
                     {
                         if (ds == 0) p.LegsAnim = isBackward ? 10 : 9;
-                        else if (!isWalk && v2d > 305) p.LegsAnim = isBackward ? 2 : 1;
+                        else if (!isWalk && v2d > 310) p.LegsAnim = isBackward ? 2 : 1;
                         else p.LegsAnim = isBackward ? 4 : 3;
                     }
                     else
                     {
                         p.LegsAnim = ds == 0 ? 8 : 7;
                     }
-                    if (og && v2d > 10) p.LegsSpeedAnimTime += rawFrameMs * (v2d / 250f);
+                    if (p.LegsAnim != prevLegsAnim)
+                    {
+                        p.LegsSpeedAnimTime = 0f;
+                    }
+                    float legAnimSpeed = (p.LegsAnim == 1 || p.LegsAnim == 2) ? v2d * 0.0016f : 1f;
+                    p.LegsSpeedAnimTime += rawFrameMs * legAnimSpeed;
                 }
             }
             else
@@ -601,13 +641,23 @@ namespace SSJJ.Server
 
             if (isAttack || isAttack2)
             {
+                bool fired;
                 if (modeCoord.IsFlyKnife)
                 {
-                    modeCoord.TryFlyKnifeAttack(p, isAttack, isAttack2, allEntities);
+                    fired = modeCoord.TryFlyKnifeAttack(p, isAttack, isAttack2, allEntities);
                 }
                 else
                 {
-                    wpn.TryFire(p, phys, isAttack, isAttack2, tables, officialPhysics, freeForAll, allEntities);
+                    fired = wpn.TryFire(p, phys, isAttack, isAttack2, tables, officialPhysics, freeForAll, allEntities);
+                }
+                if (fired)
+                {
+                    int atkMs = Math.Max(50, wDef.AttackIntervalMs);
+                    p.ShotsFired++;
+                    p.DelayFire = true;
+                    p.NextAttackTimer = p.ClientTime + atkMs;
+                    p.ViewAnim = isAttack2 ? 20 : 15;
+                    p.ViewAnimRemainMs = atkMs;
                 }
                 if (p.TorsoAnim != 15)
                 {
@@ -625,10 +675,30 @@ namespace SSJJ.Server
                 }
                 p.ReloadAnimEndTime = (float)nowSec + 1.4f;
             }
-            else if (nowSec >= p.FireAnimEndTime && nowSec >= p.ReloadAnimEndTime && p.TorsoAnim != 13)
+            else
             {
-                p.TorsoAnim = 13;
-                p.TorsoAnimStartTime = (float)(nowSec * 1000.0);
+                // 与 RifleIdleAction / AbstractFrameAction 1:1 对齐
+                if (p.DelayFire)
+                {
+                    p.DelayFire = false;
+                    if (p.ShotsFired > 8) p.ShotsFired = 8;
+                    p.DecreaseShotsFired = p.ClientTime + 150;
+                }
+                else if (p.ShotsFired > 0 && p.DecreaseShotsFired < p.ClientTime)
+                {
+                    p.DecreaseShotsFired = p.ClientTime + 16;
+                    p.ShotsFired--;
+                }
+                else if (p.ShotsFired == 0)
+                {
+                    p.WeaponAccuracy = wDef.DefaultAccuracy;
+                }
+
+                if (nowSec >= p.FireAnimEndTime && nowSec >= p.ReloadAnimEndTime && p.TorsoAnim != 13)
+                {
+                    p.TorsoAnim = 13;
+                    p.TorsoAnimStartTime = (float)(nowSec * 1000.0);
+                }
             }
         }
 
