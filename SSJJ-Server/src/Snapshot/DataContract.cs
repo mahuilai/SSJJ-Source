@@ -45,6 +45,12 @@ namespace SSJJ.Server.Snapshot
         public int LeftViewAnim { get; set; } = 13;
         public float LeftViewAnimSpeed { get; set; } = 1.0f;
         public int Fov { get; set; } = 90;
+        public int LastFov { get; set; } = 90;
+        public bool ResumeZoom { get; set; } = false;
+        public float PunchYaw { get; set; } = 0f;
+        public float PunchPitch { get; set; } = 0f;
+        public int DecayTime { get; set; } = 0;
+        public int StateFlag { get; set; } = 0;
         public float WeaponAccuracy { get; set; } = 0.2f;
         public int ShotsFired { get; set; } = 0;
         public int DecreaseShotsFired { get; set; } = 0;

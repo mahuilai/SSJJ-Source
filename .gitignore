@@ -140,6 +140,7 @@ Game-SSJJ/Assets/Parkour/
 **/.gradle/
 ssjj-port/build/
 ssjj-port/libs/
+_work/mode_sweep_logs/
 _work/Quake-III-Arena/
 _work/quake3/
 _work/*.bin
@@ -217,6 +218,7 @@ Game-SSJJ/Assets/Parkour/
 **/.gradle/
 ssjj-port/build/
 ssjj-port/libs/
+_work/mode_sweep_logs/
 _wb/
 /data/
 

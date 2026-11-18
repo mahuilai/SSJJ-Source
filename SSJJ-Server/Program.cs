@@ -152,6 +152,8 @@ namespace SSJJ.Server
             var pendingCmds = new ConcurrentQueue<DecodedUserCmd>();
             var pendingHits = new ConcurrentQueue<HitEventData>();
             var pendingExplosions = new ConcurrentQueue<GrenadeExplosionEventData>();
+            var missileSys = new G_Missile();
+            missileSys.OnGrenadeExploded += exp => pendingExplosions.Enqueue(exp);
 
             int seqId = 1;
             int lastCmdSeq = 0;
@@ -282,12 +284,13 @@ namespace SSJJ.Server
                     bool isDefusing = modeCoord.IsPlayerDefusingC4(localPlayer, cmd);
                     modeCoord.HandlePlayerExplodeCommand(localPlayer, cmd, prevButtons, dt, tcp);
                     skillSystem.ProcessCommand(localPlayer, cmd, prevButtons, now, freeForAll, isDefusing, allEntities, tcp);
-                    StepLocalPlayer(localPlayer, localPhysics, localWeapon, tables, officialPhysics, modeCoord, weReady, cmd, prevButtons, freeForAll, allEntities, now);
+                    StepLocalPlayer(localPlayer, localPhysics, localWeapon, missileSys, tables, officialPhysics, modeCoord, weReady, cmd, prevButtons, freeForAll, allEntities, now);
                     prevButtons = cmd.Buttons;
                 }
 
                 localWeapon.Tick(dt);
                 skillSystem.Tick(dt, now, allEntities);
+                missileSys.Tick(dt, allEntities, officialPhysics);
 
                 if (localPlayer.IsDead)
                 {
@@ -472,6 +475,7 @@ namespace SSJJ.Server
             PlayerBasicInfo p,
             PlayerPhysicsState phys,
             G_Weapon wpn,
+            G_Missile missileSys,
             GameTables tables,
             OfficialPhysicsWorld officialPhysics,
             ModeCoordinator modeCoord,
@@ -502,27 +506,11 @@ namespace SSJJ.Server
             bool isWalk = (cmd.Buttons & ButtonConstant.Switchwalk) != 0;
             bool isAttack = (cmd.Buttons & ButtonConstant.Attack) != 0;
             bool isAttack2 = (cmd.Buttons & ButtonConstant.Attack2) != 0;
+            bool isAttack2Edge = isAttack2 && (prevButtons & ButtonConstant.Attack2) == 0;
             bool isReload = (cmd.Buttons & ButtonConstant.Reload) != 0 && (prevButtons & ButtonConstant.Reload) == 0;
 
-            // 与 PlayerOrientationPredicationSystem.CaculateFinalMoveYaw 1:1 对齐
-            if (isForward || isBackward || isLeft || isRight)
-            {
-                float finalMoveYaw = cmd.Yaw;
-                if (isForward)
-                {
-                    if (isLeft) finalMoveYaw = cmd.Yaw + 45f;
-                    else if (isRight) finalMoveYaw = cmd.Yaw - 45f;
-                }
-                else if (isBackward)
-                {
-                    if (isLeft) finalMoveYaw = cmd.Yaw + 135f;
-                    else if (isRight) finalMoveYaw = cmd.Yaw - 135f;
-                    else finalMoveYaw = cmd.Yaw + 180f;
-                }
-                else if (isLeft) finalMoveYaw = cmd.Yaw + 90f;
-                else if (isRight) finalMoveYaw = cmd.Yaw - 90f;
-                p.MoveYaw = WrapAngle180(finalMoveYaw);
-            }
+            PlayerPredictionEngine.UpdateMoveYaw(p, cmd.Yaw, isForward, isBackward, isLeft, isRight);
+            PlayerPredictionEngine.StepPunchAndDecay(p, rawFrameMs);
 
             var wDef = tables.GetWeapon(p.CurrentWeaponName);
             if (p.ViewAnimRemainMs > 0)
@@ -535,24 +523,7 @@ namespace SSJJ.Server
                 }
             }
 
-            if (p.IsStartReload && p.ClientTime >= p.ReloadEndTime)
-            {
-                p.IsStartReload = false;
-                if (p.MaxClip > 0 && p.CurrentClip < p.MaxClip && p.CurrentCarryClip > 0)
-                {
-                    int need = Math.Min(p.MaxClip - p.CurrentClip, p.CurrentCarryClip);
-                    p.CurrentClip += need;
-                    p.CurrentCarryClip -= need;
-                }
-            }
-            else if (isReload && !p.IsStartReload && p.MaxClip > 0 && p.CurrentClip < p.MaxClip && p.CurrentCarryClip > 0)
-            {
-                p.IsStartReload = true;
-                p.ReloadEndTime = p.ClientTime + 1400;
-                p.NextAttackTimer = p.ClientTime + 1400;
-                p.ViewAnim = 17;
-                p.ViewAnimRemainMs = 1400;
-            }
+            PlayerPredictionEngine.StepReload(p, wDef, isReload, isAttack);
 
             if (weReady)
             {
@@ -600,27 +571,7 @@ namespace SSJJ.Server
                     p.Velocity2D = v2d;
                     p.Stamina = stamina;
                     // 与 LegPredictionUtility + PlayerLegPredictionSystem 1:1 对齐
-                    int prevLegsAnim = p.LegsAnim;
-                    if (!og)
-                    {
-                        p.LegsAnim = 5;
-                    }
-                    else if (p.Moving)
-                    {
-                        if (ds == 0) p.LegsAnim = isBackward ? 10 : 9;
-                        else if (!isWalk && v2d > 310) p.LegsAnim = isBackward ? 2 : 1;
-                        else p.LegsAnim = isBackward ? 4 : 3;
-                    }
-                    else
-                    {
-                        p.LegsAnim = ds == 0 ? 8 : 7;
-                    }
-                    if (p.LegsAnim != prevLegsAnim)
-                    {
-                        p.LegsSpeedAnimTime = 0f;
-                    }
-                    float legAnimSpeed = (p.LegsAnim == 1 || p.LegsAnim == 2) ? v2d * 0.0016f : 1f;
-                    p.LegsSpeedAnimTime += rawFrameMs * legAnimSpeed;
+                    PlayerPredictionEngine.UpdateLegsAnimAndSpeedTime(p, og, ds, v2d, isWalk, isBackward, rawFrameMs);
                 }
             }
             else
@@ -639,9 +590,15 @@ namespace SSJJ.Server
                 G_Active.ClientThink(phys, p, qCmd, dt);
             }
 
-            if (isAttack || isAttack2)
+            bool fired = false;
+            if (isAttack && wDef.IsThrowable && !wDef.Name.Equals("c4", StringComparison.OrdinalIgnoreCase) && p.CurrentClip > 0)
             {
-                bool fired;
+                p.CurrentClip--;
+                missileSys.SpawnGrenade(p);
+                fired = true;
+            }
+            else if ((isAttack || (isAttack2 && wDef.IsMelee)) && !p.IsStartReload)
+            {
                 if (modeCoord.IsFlyKnife)
                 {
                     fired = modeCoord.TryFlyKnifeAttack(p, isAttack, isAttack2, allEntities);
@@ -649,15 +606,6 @@ namespace SSJJ.Server
                 else
                 {
                     fired = wpn.TryFire(p, phys, isAttack, isAttack2, tables, officialPhysics, freeForAll, allEntities);
-                }
-                if (fired)
-                {
-                    int atkMs = Math.Max(50, wDef.AttackIntervalMs);
-                    p.ShotsFired++;
-                    p.DelayFire = true;
-                    p.NextAttackTimer = p.ClientTime + atkMs;
-                    p.ViewAnim = isAttack2 ? 20 : 15;
-                    p.ViewAnimRemainMs = atkMs;
                 }
                 if (p.TorsoAnim != 15)
                 {
@@ -675,31 +623,14 @@ namespace SSJJ.Server
                 }
                 p.ReloadAnimEndTime = (float)nowSec + 1.4f;
             }
-            else
+            else if (nowSec >= p.FireAnimEndTime && nowSec >= p.ReloadAnimEndTime && p.TorsoAnim != 13)
             {
-                // 与 RifleIdleAction / AbstractFrameAction 1:1 对齐
-                if (p.DelayFire)
-                {
-                    p.DelayFire = false;
-                    if (p.ShotsFired > 8) p.ShotsFired = 8;
-                    p.DecreaseShotsFired = p.ClientTime + 150;
-                }
-                else if (p.ShotsFired > 0 && p.DecreaseShotsFired < p.ClientTime)
-                {
-                    p.DecreaseShotsFired = p.ClientTime + 16;
-                    p.ShotsFired--;
-                }
-                else if (p.ShotsFired == 0)
-                {
-                    p.WeaponAccuracy = wDef.DefaultAccuracy;
-                }
-
-                if (nowSec >= p.FireAnimEndTime && nowSec >= p.ReloadAnimEndTime && p.TorsoAnim != 13)
-                {
-                    p.TorsoAnim = 13;
-                    p.TorsoAnimStartTime = (float)(nowSec * 1000.0);
-                }
+                p.TorsoAnim = 13;
+                p.TorsoAnimStartTime = (float)(nowSec * 1000.0);
             }
+
+            PlayerPredictionEngine.StepSniperZoom(p, wDef, isAttack2Edge, fired);
+            PlayerPredictionEngine.StepWeaponIdleAndAccuracy(p, wDef, isAttack, fired, isAttack2 && wDef.IsMelee);
         }
 
         private static List<T> DrainList<T>(ConcurrentQueue<T> q, int max)

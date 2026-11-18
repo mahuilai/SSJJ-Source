@@ -23,6 +23,7 @@ namespace SSJJ.Server.Bots
         private readonly OfficialPhysicsWorld? _officialPhysics;
         private readonly BspNavGraph? _navGraph;
         private readonly bool _freeForAll;
+        private readonly string _difficulty;
         private readonly float _spawnX;
         private readonly float _spawnY;
         private readonly float _spawnZ;
@@ -58,7 +59,8 @@ namespace SSJJ.Server.Bots
             BspNavGraph? navGraph,
             bool freeForAll,
             bool isMeleeOnly,
-            int quality = 1)
+            int quality = 1,
+            string difficulty = "normal")
         {
             Id = id;
             Team = team;
@@ -67,6 +69,7 @@ namespace SSJJ.Server.Bots
             _officialPhysics = officialPhysics;
             _navGraph = navGraph;
             _freeForAll = freeForAll;
+            _difficulty = string.IsNullOrWhiteSpace(difficulty) ? "normal" : difficulty.Trim().ToLowerInvariant();
             _spawnX = x;
             _spawnY = y;
             _spawnZ = z;
@@ -307,12 +310,13 @@ namespace SSJJ.Server.Bots
 
                 float aimTargetYaw = hasLos ? desiredYaw : navYaw;
                 float deltaAimYaw = NormalizeAngle(aimTargetYaw - Snap.ViewYaw);
-                float maxStepYaw = 540f * dt;
+                float turnSpeed = _difficulty == "hard" ? 720f : (_difficulty == "easy" ? 240f : 460f);
+                float maxStepYaw = turnSpeed * dt;
                 Snap.ViewYaw = Math.Abs(deltaAimYaw) <= maxStepYaw ? aimTargetYaw : Snap.ViewYaw + Math.Sign(deltaAimYaw) * maxStepYaw;
 
                 float aimPitch = hasLos ? desiredPitch : 0f;
                 float deltaPitch = aimPitch - Snap.ViewPitch;
-                float maxStepPitch = 360f * dt;
+                float maxStepPitch = (turnSpeed * 0.7f) * dt;
                 Snap.ViewPitch = Math.Abs(deltaPitch) <= maxStepPitch ? aimPitch : Snap.ViewPitch + Math.Sign(deltaPitch) * maxStepPitch;
                 Snap.MoveYaw = Snap.ViewYaw;
                 Snap.MovePitch = Snap.ViewPitch;
@@ -324,7 +328,7 @@ namespace SSJJ.Server.Bots
                     // 近战人机：严格禁止远程开火！必须冲到 <= 195cm 且视线无阻挡才挥砍
                     if (dist2D <= 195f && losYawDiff < 38f && hasLos)
                     {
-                        bool heavy = _rng.NextDouble() < 0.35;
+                        bool heavy = _rng.NextDouble() < (_difficulty == "hard" ? 0.50 : 0.35);
                         if (heavy) cmd.Attack2 = true; else cmd.Attack = true;
                         Weapon.TryFire(Snap, Physics, !heavy, heavy, _tables, _officialPhysics, _freeForAll, allEntities);
                     }
@@ -333,12 +337,14 @@ namespace SSJJ.Server.Bots
                 }
                 else
                 {
-                    // 枪械人机：仅在有视线时开火，且限制最大有效交战距离
+                    // 枪械人机：仅在有视线时开火，按难度区分反应延迟与瞄准精度
                     if (hasLos) _targetLockTime += dt;
                     else _targetLockTime = 0f;
 
-                    bool inAim = losYawDiff < 20f;
-                    if (hasLos && inAim && _targetLockTime >= 0.12f && dist2D < 6500f)
+                    float reqLock = _difficulty == "hard" ? 0.06f : (_difficulty == "easy" ? 0.45f : 0.16f);
+                    float aimCone = _difficulty == "hard" ? 12f : (_difficulty == "easy" ? 30f : 20f);
+                    bool inAim = losYawDiff < aimCone;
+                    if (hasLos && inAim && _targetLockTime >= reqLock && dist2D < 6500f)
                     {
                         cmd.Attack = true;
                         Weapon.TryFire(Snap, Physics, true, false, _tables, _officialPhysics, _freeForAll, allEntities);

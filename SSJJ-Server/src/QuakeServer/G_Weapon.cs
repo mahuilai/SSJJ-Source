@@ -75,7 +75,9 @@ namespace SSJJ.Server.QuakeServer
             int maxClip = tblDef != null && tblDef.MaxClip > 0 ? tblDef.MaxClip
                 : (WeaponDefs.TryGetValue(wName, out var wd3) ? wd3.MaxClip : 30);
             int pellets = tblDef != null ? Math.Max(1, tblDef.FireBullets) : 1;
-            float spread = tblDef?.WeaponType == 5 ? 0.002f : (tblDef?.WeaponType == 6 ? 0.055f : 0.014f);
+            float spread = tblDef?.WeaponType == 5
+                ? ((shooter.Velocity2D > 10 || !shooter.OnGround) ? 0.085f : (shooter.Fov < 90 ? 0.0005f : 0.025f))
+                : (tblDef?.WeaponType == 6 ? 0.055f : Math.Clamp(shooter.WeaponAccuracy * 0.08f, 0.004f, 0.07f));
             float maxRange = tblDef != null ? Math.Min(tblDef.ShotDistance, 20000f) : 12000f;
 
             if (shooter.MaxClip <= 0) shooter.MaxClip = maxClip;
@@ -236,8 +238,18 @@ namespace SSJJ.Server.QuakeServer
 
             if (best != null)
             {
+                // 近战背部攻击 (1.5x) 与视平线爆头 (2.0x)
+                float targetYawRad = best.ViewYaw * (float)Math.PI / 180f;
+                float tFwdX = (float)Math.Cos(targetYawRad);
+                float tFwdY = (float)Math.Sin(targetYawRad);
+                float atkDot = fwdX * tFwdX + fwdY * tFwdY;
+                int part = shooter.ViewPitch < -10f ? 1 : 2;
+                int finalMeleeDmg = rawDmg;
+                if (atkDot > 0.5f) finalMeleeDmg = (int)(finalMeleeDmg * 1.5f);
+                if (part == 1) finalMeleeDmg = (int)(finalMeleeDmg * 2.0f);
+
                 // 近战无视护甲削减，确保左键两刀 / 右键一刀手感
-                G_Combat.ApplyDamage(best, shooter, rawDmg, 2, shooter.CurrentWeaponName, ignoreArmor: true);
+                G_Combat.ApplyDamage(best, shooter, finalMeleeDmg, part, shooter.CurrentWeaponName, ignoreArmor: true);
                 return true;
             }
             return false;

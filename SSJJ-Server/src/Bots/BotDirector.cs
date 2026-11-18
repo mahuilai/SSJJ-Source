@@ -83,7 +83,9 @@ namespace SSJJ.Server.Bots
                     officialPhysics: _officialPhysics,
                     navGraph: _navGraph,
                     freeForAll: ffa,
-                    isMeleeOnly: meleeOnly);
+                    isMeleeOnly: meleeOnly,
+                    quality: _cfg.BotDifficulty == "hard" ? 3 : (_cfg.BotDifficulty == "easy" ? 0 : 1),
+                    difficulty: _cfg.BotDifficulty);
 
                 _officialPhysics.RegisterEntity(id, team, career, true, x, y, z);
                 _agents.Add(agent);
