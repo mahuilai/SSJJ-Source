@@ -5,6 +5,8 @@ import java.io.*;
 import java.net.*;
 import java.nio.file.*;
 import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.*;
 import java.util.regex.*;
 import java.util.zip.Inflater;
 
@@ -88,19 +90,23 @@ public class LobbyLoginServer {
         return sb;
     }
 
-    static Amf3TypedObject makeBagData(boolean isGlobalBag, Amf3TypedObject master, Amf3TypedObject secondary, Amf3TypedObject closed, Amf3TypedObject bom1) {
+    static Amf3TypedObject makeBagData(ProfileManager.BagSlot bag) {
         var bd = new Amf3TypedObject("netdata.BagData", List.of(
             "masterWeapon", "secondaryWeapon", "closedWeapon", "bom1", "bom2", "bom3",
             "isGlobalBag", "bagDataScore"), false);
-        bd.set("masterWeapon", master);
-        bd.set("secondaryWeapon", secondary);
-        bd.set("closedWeapon", closed);
-        bd.set("bom1", bom1);
-        bd.set("bom2", null);
-        bd.set("bom3", null);
-        bd.set("isGlobalBag", isGlobalBag);
+        bd.set("masterWeapon", makeWeaponData(bag.master));
+        bd.set("secondaryWeapon", makeWeaponData(bag.secondary));
+        bd.set("closedWeapon", makeWeaponData(bag.closed));
+        bd.set("bom1", makeWeaponData(bag.bom1));
+        bd.set("bom2", makeWeaponData(bag.bom2));
+        bd.set("bom3", makeWeaponData(bag.bom3));
+        bd.set("isGlobalBag", false);
         bd.set("bagDataScore", 1000);
         return bd;
+    }
+
+    static Amf3TypedObject makeWeaponData(ProfileManager.WeaponSlot slot) {
+        return slot == null ? null : makeWeaponData(slot.storageId, slot.codeName, slot.tid);
     }
 
     static Amf3TypedObject makeAvatarBagData(int tid, int ctid) {
@@ -211,13 +217,20 @@ public class LobbyLoginServer {
         String codeName;
         String name;
         String res;
+        int adventureRating;
     }
     static Map<Integer, WeaponMeta> weaponMetaMap = new HashMap<>();
+    static Map<?, ?> avatarCatalog = Map.of();
+    static Map<?, ?> skinCatalog = Map.of();
+    static Map<?, ?> avatarPartCatalog = Map.of();
 
     static void loadWeaponMeta() {
         try {
             byte[] b = Files.readAllBytes(Paths.get("../cache/gamedata1.amf3"));
             Map<?, ?> m = (Map<?, ?>) new Amf3Decoder(b).decodeOne();
+            if (m.get("shop_avatar") instanceof Map<?, ?> avatars) avatarCatalog = avatars;
+            if (m.get("shop_skin") instanceof Map<?, ?> skins) skinCatalog = skins;
+            if (m.get("shop_avatarParts") instanceof Map<?, ?> parts) avatarPartCatalog = parts;
             Map<?, ?> sw = (Map<?, ?>) m.get("shop_weapon");
             if (sw != null) {
                 for (var e : sw.entrySet()) {
@@ -234,6 +247,9 @@ public class LobbyLoginServer {
                     wm.codeName = String.valueOf(row.get("codeName"));
                     wm.name = String.valueOf(row.get("name"));
                     wm.res = String.valueOf(row.get("res"));
+                    wm.adventureRating = (int)Math.max(0, Math.min(400,
+                        numberArgument(row.get("attackLv")) + numberArgument(row.get("defenseLv"))
+                        + numberArgument(row.get("coordLv"))));
                     weaponMetaMap.put(tid, wm);
                 }
                 System.out.println("Loaded " + weaponMetaMap.size() + " weapon metadata entries!");
@@ -251,6 +267,170 @@ public class LobbyLoginServer {
     static volatile int roomRaceType = 2003;
     static volatile int roomLimitNumber = 10;
     static volatile Amf3TypedObject currentRoomInfo = null;
+    static final String LOCAL_SECOND_ACCOUNT = "900000002";
+    static final long LOCAL_SECOND_CHARACTER = 1000200072529L;
+    static final int BOT_CHANNEL_ID = 2;
+
+    static final class LobbySession {
+        final DataOutputStream out;
+        final Object sendLock = new Object();
+        volatile double characterId = 1000200072528.0;
+        volatile String playerName = "离线玩家";
+        volatile String career = "police";
+        volatile int selectedBagIndex = 0;
+        volatile int team = 1;
+        volatile boolean observerFlag = false;
+        volatile int readyGame = 1;
+        volatile int roomId = 0;
+        volatile int channelId = 1;
+        volatile String loginName = "";
+        volatile String lobbyToken = "";
+        volatile String clanName = "无端离线战队";
+        volatile int clanId = 1;
+        volatile File profileFile = ProfileManager.getProfileFile();
+        LobbySession(DataOutputStream out) { this.out = out; }
+    }
+
+    static final class LobbyRoom {
+        final int roomId;
+        final int channelId;
+        final List<LobbySession> members = new CopyOnWriteArrayList<>();
+        volatile Amf3TypedObject rawRoom;
+        volatile double hostCharId;
+        volatile String hostName;
+        volatile String roomName = "Server-First 联机房";
+        volatile int sceneId = 12;
+        volatile int raceType = 2003;
+        volatile int limitNumber = 10;
+        volatile int tcpPort = 27100;
+        volatile int udpPort = 27101;
+        volatile Process battleServerProc = null;
+        volatile Path battleControl = null;
+        volatile int battleSeats = 0;
+
+        LobbyRoom(int roomId, LobbySession host, Amf3TypedObject baseRoom) {
+            this.roomId = roomId;
+            this.channelId = host.channelId;
+            this.rawRoom = baseRoom;
+            this.hostCharId = host.characterId;
+            this.hostName = host.playerName;
+        }
+
+        synchronized Amf3TypedObject toAmf3() {
+            var keys = new ArrayList<>(List.of(
+                "roomId", "roomDisplayId", "roomName", "sceneId", "raceType", "limitNumber",
+                "createCharacterId", "createCharName", "createCharVipLv", "status", "gameStatus",
+                "accessNumber", "battleNumber", "gameLimitNumber"));
+            Amf3TypedObject r = new Amf3TypedObject("bean.RoomInfoEx", keys, true);
+            if (rawRoom != null) {
+                for (var e : rawRoom.fields().entrySet()) {
+                    if (e.getKey() != null && !keys.contains(e.getKey())) r.set(e.getKey(), e.getValue());
+                }
+            }
+            r.set("roomId", (double) roomId);
+            r.set("roomDisplayId", (double) roomId);
+            r.set("roomName", roomName);
+            r.set("sceneId", sceneId);
+            r.set("raceType", raceType);
+            r.set("limitNumber", limitNumber);
+            r.set("createCharacterId", hostCharId);
+            r.set("createCharName", hostName);
+            r.set("createCharVipLv", 15);
+            r.set("status", 0);
+            r.set("gameStatus", battleServerProc != null && battleServerProc.isAlive() ? 1 : 0);
+            r.set("accessNumber", members.size());
+            r.set("battleNumber", battleServerProc != null && battleServerProc.isAlive() ? battleSeats : 0);
+            r.set("gameLimitNumber", limitNumber);
+            return r;
+        }
+
+        synchronized Amf3TypedObject toListAmf3() {
+            var item = new Amf3TypedObject("bean.ClientRoom", List.of(
+                "roomId", "roomDisplayId", "roomName", "sceneId", "raceType", "limitNumber",
+                "createCharacterId", "createCharName", "createCharVipLv", "status", "gameStatus",
+                "accessNumber", "battleNumber", "gameLimitNumber", "isJoin", "channelId"
+            ), false);
+            var room = toAmf3();
+            for (String key : item.sealedNames()) {
+                if (room.fields().containsKey(key)) item.set(key, room.fields().get(key));
+            }
+            item.set("gameLimitNumber", limitNumber);
+            item.set("battleNumber", members.size());
+            item.set("isJoin", true);
+            item.set("channelId", channelId);
+            return item;
+        }
+
+        List<Object> userListAmf3() {
+            var list = new ArrayList<Object>(members.size());
+            for (LobbySession m : members) {
+                list.add(makeClientRoomUser(m));
+            }
+            return list;
+        }
+
+        void broadcast(String fn, List<Object> params) {
+            for (LobbySession m : members) {
+                try {
+                    synchronized (m.sendLock) {
+                        send(m.out, fn, params);
+                    }
+                } catch (Exception ignored) {}
+            }
+        }
+    }
+
+    static final ConcurrentHashMap<Integer, LobbyRoom> ROOMS = new ConcurrentHashMap<>();
+    static final ConcurrentHashMap<Double, LobbySession> ACTIVE_SESSIONS = new ConcurrentHashMap<>();
+    static final ConcurrentHashMap<String, LobbySession> LOBBY_TOKENS = new ConcurrentHashMap<>();
+    static final ConcurrentHashMap<Double, LobbySession> ACTIVE_CHANNELS = new ConcurrentHashMap<>();
+    static final AtomicInteger NEXT_ROOM_ID = new AtomicInteger(1001);
+    static final AtomicInteger NEXT_GUEST_ID = new AtomicInteger(1);
+
+    static void broadcastRoomListChange(LobbyRoom room, String event, List<Object> params) {
+        for (var member : ACTIVE_CHANNELS.values()) {
+            if (member.channelId != room.channelId || member.roomId != 0) continue;
+            try { send(member.out, event, params); }
+            catch (IOException ignored) {}
+            catch (Exception e) { System.err.println("[LobbyServer] Room list broadcast: " + e.getMessage()); }
+        }
+    }
+
+    static LobbyRoom findRoomForJoin(int requestedRoomId, int channelId) {
+        if (requestedRoomId > 0) {
+            var room = ROOMS.get(requestedRoomId);
+            return room != null && room.channelId == channelId ? room : null;
+        }
+        for (LobbyRoom r : ROOMS.values()) {
+            if (r.channelId == channelId && r.members.size() < r.limitNumber) return r;
+        }
+        return null;
+    }
+
+    static Amf3TypedObject makeClientRoomUser(LobbySession session) {
+        var u = new Amf3TypedObject("bean.ClientRoomUser", List.of(
+            "playerName", "characterId", "readyGame", "inGameServer", "team",
+            "lv", "vipLv", "teamName", "teamId", "observerFlag",
+            "dId", "dName", "lastInviteTime", "raceRankSect", "raceIsKing", "raceRankLv"
+        ), false);
+        u.set("playerName", session.playerName);
+        u.set("characterId", session.characterId);
+        u.set("readyGame", session.readyGame);
+        u.set("inGameServer", false);
+        u.set("team", session.team);
+        u.set("lv", 91);
+        u.set("vipLv", 15);
+        u.set("teamName", session.clanName);
+        u.set("teamId", session.clanId);
+        u.set("observerFlag", session.observerFlag);
+        u.set("dId", 1);
+        u.set("dName", "离线服");
+        u.set("lastInviteTime", 0.0);
+        u.set("raceRankSect", 5);
+        u.set("raceIsKing", 0);
+        u.set("raceRankLv", 25);
+        return u;
+    }
 
     static int intField(Amf3TypedObject obj, String key, int defVal) {
         if (obj == null) return defVal;
@@ -300,7 +480,7 @@ public class LobbyLoginServer {
 
     static volatile Process activeBattleProc = null;
 
-    static void launchBattleClient(String career, int bag, int sceneId, int raceType, int team, int allyBots, int enemyBots) {
+    static void launchBattleClient(String career, int bag, int sceneId, int raceType, int team, int allyBots, int enemyBots, int maxHumans, int tcpPort, int udpPort) {
         try {
             if (activeBattleProc != null && activeBattleProc.isAlive()) {
                 System.out.println("[LobbyServer] Battle launcher already running; ignoring duplicate startGame.");
@@ -311,20 +491,99 @@ public class LobbyLoginServer {
             if (!Files.isRegularFile(script)) throw new FileNotFoundException(script.toString());
             activeBattleProc = new ProcessBuilder(
                 "python", script.toString(),
+                "--profile", ProfileManager.getProfileFile().getAbsolutePath(),
                 "--career", career,
                 "--bag", String.valueOf(bag),
                 "--scene-id", String.valueOf(sceneId),
                 "--race-type", String.valueOf(raceType),
                 "--team", String.valueOf(team),
                 "--ally-bots", String.valueOf(allyBots),
-                "--enemy-bots", String.valueOf(enemyBots)
-            ).directory(root.toFile()).start();
+                "--enemy-bots", String.valueOf(enemyBots),
+                "--max-human-players", String.valueOf(Math.max(1, maxHumans)),
+                "--tcp-port", String.valueOf(tcpPort),
+                "--udp-port", String.valueOf(udpPort)
+            ).directory(root.toFile())
+                .redirectErrorStream(true)
+                .redirectOutput(ProcessBuilder.Redirect.appendTo(root.resolve("Game-SSJJ-logs/room-battle.log").toFile()))
+                .start();
             System.out.println("[LobbyServer] Spawned " + script + " (career=" + career + ", bag=" + bag
                 + ", scene=" + sceneId + ", race=" + raceType + ", team=" + team
-                + ", ally=" + allyBots + ", enemy=" + enemyBots + ")");
+                + ", ally=" + allyBots + ", enemy=" + enemyBots + ", humans=" + maxHumans
+                + ", tcp=" + tcpPort + ", udp=" + udpPort + ")");
         } catch (Exception e) {
             System.err.println("[LobbyServer] Failed to launch battle client: " + e.getMessage());
         }
+    }
+
+    static boolean isHeadlessBattleBridge() {
+        return "1".equals(System.getProperty("ssjj.lobby.headlessBattle"))
+            || "1".equals(System.getenv("SSJJ_LOBBY_HEADLESS_BATTLE"));
+    }
+
+    static boolean isLocalDualBattle() {
+        return "1".equals(System.getenv("SSJJ_LOBBY_LOCAL_DUAL"));
+    }
+
+    record BattleSeat(long characterId, int team, String playerName, File profileFile) {}
+
+    static boolean launchRoomBattle(LobbyRoom room, LobbySession host, List<BattleSeat> seats, int allyBots, int enemyBots) {
+        synchronized (room) {
+            return launchRoomBattleLocked(room, host, seats, allyBots, enemyBots);
+        }
+    }
+
+    private static boolean launchRoomBattleLocked(LobbyRoom room, LobbySession host, List<BattleSeat> seats, int allyBots, int enemyBots) {
+        try {
+            if (room.battleServerProc != null && room.battleServerProc.isAlive())
+                return Files.isRegularFile(room.battleControl.resolve("ready"));
+            Path root = projectRoot();
+            Path control = Files.createTempDirectory(Files.createDirectories(root.resolve("Game-SSJJ-logs")), "room-" + room.roomId + "-");
+            Path script = root.resolve("_work/launch_battle_from_lobby.py");
+            var command = new ArrayList<>(List.of("python", script.toString(),
+                "--profile", host.profileFile.getAbsolutePath(),
+                "--scene-id", String.valueOf(room.sceneId),
+                "--race-type", String.valueOf(room.raceType),
+                "--team", String.valueOf(host.team),
+                "--room-id", String.valueOf(room.roomId),
+                "--tcp-port", String.valueOf(room.tcpPort),
+                "--udp-port", String.valueOf(room.udpPort),
+                "--ally-bots", String.valueOf(Math.max(0, allyBots)),
+                "--enemy-bots", String.valueOf(Math.max(0, enemyBots)),
+                "--room-control", control.toString()));
+            for (BattleSeat seat : seats) {
+                command.addAll(List.of("--seat", String.valueOf(seat.characterId()), String.valueOf(seat.team()),
+                    seat.playerName(), seat.profileFile().getAbsolutePath()));
+            }
+            if (isHeadlessBattleBridge()) command.add("--server-only");
+            room.battleControl = control;
+            room.battleSeats = seats.size();
+            var launcher = new ProcessBuilder(command).directory(root.toFile())
+                .redirectErrorStream(true)
+                .redirectOutput(control.resolve("bridge.log").toFile());
+            launcher.environment().put("PYTHONIOENCODING", "utf-8");
+            room.battleServerProc = launcher.start();
+            long deadline = System.currentTimeMillis() + 10000;
+            while (System.currentTimeMillis() < deadline && room.battleServerProc.isAlive()) {
+                if (Files.isRegularFile(control.resolve("ready"))) {
+                    System.out.println("[LobbyServer] Battle room " + room.roomId + " ready at 127.0.0.1:"
+                        + room.tcpPort + "/" + room.udpPort + " seats=" + seats.size() + " logs=" + control);
+                    return true;
+                }
+                Thread.sleep(50);
+            }
+            stopRoomBattle(room);
+            System.err.println("[LobbyServer] Room bridge did not become ready. See " + control.resolve("bridge.log"));
+        } catch (Exception e) {
+            stopRoomBattle(room);
+            System.err.println("[LobbyServer] Failed to launch room battle: " + e.getMessage());
+        }
+        return false;
+    }
+
+    private static void stopRoomBattle(LobbyRoom room) {
+        if (room.battleControl == null) return;
+        try { Files.writeString(room.battleControl.resolve("stop"), ""); }
+        catch (IOException e) { System.err.println("[LobbyServer] Failed to stop room " + room.roomId + ": " + e.getMessage()); }
     }
 
     static void loadStorageBinFile(String filePath) {
@@ -436,6 +695,108 @@ public class LobbyLoginServer {
         return -1L;
     }
 
+    static Amf3TypedObject copyBean(Amf3TypedObject source) {
+        var copy = new Amf3TypedObject(source.className(), source.sealedNames(), source.dynamic());
+        source.fields().forEach(copy::set);
+        source.dynamicFields().forEach(copy::set);
+        return copy;
+    }
+
+    static Amf3TypedObject avatarFor(Map<String, Object> avatars, int id) {
+        return avatars.get(String.valueOf(id)) instanceof Amf3TypedObject avatar ? avatar : null;
+    }
+
+    static boolean selectAvatar(ProfileManager.Profile profile, Map<String, Object> avatars, int id) {
+        var avatar = avatarFor(avatars, id);
+        if (avatar == null) return false;
+        profile.defaultAvatar = id;
+        profile.defaultCareer = String.valueOf(avatar.fields().get("career"));
+        return true;
+    }
+
+    static Amf3TypedObject makeUserSettings(ProfileManager.Profile profile) {
+        var sb = new Amf3TypedObject("bean.UserSettingBean", List.of(
+            "isRecommendDenied", "isChatFromStrangersDenied", "isInviteJoinTeamDenied",
+            "isCreateFriendDenied", "isBackgroundMusic", "isBackgroundMusicNotice",
+            "isCache", "isShowMedalInBattle", "isChromeNotice", "unityWindowModel",
+            "otherSettingString", "battleClientValue", "playerCareerLevel", "enableLoginIpProtect"), false);
+        sb.set("isRecommendDenied", false);
+        sb.set("isChatFromStrangersDenied", false);
+        sb.set("isInviteJoinTeamDenied", false);
+        sb.set("isCreateFriendDenied", false);
+        sb.set("isBackgroundMusic", true);
+        sb.set("isBackgroundMusicNotice", false);
+        sb.set("isCache", false);
+        sb.set("isShowMedalInBattle", true);
+        sb.set("isChromeNotice", true);
+        sb.set("unityWindowModel", "0");
+        sb.set("otherSettingString", "");
+        sb.set("battleClientValue", "2");
+        sb.set("playerCareerLevel", 1);
+        sb.set("enableLoginIpProtect", false);
+        for (var entry : profile.userSettings.entrySet()) {
+            String name = entry.getKey();
+            String saved = entry.getValue();
+            Object fallback = sb.fields().get(name);
+            if (fallback instanceof Boolean) sb.set(name, Boolean.parseBoolean(saved));
+            else if (fallback instanceof Number) {
+                try { sb.set(name, Integer.parseInt(saved)); } catch (NumberFormatException ignored) {}
+            } else if (fallback instanceof String) sb.set(name, saved);
+        }
+        return sb;
+    }
+
+    static long numberArgument(Object value) {
+        if (value instanceof Number n) return n.longValue();
+        try { return (long)Double.parseDouble(String.valueOf(value)); }
+        catch (NumberFormatException ignored) { return 0; }
+    }
+
+    static Amf3TypedObject storageCatalogItem(long id) {
+        return grandSlamStorageMap.get(String.valueOf(id)) instanceof Amf3TypedObject bean ? bean : null;
+    }
+
+    static Map<?, ?> catalogEntry(Map<?, ?> catalog, int id) {
+        Object row = catalog.get(String.valueOf(id));
+        if (row == null) row = catalog.get(id);
+        if (row == null) row = catalog.get((double)id);
+        return row instanceof Map<?, ?> fields ? fields : Map.of();
+    }
+
+    static int avatarPartSlot(Amf3TypedObject storage) {
+        if (intField(storage, "type", 0) != 16) return -1;
+        var config = catalogEntry(avatarPartCatalog, intField(storage, "tid", 0));
+        Object slot = config.get("type");
+        return slot == null ? -1 : (int)numberArgument(slot);
+    }
+
+    static void applyAvatarAppearance(Amf3TypedObject avatar, ProfileManager.Profile profile, int roleId) {
+        var appearance = profile.avatarAppearances.get(roleId);
+        long skinId = appearance == null ? 0 : appearance.storageSkinId();
+        int facadeId = appearance == null ? 0 : appearance.facadePartId();
+        var skinStorage = storageCatalogItem(skinId);
+        int avatarId = intField(skinStorage, "tid", 0);
+        if (intField(skinStorage, "type", 0) == 8) {
+            var skin = catalogEntry(skinCatalog, avatarId);
+            avatarId = (int)numberArgument(skin.get("originCharId"));
+        }
+        avatar.set("storageSkinId", (double)skinId);
+        avatar.set("careerSkin", Objects.toString(catalogEntry(avatarCatalog, avatarId).get("carrer"), ""));
+        avatar.set("facadePartId", facadeId);
+        var parts = new LinkedHashMap<String, Object>();
+        profile.avatarParts.getOrDefault(roleId, Map.of()).forEach((slot, id) -> {
+            int tid = intField(storageCatalogItem(id), "tid", 0);
+            Object career = catalogEntry(avatarPartCatalog, tid).get("carrer");
+            if (career == null) return;
+            var part = new Amf3TypedObject("netdata.AvatarPartData", List.of(
+                "avatarPartStorageId", "avatarPartId", "avatarPartCodeName", "backDecorationExp", "backDecorationGp"), false);
+            part.set("avatarPartStorageId", (double)id).set("avatarPartId", tid).set("avatarPartCodeName", career)
+                .set("backDecorationExp", 0).set("backDecorationGp", 0);
+            parts.put(String.valueOf(slot), part);
+        });
+        avatar.set("avatarPartDataMap", parts);
+    }
+
     static void ensureDefaultRenameCard(ProfileManager.Profile profile) {
         long fastCardId = findStorageId(3, 1078);
         long regularCardId = findStorageId(3, 33);
@@ -465,6 +826,38 @@ public class LobbyLoginServer {
             }
         }
         return copy;
+    }
+
+    static Amf3TypedObject storageForProfile(ProfileManager.Profile profile, long id) {
+        var source = grandSlamStorageMap.get(String.valueOf(id));
+        if (!(source instanceof Amf3TypedObject bean)) return null;
+        int amount = profile.storageAmounts.getOrDefault(id, intField(bean, "amount", 1));
+        return copyStorageBean(id, amount);
+    }
+
+    static List<Object> updateWeaponSkin(ProfileManager.Profile profile, long weaponId, long skinId, boolean equip) {
+        var weapon = storageForProfile(profile, weaponId);
+        var skin = storageForProfile(profile, skinId);
+        if (intField(weapon, "type", 0) != 1 || intField(skin, "type", 0) != 8) return List.of();
+        var changes = new ArrayList<Object>();
+        changes.add(weapon);
+        Long previous = profile.equippedSkins.get(weaponId);
+        if (equip) {
+            profile.equippedSkins.values().removeIf(id -> id == skinId);
+            profile.equippedSkins.put(weaponId, skinId);
+            if (previous != null && previous != skinId) {
+                var oldSkin = storageForProfile(profile, previous);
+                if (oldSkin != null) changes.add(oldSkin);
+            }
+        } else {
+            profile.equippedSkins.remove(weaponId, skinId);
+        }
+        if (skin.fields().get("extBean") instanceof Amf3TypedObject ext) {
+            ext.set("weaponStorageId", equip ? (double)weaponId : 0.0);
+        }
+        changes.add(skin);
+        ProfileManager.save(profile);
+        return changes;
     }
 
     static final Set<Integer> FULL_STORAGE_DISPATCH_TYPES =
@@ -497,6 +890,8 @@ public class LobbyLoginServer {
             addEquippedWeaponId(ownedIds, equippedIds, bag.secondary);
             addEquippedWeaponId(ownedIds, equippedIds, bag.closed);
             addEquippedWeaponId(ownedIds, equippedIds, bag.bom1);
+            addEquippedWeaponId(ownedIds, equippedIds, bag.bom2);
+            addEquippedWeaponId(ownedIds, equippedIds, bag.bom3);
         }
         for (var skin : profile.equippedSkins.entrySet()) {
             ownedIds.add(skin.getValue());
@@ -650,7 +1045,7 @@ public class LobbyLoginServer {
             new java.util.concurrent.atomic.AtomicInteger();
     // 观测：本轮是否已回包（用于捕获"客户端永久 pending"这一类静默失败）
     static final ThreadLocal<Boolean> SENT = ThreadLocal.withInitial(() -> Boolean.FALSE);
-    static final java.util.Set<String> NO_REPLY_OK = java.util.Set.of("heartBeat");
+    static final java.util.Set<String> NO_REPLY_OK = java.util.Set.of("heartBeat", "firstHitSetButton");
     static final java.util.concurrent.atomic.AtomicLong NO_REPLY_COUNT =
             new java.util.concurrent.atomic.AtomicLong();
     static final java.util.concurrent.atomic.AtomicLong RPC_ERR_COUNT =
@@ -694,13 +1089,21 @@ public class LobbyLoginServer {
         System.out.println("[conn] ACCEPT " + peer);
         long t0 = System.currentTimeMillis();
         int frameCount = 0;
+        LobbySession session = null;
         try (DataInputStream in = new DataInputStream(new BufferedInputStream(s.getInputStream()));
              DataOutputStream out = new DataOutputStream(new BufferedOutputStream(s.getOutputStream()))) {
             
             ProfileManager.Profile profile = ProfileManager.load();
+            session = new LobbySession(out);
+            session.playerName = profile.playerName;
+            session.career = profile.defaultCareer;
+            session.selectedBagIndex = profile.selectedBagIndex;
+            session.team = profile.team;
+            Amf3TypedObject settings = makeUserSettings(profile);
             List<Amf3TypedObject> sessionAvatarBags = new ArrayList<>();
             List<Amf3TypedObject> bagArray = new ArrayList<>();
-            Map<String, Object> rootAvatarDataHashMap = new LinkedHashMap<>(grandSlamRootAvatarMap);
+            Map<String, Object> rootAvatarDataHashMap = new LinkedHashMap<>();
+            AdventureLobby adventure = new AdventureLobby();
 
             while (true) {
                 int len;
@@ -830,8 +1233,8 @@ public class LobbyLoginServer {
                     // The official AIR preloader blocks here before it loads the lobby module.
                     send(out, "callbackGetUserCharacterState", List.of(Boolean.TRUE));
                 } else if ("getRoomChannel".equals(fn)) {
-                    var ch1 = makeLobbyRoomChannel(1, "本地离线频道", 1, 1);
-                    var ch2 = makeLobbyRoomChannel(2, "人机娱乐频道", 2, 217);
+                    var ch1 = makeLobbyRoomChannel(1, "本地联机频道", 1, 1);
+                    var ch2 = makeLobbyRoomChannel(BOT_CHANNEL_ID, "人机娱乐频道", 2, 217);
                     var ch3 = makeLobbyRoomChannel(3, "经典竞技频道", 3, 215);
                     send(out, "callChannelList", List.of(List.of(ch1, ch2, ch3), new LinkedHashMap<String, Object>()));
                 } else if ("getGlobalRoomChannel".equals(fn)) {
@@ -841,30 +1244,58 @@ public class LobbyLoginServer {
                     var params = new java.util.ArrayList<Object>(); params.add(null);
                     send(out, "callbackGetPatchca", params);
                 } else if ("loginV3".equals(fn)) {
+                    if (!rpcParams.isEmpty() && rpcParams.get(0) instanceof String name) session.loginName = name;
                     send(out, "callBackLoginV3", List.of(1));
                 } else if ("getUserDataByLogin".equals(fn)) {
-                    profile = ProfileManager.load();
+                    boolean localSecond = LOCAL_SECOND_ACCOUNT.equals(session.loginName);
+                    session.profileFile = localSecond ? ProfileManager.localSecondProfileFile() : ProfileManager.getProfileFile();
+                    profile = ProfileManager.load(session.profileFile, localSecond ? "糖心大掌门" : null);
+                    synchronized (ACTIVE_SESSIONS) {
+                        if (ACTIVE_SESSIONS.get(session.characterId) == session) {
+                            // Keep the room identity on repeated user-data requests.
+                        } else if (localSecond) {
+                            if (ACTIVE_SESSIONS.containsKey((double)LOCAL_SECOND_CHARACTER)) {
+                                System.out.println("[LobbyServer] Local second account is already logged in");
+                                break;
+                            }
+                            session.characterId = LOCAL_SECOND_CHARACTER;
+                            session.playerName = profile.playerName;
+                            session.clanName = "91传媒";
+                            session.clanId = 91;
+                        } else if (ACTIVE_SESSIONS.containsKey(1000200072528.0)) {
+                            int seq = NEXT_GUEST_ID.incrementAndGet();
+                            session.characterId = 1000200072528.0 + seq;
+                            session.playerName = "联机玩家" + seq;
+                        } else {
+                            session.characterId = 1000200072528.0;
+                            session.playerName = profile.playerName;
+                        }
+                        if (!rpcParams.isEmpty() && rpcParams.get(0) != null) {
+                            String requestedName = String.valueOf(rpcParams.get(0)).trim();
+                            if (!requestedName.isEmpty() && !"321282597".equals(requestedName) && !"local".equalsIgnoreCase(requestedName)) {
+                                session.playerName = requestedName;
+                            }
+                        }
+                        session.career = profile.defaultCareer;
+                        session.selectedBagIndex = profile.selectedBagIndex;
+                        session.team = profile.team;
+                        ACTIVE_SESSIONS.put(session.characterId, session);
+                        if (session.lobbyToken.isEmpty()) session.lobbyToken = UUID.randomUUID().toString();
+                        LOBBY_TOKENS.put(session.lobbyToken, session);
+                    }
+                    profile.persistent = localSecond || session.characterId == 1000200072528.0;
+                    System.out.println("[LobbyServer] Lobby player=" + (long)session.characterId + " profile=" + session.profileFile.getName());
                     ensureDefaultRenameCard(profile);
+                    final ProfileManager.Profile loadedProfile = profile;
+                    rootAvatarDataHashMap.clear();
+                    grandSlamRootAvatarMap.forEach((id, value) -> {
+                        if (!(value instanceof Amf3TypedObject original)) return;
+                        var avatar = copyBean(original);
+                        applyAvatarAppearance(avatar, loadedProfile, Integer.parseInt(id));
+                        rootAvatarDataHashMap.put(id, avatar);
+                    });
 
-                    var sb = new Amf3TypedObject("bean.UserSettingBean", List.of(
-                        "isRecommendDenied", "isChatFromStrangersDenied", "isInviteJoinTeamDenied",
-                        "isCreateFriendDenied", "isBackgroundMusic", "isBackgroundMusicNotice",
-                        "isCache", "isShowMedalInBattle", "isChromeNotice", "unityWindowModel",
-                        "otherSettingString", "battleClientValue", "playerCareerLevel", "enableLoginIpProtect"), false);
-                    sb.set("isRecommendDenied", false);
-                    sb.set("isChatFromStrangersDenied", false);
-                    sb.set("isInviteJoinTeamDenied", false);
-                    sb.set("isCreateFriendDenied", false);
-                    sb.set("isBackgroundMusic", true);
-                    sb.set("isBackgroundMusicNotice", false);
-                    sb.set("isCache", false);
-                    sb.set("isShowMedalInBattle", true);
-                    sb.set("isChromeNotice", true);
-                    sb.set("unityWindowModel", "0");
-                    sb.set("otherSettingString", "");
-                    sb.set("battleClientValue", "2");
-                    sb.set("playerCareerLevel", 1);
-                    sb.set("enableLoginIpProtect", false);
+                    settings = makeUserSettings(profile);
 
                     // Build session avatar bags and loadout bags from profile
                     sessionAvatarBags.clear();
@@ -873,14 +1304,13 @@ public class LobbyLoginServer {
                         ProfileManager.BagSlot bs = profile.bags.get(i);
                         sessionAvatarBags.add(makeAvatarBagData(bs.roleTID, bs.roleCTID));
 
-                        var wm = bs.master != null ? makeWeaponData(bs.master.storageId, bs.master.codeName, bs.master.tid) : null;
-                        var ws = bs.secondary != null ? makeWeaponData(bs.secondary.storageId, bs.secondary.codeName, bs.secondary.tid) : null;
-                        var wc = bs.closed != null ? makeWeaponData(bs.closed.storageId, bs.closed.codeName, bs.closed.tid) : null;
-                        var wb = bs.bom1 != null ? makeWeaponData(bs.bom1.storageId, bs.bom1.codeName, bs.bom1.tid) : null;
-                        bagArray.add(makeBagData(false, wm, ws, wc, wb));
+                        bagArray.add(makeBagData(bs));
                     }
 
-                    var rpgBagArray = new ArrayList<>(bagArray);
+                    var rpgBagArray = new ArrayList<Amf3TypedObject>();
+                    for (var bag : bagArray) rpgBagArray.add(copyBean(bag));
+                    rpgBagArray.get(Math.max(0, Math.min(profile.selectedBagIndex, rpgBagArray.size() - 1)))
+                        .set("bagDataScore", AdventureLobby.power(profile));
                     var globalBag = bagArray.get(0);
 
                     // The static storage catalog is metadata, not the player's inventory.
@@ -888,16 +1318,9 @@ public class LobbyLoginServer {
                     // as owned items and spam thousands of missing shop_pack errors.
                     var storageMap = buildPlayerStorageMap(profile);
 
-                    var raT = rootAvatarDataHashMap.get(String.valueOf(profile.defaultAvatar));
-                    if (raT == null) {
-                        raT = makeRootAvatarData(profile.defaultAvatar, profile.defaultCareer, 20000000.0 + profile.defaultAvatar);
-                        rootAvatarDataHashMap.put(String.valueOf(profile.defaultAvatar), raT);
-                    }
-                    var raCT = rootAvatarDataHashMap.get("4");
-                    if (raCT == null) {
-                        raCT = makeRootAvatarData(4, "sas", 20000004.0);
-                        rootAvatarDataHashMap.put("4", raCT);
-                    }
+                    var activeAvatarBag = profile.bags.get(profile.selectedAvatarBagIndex);
+                    var raT = avatarFor(rootAvatarDataHashMap, activeAvatarBag.roleTID);
+                    var raCT = avatarFor(rootAvatarDataHashMap, activeAvatarBag.roleCTID);
 
                     var pvpTacBag = new Amf3TypedObject("netdata.TacticalBagData", List.of("idx", "isLock", "tacticalWeapon"), false);
                     pvpTacBag.set("idx", 0);
@@ -918,7 +1341,7 @@ public class LobbyLoginServer {
                         "selectedBagIndex", "settingBean", "charMedalBean", "defaultAvatar", "avatarT", "avatarCT", "avatarSH",
                         "selectAvatarBagIndex", "avatarBagData", "rootAvatarDataHashMap",
                         "rootAvatarDataT", "rootAvatarDataCT",
-                        "bagArray", "rpgBagArray", "globalBag", "pvpTacticalBag", "rpgTacticalBag",
+                        "bagArray", "rpgBagArray", "globalBag", "pvpTacticalBag", "rpgTacticalBag", "boomCnt",
                         "storageMap", "vip4399Bean", "lv", "maxLv", "exp", "roomId",
                         "blockFunctionMap", "propertyUnits", "rpgBlindCodeMap",
                         "gameCoinMap", "storageArrearsMap", "gameCoinArrearsMap", "buffEffectMap",
@@ -936,12 +1359,12 @@ public class LobbyLoginServer {
                     u.set("loginRet", 1);
                     u.set("loginId", 1);
                     u.set("operatorId", 1);
-                    u.set("userId", 321282597);
-                    u.set("username", "321282597");
-                    u.set("playerName", profile.playerName);
+                    u.set("userId", localSecond ? Integer.parseInt(LOCAL_SECOND_ACCOUNT) : 321282597);
+                    u.set("username", localSecond ? LOCAL_SECOND_ACCOUNT : "321282597");
+                    u.set("playerName", session.playerName);
                     u.set("lastChangePlayerName", (double)profile.lastChangePlayerName);
                     u.set("changename", "");
-                    u.set("characterId", 100072528);
+                    u.set("characterId", session.characterId);
                     u.set("vipLv", 18);
                     u.set("goldTotal", 91);
                     u.set("gold", 91);
@@ -950,16 +1373,16 @@ public class LobbyLoginServer {
                     u.set("reputationScore", 100);
                     u.set("isadult", 1);
                     u.set("accountTag", 3);
-                    u.set("teamId", 0);
-                    u.set("token", "local");
+                    u.set("teamId", localSecond ? session.clanId : 0);
+                    u.set("token", session.lobbyToken);
                     u.set("regTime", 0.0);
                     u.set("selectedBagIndex", profile.selectedBagIndex);
-                    u.set("settingBean", sb);
+                    u.set("settingBean", settings);
                     u.set("charMedalBean", charMedalMap.containsKey(profile.activeMedalLine)
                         ? copyCharMedalBean(charMedalMap.get(profile.activeMedalLine)) : null);
                     u.set("defaultAvatar", profile.defaultAvatar);
-                    u.set("avatarT", profile.defaultAvatar);
-                    u.set("avatarCT", 4);
+                    u.set("avatarT", activeAvatarBag.roleTID);
+                    u.set("avatarCT", activeAvatarBag.roleCTID);
                     u.set("avatarSH", 2001);
                     u.set("selectAvatarBagIndex", Math.max(0, Math.min(1, profile.selectedAvatarBagIndex)));
                     u.set("avatarBagData", sessionAvatarBags);
@@ -971,6 +1394,7 @@ public class LobbyLoginServer {
                     u.set("rootAvatarDataT", raT);
                     u.set("rootAvatarDataCT", raCT);
                     u.set("bagArray", bagArray);
+                    u.set("boomCnt", 3);
                     u.set("rpgBagArray", rpgBagArray);
                     u.set("globalBag", globalBag);
                     u.set("pvpTacticalBag", pvpTacBag);
@@ -1059,9 +1483,229 @@ public class LobbyLoginServer {
                     int chId = 1;
                     if (rpcParams.size() > 1 && rpcParams.get(1) instanceof Number n) chId = n.intValue();
                     else if (!rpcParams.isEmpty() && rpcParams.get(0) instanceof Number n) chId = n.intValue();
+                    String token = !rpcParams.isEmpty() && rpcParams.get(0) instanceof String value ? value : "";
+                    LobbySession account = LOBBY_TOKENS.get(token);
+                    if (account == null && ACTIVE_SESSIONS.get(session.characterId) != session) {
+                        send(out, "callEnterChannelSuccess", List.of(-2, chId));
+                        continue;
+                    }
+                    if (account != null && account != session) {
+                        session.characterId = account.characterId;
+                        session.loginName = account.loginName;
+                        session.clanId = account.clanId;
+                        session.clanName = account.clanName;
+                        session.profileFile = account.profileFile;
+                        boolean second = LOCAL_SECOND_ACCOUNT.equals(account.loginName);
+                        profile = ProfileManager.load(session.profileFile, second ? "糖心大掌门" : null);
+                        profile.persistent = second || session.characterId == 1000200072528.0;
+                        session.playerName = profile.persistent ? profile.playerName : account.playerName;
+                        session.career = profile.defaultCareer;
+                        session.selectedBagIndex = profile.selectedBagIndex;
+                        session.team = profile.team;
+                    }
+                    if (session.channelId != chId) leaveCurrentRoom(session);
+                    session.channelId = chId;
+                    var previous = ACTIVE_CHANNELS.put(session.characterId, session);
+                    if (previous != null && previous != session) leaveCurrentRoom(previous);
                     send(out, "callEnterChannelSuccess", List.of(1, chId));
+                    System.out.println("[LobbyServer] Channel " + chId + " entered by " + (long)session.characterId);
                 } else if ("getRoomList".equals(fn)) {
-                    send(out, "callBackGetRoomList", List.of(List.of(), 1));
+                    var rooms = new ArrayList<Object>();
+                    for (LobbyRoom r : ROOMS.values()) if (r.channelId == session.channelId) rooms.add(r.toListAmf3());
+                    send(out, "callBackGetRoomList", List.of(rooms, 1));
+                } else if ("createRoom".equals(fn)) {
+                    Amf3TypedObject roomObj = rpcParams.isEmpty() ? null : toRoomInfoObject(rpcParams.get(0));
+                    if (roomObj == null) {
+                        roomObj = new Amf3TypedObject("bean.RoomInfoEx", List.of("sceneId", "raceType", "limitNumber", "roomName"), false);
+                    }
+                    int rid = NEXT_ROOM_ID.getAndIncrement();
+                    LobbyRoom room = new LobbyRoom(rid, session, roomObj);
+                    room.sceneId = Math.max(1, intField(roomObj, "sceneId", 12));
+                    room.raceType = intField(roomObj, "raceType", 2003);
+                    room.limitNumber = Math.max(2, intField(roomObj, "limitNumber", 10));
+                    Object rn = roomObj.fields().get("roomName");
+                    if (rn != null && !String.valueOf(rn).isBlank()) room.roomName = String.valueOf(rn);
+                    if (isHeadlessBattleBridge() || isLocalDualBattle() || rid > 1001) {
+                        room.tcpPort = 27200 + (rid - 1001) * 2;
+                        room.udpPort = room.tcpPort + 1;
+                    }
+                    leaveCurrentRoom(session);
+                    session.team = 1;
+                    session.observerFlag = false;
+                    session.roomId = rid;
+                    room.members.add(session);
+                    ROOMS.put(rid, room);
+                    currentRoomInfo = room.toAmf3();
+                    roomSceneId = room.sceneId;
+                    roomRaceType = room.raceType;
+                    roomLimitNumber = room.limitNumber;
+                    send(out, "callBackJoinRoom", List.of(1, room.toAmf3(), room.userListAmf3()));
+                    broadcastRoomListChange(room, "callBackAddRoom", List.of(room.channelId, room.toListAmf3(), 0));
+                } else if ("joinRoom".equals(fn) || "fastJoinRoom".equals(fn)) {
+                    int reqRoomId = 0;
+                    if (!rpcParams.isEmpty() && rpcParams.get(0) instanceof Number n) reqRoomId = n.intValue();
+                    else if (rpcParams.size() > 1 && rpcParams.get(1) instanceof Amf3TypedObject ro) reqRoomId = intField(ro, "roomId", 0);
+                    LobbyRoom room = findRoomForJoin(reqRoomId, session.channelId);
+                    if (room == null) {
+                        send(out, "callBackRoomNotExist", List.of((double)reqRoomId));
+                    } else if (room.members.contains(session)) {
+                        send(out, "callBackJoinRoom", List.of(1, room.toAmf3(), room.userListAmf3()));
+                    } else if (room.members.size() >= room.limitNumber) {
+                        send(out, "callBackRoomFull", List.of());
+                    } else {
+                        leaveCurrentRoom(session);
+                        int t1 = 0, t2 = 0;
+                        for (LobbySession m : room.members) {
+                            if (m.team == 1) t1++; else t2++;
+                        }
+                        session.team = (t1 <= t2) ? 1 : 2;
+                        session.observerFlag = false;
+                        session.roomId = room.roomId;
+                        room.members.add(session);
+                        Amf3TypedObject refreshed = room.toAmf3();
+                        send(out, "callBackJoinRoom", List.of(1, refreshed, room.userListAmf3()));
+                        for (LobbySession other : room.members) {
+                            if (other != session) {
+                                synchronized (other.sendLock) {
+                                    try {
+                                        send(other.out, "callBackUserJoin", List.of(makeClientRoomUser(session)));
+                                        send(other.out, "callBackRefreshCurrentRoom", List.of(refreshed));
+                                    } catch (Exception ignored) {}
+                                }
+                            }
+                        }
+                        broadcastRoomListChange(room, "callBackChangeRoomData", List.of(room.channelId, room.toListAmf3(), 0));
+                    }
+                } else if ("updateRoom".equals(fn)) {
+                    Amf3TypedObject roomObj = rpcParams.isEmpty() ? null : toRoomInfoObject(rpcParams.get(0));
+                    LobbyRoom room = ROOMS.get(session.roomId);
+                    if (roomObj != null && room != null && room.hostCharId == session.characterId) {
+                        room.rawRoom = roomObj;
+                        room.sceneId = Math.max(1, intField(roomObj, "sceneId", room.sceneId));
+                        room.raceType = intField(roomObj, "raceType", room.raceType);
+                        room.limitNumber = Math.max(Math.max(2, room.members.size()), intField(roomObj, "limitNumber", room.limitNumber));
+                        Object rn = roomObj.fields().get("roomName");
+                        if (rn != null && !String.valueOf(rn).isBlank()) room.roomName = String.valueOf(rn);
+                        currentRoomInfo = room.toAmf3();
+                        roomSceneId = room.sceneId;
+                        roomRaceType = room.raceType;
+                        roomLimitNumber = room.limitNumber;
+                        room.broadcast("callBackRefreshCurrentRoom", List.of(room.toAmf3()));
+                    } else {
+                        send(out, "callbackCanNotCreateRoom", List.of(-1));
+                    }
+                } else if ("changeTeam".equals(fn)) {
+                    int newTeam = (!rpcParams.isEmpty() && rpcParams.get(0) instanceof Number n) ? n.intValue() : 1;
+                    boolean obs = rpcParams.size() > 1 && Boolean.TRUE.equals(rpcParams.get(1));
+                    if (!obs && (newTeam == 1 || newTeam == 2)) {
+                        session.team = newTeam;
+                        if (profile.persistent) {
+                            profile.team = newTeam;
+                            ProfileManager.save(profile);
+                        }
+                    }
+                    session.observerFlag = obs;
+                    LobbyRoom room = ROOMS.get(session.roomId);
+                    if (room != null) {
+                        room.broadcast("callBackChangeTeam", List.of(session.characterId, newTeam, obs));
+                    } else {
+                        send(out, "callBackChangeTeam", List.of(session.characterId, newTeam, obs));
+                    }
+                } else if ("changeGameToObserver".equals(fn)) {
+                    boolean obs = rpcParams.isEmpty() || Boolean.TRUE.equals(rpcParams.get(rpcParams.size() - 1));
+                    session.observerFlag = obs;
+                    LobbyRoom room = ROOMS.get(session.roomId);
+                    if (room != null) {
+                        room.broadcast("callBackChangeGameToObserver", List.of(session.characterId, obs));
+                    } else {
+                        send(out, "callBackChangeGameToObserver", List.of(session.characterId, obs));
+                    }
+                } else if ("readyGame".equals(fn)) {
+                    Object value = rpcParams.isEmpty() ? null : rpcParams.get(0);
+                    session.readyGame = value instanceof Number n ? (n.intValue() == 0 ? 0 : 1)
+                        : value instanceof Boolean b ? (b ? 1 : 0) : (1 - session.readyGame);
+                    var room = ROOMS.get(session.roomId);
+                    var status = List.<Object>of(session.characterId, session.readyGame, false, 0);
+                    if (room != null) room.broadcast("callBackRefreshUserStatus", status);
+                    else send(out, "callBackRefreshUserStatus", status);
+                } else if ("kickUser".equals(fn) || "kickPlayer".equals(fn)) {
+                    var room = ROOMS.get(session.roomId);
+                    LobbySession target = null;
+                    if (room != null && room.hostCharId == session.characterId && !rpcParams.isEmpty()) {
+                        try { target = ACTIVE_CHANNELS.get(Double.parseDouble(String.valueOf(rpcParams.get(0)))); }
+                        catch (NumberFormatException ignored) {}
+                    }
+                    if (target != null && target != session && target.roomId == room.roomId) {
+                        leaveCurrentRoom(target);
+                        send(target.out, "callBackWasKickedRoom", List.of());
+                    } else if (room != null) {
+                        send(out, "callBackRefreshCurrentRoom", List.of(room.toAmf3()));
+                    }
+                } else if ("leaveRoom".equals(fn)) {
+                    leaveCurrentRoom(session);
+                    currentRoomInfo = null;
+                    send(out, "callBackLeaveRoom", List.of());
+                } else if ("startGame".equals(fn)) {
+                    LobbyRoom room = ROOMS.get(session.roomId);
+                    if (room != null && room.hostCharId != session.characterId) {
+                        send(out, "callBackStartGameFail", List.of(162));
+                        continue;
+                    }
+                    if (room == null) {
+                        var defaultRoomObj = new Amf3TypedObject("bean.RoomInfoEx", List.of("sceneId", "raceType", "limitNumber"), false);
+                        room = new LobbyRoom(1001, session, defaultRoomObj);
+                        room.sceneId = roomSceneId;
+                        room.raceType = roomRaceType;
+                        room.limitNumber = roomLimitNumber;
+                        room.members.add(session);
+                        session.roomId = room.roomId;
+                        ROOMS.put(room.roomId, room);
+                    }
+                    int totalSlots = Math.max(2, room.limitNumber);
+                    var seats = new ArrayList<BattleSeat>();
+                    int t1Humans = 0, t2Humans = 0;
+                    var charIds = new ArrayList<Object>(room.members.size());
+                    for (LobbySession m : room.members) {
+                        charIds.add(m.characterId);
+                        if (m.observerFlag) continue;
+                        seats.add(new BattleSeat((long)m.characterId, m.team, m.playerName, m.profileFile));
+                        if (m.team == 1) t1Humans++; else t2Humans++;
+                    }
+                    int humanCount = seats.size();
+                    int perSide = totalSlots / 2;
+                    boolean fillBots = room.channelId == BOT_CHANNEL_ID;
+                    int t1Bots = fillBots ? Math.max(0, perSide - t1Humans) : 0;
+                    int t2Bots = fillBots ? Math.max(0, totalSlots - perSide - t2Humans) : 0;
+                    int allyBots = session.team == 1 ? t1Bots : t2Bots;
+                    int enemyBots = session.team == 1 ? t2Bots : t1Bots;
+                    if (isLocalDualBattle() && !isHeadlessBattleBridge() && humanCount < 2) {
+                        send(out, "callBackStartGameFail", List.of(162));
+                        continue;
+                    }
+                    if (isHeadlessBattleBridge() || humanCount > 1 || isLocalDualBattle()) {
+                        if (humanCount == 0 || humanCount > 16 || !launchRoomBattle(room, session, seats, allyBots, enemyBots)) {
+                            send(out, "callBackStartGameFail", List.of(162));
+                            continue;
+                        }
+                        room.broadcast("onRoomBattleEndpoint", List.of(room.roomId, "127.0.0.1", room.tcpPort, room.udpPort, room.raceType, room.sceneId, room.battleSeats));
+                        room.broadcast("callBackRefreshUserEndGame", List.of(charIds));
+                    } else {
+                        launchBattleClient(profile.defaultCareer, profile.selectedBagIndex,
+                            room.sceneId, room.raceType, session.team, allyBots, enemyBots, 1, room.tcpPort, room.udpPort);
+                        send(out, "callBackRefreshUserEndGame", List.of(charIds));
+                    }
+                } else if ("getRoomBattleEndpoint".equals(fn)) {
+                    LobbyRoom room = ROOMS.get(session.roomId);
+                    if (room != null) {
+                        int seats = room.battleServerProc != null && room.battleServerProc.isAlive() ? room.battleSeats : room.members.size();
+                        send(out, "onRoomBattleEndpoint", List.of(room.roomId, "127.0.0.1", room.tcpPort, room.udpPort, room.raceType, room.sceneId, Math.max(1, seats)));
+                    } else {
+                        send(out, "onRoomBattleEndpoint", List.of(0, "127.0.0.1", 27100, 27101, 2003, 12, 1));
+                    }
+                } else if ("roomList".equals(fn)) {
+                    var rooms = new ArrayList<Object>();
+                    for (LobbyRoom r : ROOMS.values()) if (r.channelId == session.channelId) rooms.add(r.toListAmf3());
+                    send(out, "callBackShowRoomList", List.of(rooms, 1));
                 } else if ("getPersonalRecord".equals(fn)) {
                     var pr = new Amf3TypedObject("bean.PersonalRecord", List.of("score", "totalBattle", "winCount", "killCount", "headShot", "deathCount", "assistCount"), false);
                     pr.set("score", 9999);
@@ -1074,7 +1718,7 @@ public class LobbyLoginServer {
                     send(out, "callBackGetPersonalRecord", List.of(pr));
                 } else if ("getOtherRecordNew".equals(fn)) {
                     var r = new LinkedHashMap<String, Object>();
-                    r.put("rpgPower", 999999);
+                    r.put("rpgPower", AdventureLobby.power(profile));
                     r.put("challengeScore", 8888);
                     send(out, "callbackGetOtherRecordNew", List.of(r));
                 } else if ("getCorpsInfo".equals(fn)) {
@@ -1084,62 +1728,8 @@ public class LobbyLoginServer {
                 } else if ("getMatchState".equals(fn)) {
                     send(out, "callBackGetMatchState", List.of(0));
                 } else if ("startRaceMatch".equals(fn)) {
-                    launchBattleClient(profile.defaultCareer, profile.selectedBagIndex, 12, 2003, profile.team, 4, 5);
+                    launchBattleClient(profile.defaultCareer, profile.selectedBagIndex, 12, 2003, profile.team, 4, 5, 1, 27100, 27101);
                     send(out, "onStartRaceMatch", List.of(1));
-                } else if ("createRoom".equals(fn)) {
-                    Amf3TypedObject room = rpcParams.isEmpty() ? null : toRoomInfoObject(rpcParams.get(0));
-                    if (room != null) {
-                        room.set("roomId", 1001.0);
-                        room.set("roomDisplayId", 1001.0);
-                        room.set("createCharacterId", 1000200072528.0);
-                        room.set("createCharName", profile.playerName);
-                        room.set("createCharVipLv", 15);
-                        room.set("status", 0);
-                        room.set("gameStatus", 0);
-                        room.set("accessNumber", 1);
-                        room.set("battleNumber", 0);
-                        currentRoomInfo = room;
-                        roomSceneId = Math.max(1, intField(room, "sceneId", 12));
-                        roomRaceType = intField(room, "raceType", 2003);
-                        roomLimitNumber = Math.max(2, intField(room, "limitNumber", 10));
-                        var userList = new ArrayList<Object>();
-                        userList.add(makeClientRoomUser(profile, profile.team));
-                        send(out, "callBackJoinRoom", List.of(1, room, userList));
-                    }
-                } else if ("updateRoom".equals(fn)) {
-                    Amf3TypedObject room = rpcParams.isEmpty() ? null : toRoomInfoObject(rpcParams.get(0));
-                    if (room != null) {
-                        room.set("roomId", 1001.0);
-                        room.set("roomDisplayId", 1001.0);
-                        room.set("createCharacterId", 1000200072528.0);
-                        room.set("createCharName", profile.playerName);
-                        currentRoomInfo = room;
-                        roomSceneId = Math.max(1, intField(room, "sceneId", 12));
-                        roomRaceType = intField(room, "raceType", 2003);
-                        roomLimitNumber = Math.max(2, intField(room, "limitNumber", 10));
-                        send(out, "callBackRefreshCurrentRoom", List.of(room));
-                    }
-                } else if ("changeTeam".equals(fn)) {
-                    int newTeam = (!rpcParams.isEmpty() && rpcParams.get(0) instanceof Number n) ? n.intValue() : 1;
-                    boolean obs = rpcParams.size() > 1 && Boolean.TRUE.equals(rpcParams.get(1));
-                    if (!obs && (newTeam == 1 || newTeam == 2)) {
-                        profile.team = newTeam;
-                        ProfileManager.save(profile);
-                    }
-                    send(out, "callBackChangeTeam", List.of(1000200072528.0, newTeam, obs));
-                } else if ("leaveRoom".equals(fn)) {
-                    currentRoomInfo = null;
-                    send(out, "callBackLeaveRoom", List.of());
-                } else if ("startGame".equals(fn)) {
-                    int totalSlots = Math.max(2, roomLimitNumber);
-                    int perSide = totalSlots / 2;
-                    int allyBots = Math.max(0, perSide - 1);
-                    int enemyBots = Math.max(1, totalSlots - perSide);
-                    launchBattleClient(profile.defaultCareer, profile.selectedBagIndex,
-                        roomSceneId, roomRaceType, profile.team, allyBots, enemyBots);
-                    send(out, "callBackRefreshUserEndGame", List.of(List.of(1000200072528.0)));
-                } else if ("roomList".equals(fn)) {
-                    send(out, "callBackShowRoomList", List.of(List.of(), 1));
                 } else if ("equip".equals(fn)) {
                     int bagIdx = 0;
                     double sid = 0;
@@ -1148,11 +1738,11 @@ public class LobbyLoginServer {
                         try { sid = Double.parseDouble(String.valueOf(rpcParams.get(1))); } catch(Exception e){}
                     }
                     long sidLong = (long)sid;
-                    var sbObj = grandSlamStorageMap.get(String.valueOf(sidLong));
+                    var sbObj = (Object)storageForProfile(profile, sidLong);
                     if (sbObj instanceof Amf3TypedObject sb) {
                         int tid = ((Number)sb.fields().get("tid")).intValue();
                         WeaponMeta wm = weaponMetaMap.get(tid);
-                        if (wm != null && bagIdx >= 0 && bagIdx < profile.bags.size()) {
+                        if (wm != null && bagIdx >= 0 && bagIdx < bagArray.size()) {
                             var bagSlot = profile.bags.get(bagIdx);
                             var bagBean = bagArray.get(bagIdx);
                             var wData = makeWeaponData(sid, wm.codeName, tid);
@@ -1170,14 +1760,23 @@ public class LobbyLoginServer {
                                 bagSlot.closed = new ProfileManager.WeaponSlot(sid, tid, wm.codeName);
                                 bagBean.set("closedWeapon", wData);
                             } else if (wm.type == 4) {
-                                oldSlot = bagSlot.bom1;
-                                bagSlot.bom1 = new ProfileManager.WeaponSlot(sid, tid, wm.codeName);
-                                bagBean.set("bom1", wData);
+                                var grenade = new ProfileManager.WeaponSlot(sid, tid, wm.codeName);
+                                if (hasSlot(bagSlot.bom1, sid) || hasSlot(bagSlot.bom2, sid) || hasSlot(bagSlot.bom3, sid)) {
+                                    send(out, "onEquip", List.of(bagIdx, sid, 0));
+                                    continue;
+                                }
+                                if (bagSlot.bom1 == null) { bagSlot.bom1 = grenade; bagBean.set("bom1", wData); }
+                                else if (bagSlot.bom2 == null) { bagSlot.bom2 = grenade; bagBean.set("bom2", wData); }
+                                else if (bagSlot.bom3 == null) { bagSlot.bom3 = grenade; bagBean.set("bom3", wData); }
+                                else {
+                                    send(out, "onEquip", List.of(bagIdx, sid, -1));
+                                    continue;
+                                }
                             }
                             sb.set("equipedBag", bagIdx);
                             List<Object> updateList = new ArrayList<>();
                             if (oldSlot != null && oldSlot.storageId != sid) {
-                                var oldBean = grandSlamStorageMap.get(String.valueOf((long)oldSlot.storageId));
+                                var oldBean = (Object)storageForProfile(profile, (long)oldSlot.storageId);
                                 if (oldBean instanceof Amf3TypedObject osb) {
                                     osb.set("equipedBag", -1);
                                     updateList.add(osb);
@@ -1198,11 +1797,11 @@ public class LobbyLoginServer {
                         try { sid = Double.parseDouble(String.valueOf(rpcParams.get(1))); } catch(Exception e){}
                     }
                     long sidLong = (long)sid;
-                    var sbObj = grandSlamStorageMap.get(String.valueOf(sidLong));
+                    var sbObj = (Object)storageForProfile(profile, sidLong);
                     if (sbObj instanceof Amf3TypedObject sb) {
                         int tid = ((Number)sb.fields().get("tid")).intValue();
                         WeaponMeta wm = weaponMetaMap.get(tid);
-                        if (wm != null && bagIdx >= 0 && bagIdx < profile.bags.size()) {
+                        if (wm != null && bagIdx >= 0 && bagIdx < bagArray.size()) {
                             var bagSlot = profile.bags.get(bagIdx);
                             var bagBean = bagArray.get(bagIdx);
                             if (wm.type == 1) {
@@ -1215,8 +1814,9 @@ public class LobbyLoginServer {
                                 bagSlot.closed = null;
                                 bagBean.set("closedWeapon", null);
                             } else if (wm.type == 4) {
-                                bagSlot.bom1 = null;
-                                bagBean.set("bom1", null);
+                                if (hasSlot(bagSlot.bom1, sid)) { bagSlot.bom1 = null; bagBean.set("bom1", null); }
+                                else if (hasSlot(bagSlot.bom2, sid)) { bagSlot.bom2 = null; bagBean.set("bom2", null); }
+                                else if (hasSlot(bagSlot.bom3, sid)) { bagSlot.bom3 = null; bagBean.set("bom3", null); }
                             }
                             sb.set("equipedBag", -1);
                             ProfileManager.save(profile);
@@ -1230,8 +1830,8 @@ public class LobbyLoginServer {
                     if (!rpcParams.isEmpty() && rpcParams.get(0) instanceof Number n) subIndex = n.intValue();
                     if (rpcParams.size() > 1 && rpcParams.get(1) instanceof Number n) roleId = n.intValue();
                     int group = roleGroupMap.getOrDefault(roleId, 1);
-                    profile.team = group;
-                    if (subIndex >= 0 && subIndex < profile.bags.size()) {
+                    if (subIndex >= 0 && subIndex < sessionAvatarBags.size()
+                            && selectAvatar(profile, rootAvatarDataHashMap, roleId)) {
                         var bs = profile.bags.get(subIndex);
                         // sessionAvatarBags 只在 loginV3 里填充；未登录直接发本 RPC 会
                         // IndexOutOfBounds（RpcProbe 实测触发）。
@@ -1243,47 +1843,51 @@ public class LobbyLoginServer {
                             bs.roleTID = roleId;
                             if (ab != null) ab.set("rootAvatarTID", roleId);
                         }
+                        session.career = profile.defaultCareer;
+                        ProfileManager.save(profile);
+                        send(out, "callBackEquipRootAvatar", List.of(1, sessionAvatarBags, roleId));
+                    } else {
+                        send(out, "callBackEquipRootAvatar", List.of(-1, sessionAvatarBags, roleId));
                     }
-                    profile.defaultAvatar = roleId;
-                    var raObj = rootAvatarDataHashMap.get(String.valueOf(roleId));
-                    if (raObj instanceof Amf3TypedObject ra && ra.fields().get("career") != null) {
-                        profile.defaultCareer = String.valueOf(ra.fields().get("career"));
-                    }
-                    ProfileManager.save(profile);
-                    send(out, "callBackEquipRootAvatar", List.of(1, sessionAvatarBags, roleId));
                 } else if ("equipRootAvatarInfo".equals(fn)) {
-                    double rootAvatarId = 150;
-                    double storageSkinId = 0;
-                    int facadePartId = 0;
-                    if (!rpcParams.isEmpty()) {
-                        try { rootAvatarId = Double.parseDouble(String.valueOf(rpcParams.get(0))); } catch(Exception e){}
+                    int roleId = rpcParams.isEmpty() ? 0 : (int)numberArgument(rpcParams.get(0));
+                    long storageId = rpcParams.size() > 1 ? numberArgument(rpcParams.get(1)) : 0;
+                    int facadeId = rpcParams.size() > 2 ? (int)numberArgument(rpcParams.get(2)) : 0;
+                    var avatar = avatarFor(rootAvatarDataHashMap, roleId);
+                    var item = storageCatalogItem(storageId);
+                    int type = intField(item, "type", 0);
+                    int slot = avatarPartSlot(item);
+                    int result = -1;
+                    if (avatar != null && (slot >= 0 || type == 2 || type == 8)) {
+                        long primarySkin = ((Number)avatar.fields().get("storageSkinId")).longValue();
+                        if (slot >= 0) profile.avatarParts.computeIfAbsent(roleId, key -> new LinkedHashMap<>()).put(slot, storageId);
+                        else primarySkin = storageId;
+                        profile.avatarAppearances.put(roleId, new ProfileManager.AvatarAppearance(primarySkin, facadeId));
+                        applyAvatarAppearance(avatar, profile, roleId);
+                        ProfileManager.save(profile);
+                        result = 1;
                     }
-                    if (rpcParams.size() > 1) {
-                        try { storageSkinId = Double.parseDouble(String.valueOf(rpcParams.get(1))); } catch(Exception e){}
-                    }
-                    if (rpcParams.size() > 2 && rpcParams.get(2) instanceof Number n) facadePartId = n.intValue();
-                    var raObj = rootAvatarDataHashMap.get(String.valueOf((int)rootAvatarId));
-                    if (raObj instanceof Amf3TypedObject ra) {
-                        ra.set("storageSkinId", storageSkinId);
-                        ra.set("facadePartId", facadePartId);
-                    }
-                    ProfileManager.save(profile);
-                    send(out, "callBackEquipRootAvatarInfo", List.of(1, rootAvatarId, storageSkinId, facadePartId));
+                    send(out, "callBackEquipRootAvatarInfo", List.of(result, roleId, (double)storageId, facadeId));
                 } else if ("unEquipRootAvatarInfo".equals(fn)) {
-                    double rootAvatarId = 150;
-                    double storageSkinId = 0;
-                    if (!rpcParams.isEmpty()) {
-                        try { rootAvatarId = Double.parseDouble(String.valueOf(rpcParams.get(0))); } catch(Exception e){}
+                    int roleId = rpcParams.isEmpty() ? 0 : (int)numberArgument(rpcParams.get(0));
+                    long storageId = rpcParams.size() > 1 ? numberArgument(rpcParams.get(1)) : 0;
+                    var avatar = avatarFor(rootAvatarDataHashMap, roleId);
+                    if (avatar != null) {
+                        var slots = profile.avatarParts.get(roleId);
+                        if (slots != null) {
+                            slots.values().removeIf(id -> id == storageId);
+                            if (slots.isEmpty()) profile.avatarParts.remove(roleId);
+                        }
+                        var current = profile.avatarAppearances.get(roleId);
+                        if (current != null) {
+                            long skinId = current.storageSkinId() == storageId ? 0 : current.storageSkinId();
+                            profile.avatarAppearances.put(roleId, new ProfileManager.AvatarAppearance(skinId, 0));
+                        }
+                        applyAvatarAppearance(avatar, profile, roleId);
+                        ProfileManager.save(profile);
                     }
-                    if (rpcParams.size() > 1) {
-                        try { storageSkinId = Double.parseDouble(String.valueOf(rpcParams.get(1))); } catch(Exception e){}
-                    }
-                    var raObj = rootAvatarDataHashMap.get(String.valueOf((int)rootAvatarId));
-                    if (raObj instanceof Amf3TypedObject ra) {
-                        ra.set("storageSkinId", 0.0);
-                    }
-                    ProfileManager.save(profile);
-                    send(out, "callBackUnEquipRootAvatarInfo", List.of(1, List.of(), rootAvatarId, 0));
+                    send(out, "callBackUnEquipRootAvatarInfo", List.of(avatar == null ? -1 : 1,
+                        avatar == null ? List.of() : List.of(roleId), (double)storageId, 0));
                 } else if ("useStorageSkin".equals(fn)) {
                     String skinStorageId = rpcParams.isEmpty() ? "0" : String.valueOf(rpcParams.get(0));
                     String weaponStorageId = rpcParams.size() > 1 ? String.valueOf(rpcParams.get(1)) : "0";
@@ -1309,56 +1913,28 @@ public class LobbyLoginServer {
                     if (weaponBean != null) ret.add(weaponBean);
                     send(out, "callbackUseStorageSkin", List.of(1, ret));
                 } else if ("weaponEquipSkin".equals(fn)) {
-                    String weaponStorageId = rpcParams.isEmpty() ? "0" : String.valueOf(rpcParams.get(0));
-                    String skinStorageId = rpcParams.size() > 1 ? String.valueOf(rpcParams.get(1)) : "0";
-                    int opType = rpcParams.size() > 2 && rpcParams.get(2) instanceof Number n ? n.intValue() : 1;
-                    long weaponIdLong = 0, skinIdLong = 0;
-                    try { weaponIdLong = (long)Double.parseDouble(weaponStorageId); } catch(Exception e){}
-                    try { skinIdLong = (long)Double.parseDouble(skinStorageId); } catch(Exception e){}
-                    var updatedBean = grandSlamStorageMap.get(String.valueOf(weaponIdLong));
-                    var skinBean = grandSlamStorageMap.get(String.valueOf(skinIdLong));
-                    Amf3TypedObject oldSkinBean = null;
-                    if (skinBean instanceof Amf3TypedObject sbSkin) {
-                        var ext = sbSkin.fields().get("extBean");
-                        if (!(ext instanceof Amf3TypedObject)) {
-                            ext = makeStorageExtBean((double)skinIdLong, 0.0);
-                            sbSkin.set("extBean", ext);
-                        }
-                        if (ext instanceof Amf3TypedObject extObj) {
-                            if (opType == 1) { // equip
-                                Long oldSkinId = profile.equippedSkins.get(weaponIdLong);
-                                if (oldSkinId != null && oldSkinId != skinIdLong) {
-                                    var oldBeanObj = grandSlamStorageMap.get(String.valueOf(oldSkinId));
-                                    if (oldBeanObj instanceof Amf3TypedObject osb && osb.fields().get("extBean") instanceof Amf3TypedObject oExt) {
-                                        oExt.set("weaponStorageId", 0.0);
-                                        oldSkinBean = osb;
-                                    }
-                                }
-                                extObj.set("weaponStorageId", (double)weaponIdLong);
-                                profile.equippedSkins.put(weaponIdLong, skinIdLong);
-                            } else { // unequip
-                                extObj.set("weaponStorageId", 0.0);
-                                profile.equippedSkins.remove(weaponIdLong);
-                            }
-                            ProfileManager.save(profile);
-                        }
+                    long weaponId = 0, skinId = 0;
+                    if (rpcParams.size() >= 2) {
+                        try {
+                            weaponId = (long)Double.parseDouble(String.valueOf(rpcParams.get(0)));
+                            skinId = (long)Double.parseDouble(String.valueOf(rpcParams.get(1)));
+                        } catch (NumberFormatException ignored) {}
                     }
-                    List<Object> retList = new ArrayList<>();
-                    if (updatedBean != null) retList.add(updatedBean);
-                    if (oldSkinBean != null) retList.add(oldSkinBean);
-                    if (skinBean != null) retList.add(skinBean);
-                    send(out, "callbackUpdateStorages", List.of(1, retList));
+                    int op = rpcParams.size() > 2 && rpcParams.get(2) instanceof Number n ? n.intValue() : 1;
+                    var updates = updateWeaponSkin(profile, weaponId, skinId, op == 1);
+                    send(out, "callbackUpdateStorages", List.of(updates.isEmpty() ? -1 : 1, updates));
                 } else if ("getAvatarLimitInfo".equals(fn)) {
                     send(out, "callbackGetAvatarLimitInfo", List.of(new LinkedHashMap<String, Object>()));
                 } else if ("change3dRole".equals(fn)) {
+                    boolean changed = false;
                     if (!rpcParams.isEmpty()) {
                         try {
                             int newAvatarId = (int)Double.parseDouble(String.valueOf(rpcParams.get(0)));
-                            profile.defaultAvatar = newAvatarId;
-                            ProfileManager.save(profile);
+                            changed = selectAvatar(profile, rootAvatarDataHashMap, newAvatarId);
+                            if (changed) ProfileManager.save(profile);
                         } catch (Exception ignored) {}
                     }
-                    send(out, "callbackChange3dRole", List.of(true));
+                    send(out, "callbackChange3dRole", List.of(changed));
                 } else if ("getMyRankNew".equals(fn)) {
                     send(out, "callbackGetMyRankNew", List.of(5, List.of(4), 1, 100));
                 } else if ("mountGrid".equals(fn)) {
@@ -1425,6 +2001,9 @@ public class LobbyLoginServer {
                     if (!rpcParams.isEmpty() && rpcParams.get(0) instanceof Number n) bagIdx = n.intValue();
                     bagIdx = Math.max(0, Math.min(1, bagIdx));
                     profile.selectedAvatarBagIndex = bagIdx;
+                    var selected = profile.bags.get(bagIdx);
+                    int id = roleGroupMap.getOrDefault(profile.defaultAvatar, 1) == 2 ? selected.roleCTID : selected.roleTID;
+                    selectAvatar(profile, rootAvatarDataHashMap, id);
                     ProfileManager.save(profile);
                     send(out, "callBackSelectAvatarBag", List.of(1, bagIdx, profile.defaultAvatar));
                 } else if ("selectBag".equals(fn)) {
@@ -1602,8 +2181,31 @@ public class LobbyLoginServer {
                     send(out, "callbackMounts", List.of(mType, "default", retMap));
                 } else if ("getFestivalData".equals(fn)) {
                     send(out, "callbackGetFestivalData", List.of(new LinkedHashMap<String, Object>()));
-                } else if ("heartBeat".equals(fn)) {
-                    // no-op
+                } else if ("changeUserSetting".equals(fn)) {
+                    if (!rpcParams.isEmpty() && rpcParams.get(0) instanceof Map<?, ?> requested) {
+                        for (String field : settings.sealedNames()) {
+                            Object current = settings.fields().get(field);
+                            Object value = requested.get(field);
+                            if (current instanceof Boolean && value instanceof Boolean
+                                || current instanceof Number && value instanceof Number
+                                || current instanceof String && value instanceof String text && text.length() <= 4096) {
+                                settings.set(field, value);
+                                profile.userSettings.put(field, String.valueOf(value));
+                            }
+                        }
+                        ProfileManager.save(profile);
+                    }
+                    send(out, "onChangeUserSetting", List.of(settings));
+                } else if ("createMessage".equals(fn)) {
+                    if (!rpcParams.isEmpty() && rpcParams.get(0) instanceof String message) {
+                        var room = ROOMS.get(session.roomId);
+                        if (room != null) room.broadcast("callBackAddMessage", List.of(message));
+                        else send(out, "callBackAddMessage", List.of(message));
+                    }
+                } else if (NO_REPLY_OK.contains(fn)) {
+                    // The AIR client defines no response callback for these messages.
+                } else if (adventure.dispatch(fn, rpcParams, profile, out, s.getLocalPort())) {
+                    // Adventure has its own channel callbacks and per-connection team state.
                 } else if (!RpcTable.dispatch(out, fn)) {
                     // The table is generated from the client's registered callbacks,
                     // so a miss means this build has no handler for the reply either.
@@ -1629,15 +2231,53 @@ public class LobbyLoginServer {
         } catch (Exception e) {
             System.out.println("[conn] END " + peer + " frames=" + frameCount + " err=" + e);
         } finally {
+            if (session != null) {
+                ACTIVE_SESSIONS.remove(session.characterId, session);
+                if (!session.lobbyToken.isEmpty()) LOBBY_TOKENS.remove(session.lobbyToken, session);
+                ACTIVE_CHANNELS.remove(session.characterId, session);
+                leaveCurrentRoom(session);
+            }
             System.out.println("[conn] CLOSE " + peer + " frames=" + frameCount
                 + " lived=" + (System.currentTimeMillis() - t0) + "ms");
             try { s.close(); } catch (IOException e) {}
         }
     }
 
+    static boolean hasSlot(ProfileManager.WeaponSlot slot, double storageId) {
+        return slot != null && slot.storageId == storageId;
+    }
+
+    static void leaveCurrentRoom(LobbySession session) {
+        int rid = session.roomId;
+        if (rid <= 0) return;
+        session.roomId = 0;
+        LobbyRoom room = ROOMS.get(rid);
+        if (room == null) return;
+        room.members.remove(session);
+        if (room.members.isEmpty()) {
+            ROOMS.remove(rid);
+            stopRoomBattle(room);
+            broadcastRoomListChange(room, "callBackDeleteRoom", List.of(room.channelId, (double)rid));
+        } else {
+            if (room.hostCharId == session.characterId) {
+                LobbySession nextHost = room.members.get(0);
+                room.hostCharId = nextHost.characterId;
+                room.hostName = nextHost.playerName;
+            }
+            room.broadcast("callBackRefreshCurrentRoom", List.of(room.toAmf3()));
+            room.broadcast("callBackUserLeave", List.of((double)rid, session.characterId));
+            broadcastRoomListChange(room, "callBackChangeRoomData", List.of(room.channelId, room.toListAmf3(), 0));
+        }
+    }
+
     static void send(DataOutputStream out, String fn, java.util.List<Object> params) throws Exception {
         byte[] amf = Amf3Encoder.encodeOnce(Amf3TypedObject.apc(fn, params));
-        out.writeInt(amf.length + 1); out.writeByte(0); out.write(amf); out.flush();
+        synchronized (out) {
+            out.writeInt(amf.length + 1);
+            out.writeByte(0);
+            out.write(amf);
+            out.flush();
+        }
         markSent();
         if (VERBOSE) System.out.println("-> " + fn + " " + amf.length);
     }

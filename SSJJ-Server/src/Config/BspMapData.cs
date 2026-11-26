@@ -4,6 +4,8 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using SSJJ.Server.Physics;
+using SSJJ.Server.QuakeServer;
 
 namespace SSJJ.Server.Config
 {
@@ -24,6 +26,12 @@ namespace SSJJ.Server.Config
         public float Radius { get; init; } = 180f;
     }
 
+    public readonly record struct SpawnBounds(Vector3f Min, Vector3f Max)
+    {
+        public bool Contains(float x, float y, float z) =>
+            x >= Min.X && x <= Max.X && y >= Min.Y && y <= Max.Y && z >= Min.Z && z <= Max.Z;
+    }
+
     public sealed class BspMapData
     {
         public int MapId { get; init; }
@@ -36,12 +44,18 @@ namespace SSJJ.Server.Config
         {
             var data = new BspMapData { MapId = sceneId };
             string streaming = Path.Combine(battleClientDir, "SSJJ_BattleClient_Unity_Data", "StreamingAssets");
-            string[] candidates =
-            {
-                Path.Combine(streaming, $"map{sceneId}", "model.bsp.raw"),
-                Path.Combine(streaming, $"map{sceneId}", "data", "model.bsp.raw.bytes"),
-                Path.Combine(streaming, $"map{sceneId % 1000}", "model.bsp.raw"),
-            };
+            string[] candidates = sceneId >= 100000
+                ? new[]
+                {
+                    Path.Combine(streaming, $"map{sceneId}", "model.bsp.raw"),
+                    Path.Combine(streaming, $"map{sceneId}", "data", "model.bsp.raw.bytes"),
+                }
+                : new[]
+                {
+                    Path.Combine(streaming, $"map{sceneId}", "model.bsp.raw"),
+                    Path.Combine(streaming, $"map{sceneId}", "data", "model.bsp.raw.bytes"),
+                    Path.Combine(streaming, $"map{sceneId % 1000}", "model.bsp.raw"),
+                };
 
             string? path = null;
             foreach (var c in candidates)
@@ -51,11 +65,18 @@ namespace SSJJ.Server.Config
             if (path == null)
             {
                 Console.WriteLine($"[SSJJ-Server][BSP] Warning: model.bsp.raw missing for map{sceneId}");
+                if (sceneId == 100001) PopulateIndustrial01Spawns(data);
                 return data;
             }
 
             byte[] bytes = File.ReadAllBytes(path);
             var loaded = new BspMapData { MapId = sceneId, BspPath = path, RawBspBytes = bytes };
+            if (sceneId == 100001)
+            {
+                PopulateIndustrial01Spawns(loaded);
+                Console.WriteLine($"[SSJJ-Server][BSP] map{sceneId}: loaded {bytes.Length / 1024}KB WeSce mesh from {path} | spawns={loaded.Spawns.Count}");
+                return loaded;
+            }
             if (bytes.Length < 16) return loaded;
 
             int entOff = BitConverter.ToInt32(bytes, 8);
@@ -131,6 +152,55 @@ namespace SSJJ.Server.Config
             return team == 2
                 ? new BspSpawnPoint { X = 3683.00f, Y = 5491.48f, Z = 119.38f, Yaw = -90f, TeamFlag = 1 }
                 : new BspSpawnPoint { X = 3896.36f, Y = 1254.76f, Z = 119.38f, Yaw = 90f, TeamFlag = 0 };
+        }
+
+        public SpawnBounds GetLoadoutBounds(BspSpawnPoint spawn, float groundZ, bool freeForAll)
+        {
+            var min = new Vector3f(spawn.X, spawn.Y, Math.Min(spawn.Z, groundZ));
+            var max = new Vector3f(spawn.X, spawn.Y, Math.Max(spawn.Z, groundZ));
+            if (!freeForAll)
+            {
+                foreach (var point in Spawns)
+                {
+                    if (point.TeamFlag != spawn.TeamFlag) continue;
+                    var origin = new Vector3f(point.X, point.Y, point.Z);
+                    min = Vector3f.Min(min, origin);
+                    max = Vector3f.Max(max, origin);
+                }
+            }
+            var padding = new Vector3f(Quake3Pmove.PlayerRadius, Quake3Pmove.PlayerRadius, G_Active.STAND_VIEW_HEIGHT);
+            return new SpawnBounds(min - padding, max + padding);
+        }
+
+        private static void PopulateIndustrial01Spawns(BspMapData target)
+        {
+            // Authentic player spawn from industrial_01.pcapng (Seq 1, Id=1, floor Z=519.8)
+            target.Spawns.Add(new BspSpawnPoint { X = 7509.20f, Y = 1409.09f, Z = 522.0f, Yaw = 180.0f, TeamFlag = 0 });
+
+            // Stage 1..4 monster wave spawns on main floor (Z=522.0) connected via Zone 1 -> Door 1 -> Zone 2
+            // Stage 1 (indices 0..3) - Courtyard Zone 1
+            target.Spawns.Add(new BspSpawnPoint { X = 6252.18f, Y = 1329.36f, Z = 522.0f, Yaw = 0.0f, TeamFlag = 1 });
+            target.Spawns.Add(new BspSpawnPoint { X = 6108.95f, Y = 1239.36f, Z = 522.0f, Yaw = 0.0f, TeamFlag = 1 });
+            target.Spawns.Add(new BspSpawnPoint { X = 6252.18f, Y = 1608.45f, Z = 522.0f, Yaw = 0.0f, TeamFlag = 1 });
+            target.Spawns.Add(new BspSpawnPoint { X = 6453.64f, Y = 1510.99f, Z = 522.0f, Yaw = 0.0f, TeamFlag = 1 });
+
+            // Stage 2 (indices 4..7) - Mid Courtyard approaching Door 1
+            target.Spawns.Add(new BspSpawnPoint { X = 5850.00f, Y = 1750.00f, Z = 522.0f, Yaw = 0.0f, TeamFlag = 1 });
+            target.Spawns.Add(new BspSpawnPoint { X = 5720.00f, Y = 1890.00f, Z = 522.0f, Yaw = 0.0f, TeamFlag = 1 });
+            target.Spawns.Add(new BspSpawnPoint { X = 5980.00f, Y = 1960.00f, Z = 522.0f, Yaw = 0.0f, TeamFlag = 1 });
+            target.Spawns.Add(new BspSpawnPoint { X = 6108.95f, Y = 2068.74f, Z = 522.0f, Yaw = 0.0f, TeamFlag = 1 });
+
+            // Stage 3 (indices 8..11) - Door 1 / Zone 2 Entrance
+            target.Spawns.Add(new BspSpawnPoint { X = 5581.98f, Y = 1893.61f, Z = 522.0f, Yaw = 0.0f, TeamFlag = 1 });
+            target.Spawns.Add(new BspSpawnPoint { X = 5420.00f, Y = 2150.00f, Z = 522.0f, Yaw = 0.0f, TeamFlag = 1 });
+            target.Spawns.Add(new BspSpawnPoint { X = 5328.00f, Y = 2412.00f, Z = 522.0f, Yaw = 0.0f, TeamFlag = 1 });
+            target.Spawns.Add(new BspSpawnPoint { X = 5150.00f, Y = 2550.00f, Z = 522.0f, Yaw = 0.0f, TeamFlag = 1 });
+
+            // Stage 4 Boss 雷霆加特林 + guards (indices 12..15)
+            target.Spawns.Add(new BspSpawnPoint { X = 5581.98f, Y = 1893.61f, Z = 522.0f, Yaw = 0.0f, TeamFlag = 1 });
+            target.Spawns.Add(new BspSpawnPoint { X = 5328.00f, Y = 2412.00f, Z = 522.0f, Yaw = 0.0f, TeamFlag = 1 });
+            target.Spawns.Add(new BspSpawnPoint { X = 4722.27f, Y = 2700.38f, Z = 522.0f, Yaw = 0.0f, TeamFlag = 1 });
+            target.Spawns.Add(new BspSpawnPoint { X = 4722.27f, Y = 3158.36f, Z = 522.0f, Yaw = 0.0f, TeamFlag = 1 });
         }
 
         private static string? Extract(string block, string key)

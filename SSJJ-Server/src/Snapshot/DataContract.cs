@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using SSJJ.Server.Physics;
+using SSJJ.Server.QuakeServer;
 
 namespace SSJJ.Server.Snapshot
 {
@@ -9,6 +11,9 @@ namespace SSJJ.Server.Snapshot
     public class PlayerBasicInfo
     {
         public int Id { get; set; } = 1;
+        public long CharacterId { get; set; } = 0;
+        public int PingMs { get; set; } = 0;
+        public QuakeServer.PlayerLoadout? Loadout { get; set; }
         public int Team { get; set; } = 1; // 1 = T, 2 = CT
         public string PlayerName { get; set; } = "Player";
         public string Career { get; set; } = "police";
@@ -16,6 +21,8 @@ namespace SSJJ.Server.Snapshot
         public string HandName { get; set; } = "man";
         public int Hp { get; set; } = 100;
         public int MaxHp { get; set; } = 100;
+        public int BioWeaponEntityId { get; set; }
+        public int? BioRespawnRemainingMs { get; set; }
         public int Zhuangjia { get; set; } = 100; // 护甲值
         public int Hudun { get; set; } = 0;       // 护盾值
         public bool IsDead { get; set; } = false;
@@ -28,6 +35,7 @@ namespace SSJJ.Server.Snapshot
         public int Kills { get; set; } = 0;
         public int Deaths { get; set; } = 0;
         public int Score { get; set; } = 0;
+        public int Assists { get; set; } = 0;
         public int DuckState { get; set; } = 3; // 3 = stand, 2 = ducking, 0 = crouch
         public int DuckTime { get; set; } = 0;
         public bool OnGround { get; set; } = true;
@@ -37,10 +45,15 @@ namespace SSJJ.Server.Snapshot
         public float VelX { get; set; } = 0f;
         public float VelY { get; set; } = 0f;
         public float VelZ { get; set; } = 0f;
-        public float Stamina { get; set; } = 100f;
+        public float Stamina { get; set; } = 0f;
+        public int PlayerStateFlag { get; set; } = 0;
+        public float Airaccelerate { get; set; } = 10f;
+        public bool LimitSpeedInJumpRule { get; set; } = true;
+        public float BeingHitFriction { get; set; } = 16f;
         public int LegsAnim { get; set; } = 7;
         public int TorsoAnim { get; set; } = 13;
         public int ViewAnim { get; set; } = 13;
+        public int ViewAnimRemainMs { get; set; }
         public float ViewAnimSpeed { get; set; } = 1.0f;
         public int LeftViewAnim { get; set; } = 13;
         public float LeftViewAnimSpeed { get; set; } = 1.0f;
@@ -73,7 +86,23 @@ namespace SSJJ.Server.Snapshot
         public float ViewHeight { get; set; } = 150f;
 
         // Weapon, Skin, Skill & Animation
+        private Dictionary<(int Bag, int Slot), (string Name, int Id)>? _observedWeaponIds;
+
+        internal int GetObservedWeaponId(int bag, int slot, string name)
+        {
+            _observedWeaponIds ??= new();
+            var key = (bag, slot);
+            if (_observedWeaponIds.TryGetValue(key, out var entry) && entry.Name == name)
+                return entry.Id;
+
+            // WeaponEntityCreateSystem installs WeaponInfo only when this ID first appears.
+            int id = SV_Snapshot.AllocTempEntityId();
+            _observedWeaponIds[key] = (name, id);
+            return id;
+        }
+
         public int CurrentBagId { get; set; } = 1;
+        public bool CanChangeBag { get; set; }
         public int CurrentWeapon { get; set; } = 1;      // slot: 1=primary, 2=secondary, 3=melee, 4=throwable, 5=c4
         public string CurrentWeaponName { get; set; } = "m4a1";
         public string CurrentWeaponSkinName { get; set; } = "";
@@ -90,13 +119,25 @@ namespace SSJJ.Server.Snapshot
         public long NextSkillTimer { get; set; } = 0;
         public long ReloadEndTime { get; set; } = 0;
         public bool IsStartReload { get; set; } = false;
-        public int ViewAnimRemainMs { get; set; } = 0;
+        public bool RecoilDirection { get; set; } = false;
+        public bool RecoilRunUpMax { get; set; } = false;
         public float LegsSpeedAnimTime { get; set; } = 0f;
+        public int LegsAnimRemainMs { get; set; }
         public float TorsoAnimStartTime { get; set; } = 0f;
-        public float TorsoAnimationTimer { get; set; } = 0f;
+        public int TorsoAnimRemainMs { get; set; }
+        public float TorsoAnimationTimer
+        {
+            get => TorsoAnimRemainMs * 0.001f;
+            set => TorsoAnimRemainMs = (int)MathF.Round(value * 1000f);
+        }
         public float FireAnimEndTime { get; set; } = 0f;
         public float ReloadAnimEndTime { get; set; } = 0f;
-        public float DeadTimer { get; set; } = 0f;
+        public int DeadTimerMs { get; set; }
+        public float DeadTimer
+        {
+            get => DeadTimerMs * 0.001f;
+            set => DeadTimerMs = (int)MathF.Round(value * 1000f);
+        }
         public float Alpha { get; set; } = 1.0f;
         public float SelfAlpha { get; set; } = 1.0f;
         // 客户端 HeadScalePlaybackSystem 公式: 1f + HeadEnlarge + OtherHeadEnlarge，默认必须为 0f 才是正常 1.0x 头身比例
@@ -127,12 +168,19 @@ namespace SSJJ.Server.Snapshot
     /// </summary>
     public class GrenadeExplosionEventData
     {
+        public int EntityId { get; } = SV_Snapshot.AllocTempEntityId();
         public int ThrowerId { get; set; }
+        public int EffectId { get; set; } = 4;
+        public string WeaponName { get; set; } = "grenade";
         public int WeaponTid { get; set; } = 10; // 手雷
         public float PosX { get; set; }
         public float PosY { get; set; }
         public float PosZ { get; set; }
+        public Vector3f? CollisionPoint { get; set; }
+        public Vector3f? CollisionNormal { get; set; }
     }
+
+    public sealed record SceneSmokeData(int Id, Vector3f Position);
 
     /// <summary>
     /// 受击命中事件（打击感核心）
@@ -142,9 +190,10 @@ namespace SSJJ.Server.Snapshot
         public int AttackerId { get; set; }
         public int VictimId { get; set; }
         public int Damage { get; set; }
-        public int HitPart { get; set; } // 1=Head, 2=Chest, 3=Stomach, 4=Arm, 5=Leg
+        public int HealthDamage { get; set; }
+        public int HitPart { get; set; } // HitBoxGroupUtilty: 1=head, 2=chest, 3=stomach, 4/5=arms, 6/7=legs, 8=other, 9=shield
         public bool IsHeadshot => HitPart == 1;
-        public string WeaponName { get; set; }
+        public string WeaponName { get; set; } = "m4a1";
         public float AttackerX { get; set; }
         public float AttackerY { get; set; }
         public float AttackerZ { get; set; }

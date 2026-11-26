@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\SSJJ-Server\SSJJ-Server.csproj" />
     <Reference Include="protobuf-net">
       <HintPath>..\..\SSJJ-Server\Assets\Plugins\Managed\protobuf-net.dll</HintPath>
     </Reference>

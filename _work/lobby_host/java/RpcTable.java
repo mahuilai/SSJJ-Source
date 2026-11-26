@@ -140,8 +140,10 @@ public final class RpcTable {
     public static boolean dispatch(DataOutputStream out, String fn) throws IOException {
         byte[] frame = fn == null ? null : FRAMES.get(fn);
         if (frame == null) return false;
-        out.write(frame);
-        out.flush();
+        synchronized (out) {
+            out.write(frame);
+            out.flush();
+        }
         // 这里直接写流、不走 LobbyLoginServer.send()，必须显式标记「已回包」，
         // 否则 [NO-REPLY] 观测会把表驱动的正常应答全部误报成静默失败。
         LobbyLoginServer.markSent();

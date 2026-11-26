@@ -54,16 +54,16 @@ namespace SSJJ.Server.Physics
         public bool IsDucking = false;
         public float Stamina = 100f;
 
-        // Constants from SSJJ PmoveBase & Quake 3
+        // Constants from SSJJ PmoveBase & SceneMoveData (cm/s & cm/s^2)
         public const float FloorElevation = 119.38f;
-        public const float Gravity = 800f;
+        public const float Gravity = 2032f;
         public const float StopSpeed = 100f;
         public const float Friction = 4.0f;
         public const float Accelerate = 5.0f;
         public const float AirAccelerate = 10.0f;
         public const float WishSpeedAir = 76.2f;
-        public const float JumpSpeed = 270f;
-        public const float MaxSpeed = 260f;
+        public const float JumpSpeed = 681f;
+        public const float MaxSpeed = 600f;
     }
 
     /// <summary>

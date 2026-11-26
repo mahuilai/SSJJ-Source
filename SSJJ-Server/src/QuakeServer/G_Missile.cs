@@ -1,145 +1,213 @@
-using System;
-using System.Collections.Generic;
+using System.Linq;
 using SSJJ.Server.Physics;
 using SSJJ.Server.Snapshot;
 
-namespace SSJJ.Server.QuakeServer
+namespace SSJJ.Server.QuakeServer;
+
+public sealed class G_Missile
 {
-    /// <summary>
-    /// 对标 Quake 3: code/game/g_missile.c
-    /// 投掷物权威物理轨迹、反弹与爆炸范围伤害
-    /// </summary>
-    public class G_Missile
+    public const float GRAVITY = 800f;
+    public const float BOUNCE_RESTITUTION = 0.45f;
+    public const float GROUND_FRICTION = 0.65f;
+    public const float SPLASH_RADIUS = 320f;
+    public const int MAX_SPLASH_DAMAGE = 105;
+    // The smoke_area wrapper points at yanwudan, whose non-looping ParticleSystems run for this duration.
+    public const float SmokeDurationSec = 20.046667f;
+    private const float SurfaceClearance = 4f;
+    private const float RestSpeed = 30f;
+
+    private enum GrenadeEffect { Blast, Flash, Smoke }
+
+    private sealed class Missile(int ownerId, SceneWeaponDrop flight, GrenadeEffect effect, Vector3f position, Vector3f velocity)
     {
-        public const float GRAVITY = 800f;
-        public const float BOUNCE_RESTITUTION = 0.45f;
-        public const float GROUND_FRICTION = 0.65f;
-        public const float SPLASH_RADIUS = 320f; // 约 8 米爆炸半径
-        public const int MAX_SPLASH_DAMAGE = 105;
+        public int OwnerId { get; } = ownerId;
+        public SceneWeaponDrop Flight { get; } = flight;
+        public GrenadeEffect Effect { get; } = effect;
+        public Vector3f Position = position;
+        public Vector3f Velocity = velocity;
+        public float FuseSec = 2.5f;
+    }
 
-        private readonly List<MissileEntity> _activeMissiles = new List<MissileEntity>();
-        private int _nextId = 100;
+    private readonly record struct Impact(Vector3f Position, Vector3f Normal);
+    private sealed class SmokeCloud(SceneSmokeData scene)
+    {
+        public SceneSmokeData Scene { get; } = scene;
+        public float RemainingSec = SmokeDurationSec;
+    }
 
-        public event Action<GrenadeExplosionEventData> OnGrenadeExploded;
+    private readonly List<Missile> _activeMissiles = new();
+    private readonly List<SmokeCloud> _smokeClouds = new();
 
-        public void SpawnGrenade(PlayerBasicInfo thrower, float speed = 750f)
+    public event Action<GrenadeExplosionEventData>? OnGrenadeExploded;
+
+    public IEnumerable<SceneWeaponDrop> FlyingWeapons => _activeMissiles.Select(missile => missile.Flight);
+    public IEnumerable<SceneSmokeData> SmokeClouds => _smokeClouds.Select(cloud => cloud.Scene);
+
+    public void SpawnGrenade(PlayerBasicInfo thrower, float speed = 750f, string weaponName = "grenade", int weaponType = 3)
+    {
+        if (thrower.IsDead) return;
+        float yaw = thrower.ViewYaw * MathF.PI / 180f;
+        float pitch = thrower.ViewPitch * MathF.PI / 180f;
+        var position = new Vector3f(thrower.PosX, thrower.PosY, thrower.PosZ + thrower.ViewHeight - 8f);
+        var velocity = new Vector3f(MathF.Cos(yaw) * MathF.Cos(pitch) * speed,
+            MathF.Sin(yaw) * MathF.Cos(pitch) * speed, -MathF.Sin(pitch) * speed + 160f);
+        var flight = new SceneWeaponDrop
         {
-            if (thrower == null || thrower.IsDead) return;
+            Id = SV_Snapshot.AllocTempEntityId(),
+            WeaponName = weaponName,
+            WeaponSkin = thrower.CurrentWeaponSkinName,
+            WeaponType = weaponType
+        };
+        var effect = weaponName.ToLowerInvariant() switch
+        {
+            "flashgrenade" or "flashgrenade_ult" => GrenadeEffect.Flash,
+            "smoke" or "smoke_ult" or "grenade_smoke" => GrenadeEffect.Smoke,
+            _ => GrenadeEffect.Blast
+        };
+        var missile = new Missile(thrower.Id, flight, effect, position, velocity);
+        UpdateFlight(missile);
+        _activeMissiles.Add(missile);
+    }
 
-            float yawRad = thrower.ViewYaw * (float)Math.PI / 180f;
-            float pitchRad = thrower.ViewPitch * (float)Math.PI / 180f;
+    public void RemovePlayer(int id) => _activeMissiles.RemoveAll(missile => missile.OwnerId == id);
 
-            float cosPitch = (float)Math.Cos(pitchRad);
-            float fwdX = (float)Math.Cos(yawRad) * cosPitch;
-            float fwdY = (float)Math.Sin(yawRad) * cosPitch;
-            float fwdZ = -(float)Math.Sin(pitchRad);
+    public void Clear()
+    {
+        _activeMissiles.Clear();
+        _smokeClouds.Clear();
+    }
 
-            var missile = new MissileEntity
-            {
-                Id = _nextId++,
-                ThrowerId = thrower.Id,
-                WeaponTid = 10,
-                PosX = thrower.PosX,
-                PosY = thrower.PosY,
-                PosZ = thrower.PosZ + (thrower.ViewHeight - 8f),
-                VelX = fwdX * speed,
-                VelY = fwdY * speed,
-                VelZ = fwdZ * speed + 160f,
-                FuseTimer = 2.5f,
-                Exploded = false
-            };
-
-            _activeMissiles.Add(missile);
+    public void Tick(float dt, IReadOnlyList<PlayerBasicInfo> players, OfficialPhysicsWorld? physicsWorld = null)
+    {
+        for (int i = _smokeClouds.Count - 1; i >= 0; i--)
+        {
+            if ((_smokeClouds[i].RemainingSec -= dt) <= 0f) _smokeClouds.RemoveAt(i);
         }
 
-        public void Tick(float dt, List<PlayerBasicInfo> players, OfficialPhysicsWorld? physicsWorld = null)
+        for (int i = _activeMissiles.Count - 1; i >= 0; i--)
         {
-            for (int i = _activeMissiles.Count - 1; i >= 0; i--)
+            var missile = _activeMissiles[i];
+            float step = missile.FuseSec > 0f ? MathF.Min(dt, missile.FuseSec) : dt;
+            Impact? impact = Move(missile, step, physicsWorld);
+            missile.FuseSec -= dt;
+            if (physicsWorld?.IsBelowScene(missile.Position.Z) == true)
             {
-                var m = _activeMissiles[i];
+                _activeMissiles.RemoveAt(i);
+                continue;
+            }
 
-                float nextX = m.PosX + m.VelX * dt;
-                float nextY = m.PosY + m.VelY * dt;
-                m.VelZ -= GRAVITY * dt;
-                float nextZ = m.PosZ + m.VelZ * dt;
+            if (missile.FuseSec <= 0f && (missile.Effect != GrenadeEffect.Smoke || impact is { Normal.Z: > 0f }))
+            {
+                _activeMissiles.RemoveAt(i);
+                Detonate(missile, impact, players, physicsWorld);
+                continue;
+            }
 
-                if (physicsWorld != null && physicsWorld.IsReady)
-                {
-                    if (!physicsWorld.TraceRayClear(m.PosX, m.PosY, m.PosZ, nextX, nextY, m.PosZ, out _))
-                    {
-                        m.VelX = -m.VelX * BOUNCE_RESTITUTION;
-                        m.VelY = -m.VelY * BOUNCE_RESTITUTION;
-                        nextX = m.PosX;
-                        nextY = m.PosY;
-                    }
-                    if (physicsWorld.SampleGround(nextX, nextY, m.PosZ + 20f, out float gz) && nextZ <= gz + 4f)
-                    {
-                        nextZ = gz + 4f;
-                        m.VelZ = -m.VelZ * BOUNCE_RESTITUTION;
-                        m.VelX *= GROUND_FRICTION;
-                        m.VelY *= GROUND_FRICTION;
-                        if (Math.Abs(m.VelZ) < 30f) m.VelZ = 0f;
-                    }
-                }
-                else if (nextZ <= 4f)
-                {
-                    nextZ = 4f;
-                    m.VelZ = -m.VelZ * BOUNCE_RESTITUTION;
-                    m.VelX *= GROUND_FRICTION;
-                    m.VelY *= GROUND_FRICTION;
-                    if (Math.Abs(m.VelZ) < 30f) m.VelZ = 0f;
-                }
+            UpdateFlight(missile);
+        }
+    }
 
-                m.PosX = nextX;
-                m.PosY = nextY;
-                m.PosZ = nextZ;
+    private static Impact? Move(Missile missile, float dt, OfficialPhysicsWorld? physicsWorld)
+    {
+        var start = missile.Position;
+        missile.Velocity.Z -= GRAVITY * dt;
+        var end = start + missile.Velocity * dt;
+        missile.Position = end;
 
-                m.FuseTimer -= dt;
-                if (m.FuseTimer <= 0f && !m.Exploded)
-                {
-                    m.Exploded = true;
-                    Explode(m, players, physicsWorld);
-                    _activeMissiles.RemoveAt(i);
-                }
+        if (physicsWorld?.IsReady == true)
+        {
+            if (physicsWorld.TraceRayWithNormal(start.X, start.Y, start.Z, end.X, end.Y, end.Z,
+                out _, out float x, out float y, out float z, out float normalX, out float normalY, out float normalZ))
+            {
+                return Bounce(missile, new Vector3f(x, y, z), new Vector3f(normalX, normalY, normalZ).Normalized());
             }
         }
-
-        private void Explode(MissileEntity m, List<PlayerBasicInfo> players, OfficialPhysicsWorld? physicsWorld)
+        else if (end.Z <= PlayerPhysicsState.FloorElevation && missile.Velocity.Z < 0f)
         {
-            // 广播手雷爆炸事件 (驱动客户端爆炸火焰、冲击波与震屏)
-            OnGrenadeExploded?.Invoke(new GrenadeExplosionEventData
-            {
-                ThrowerId = m.ThrowerId,
-                WeaponTid = m.WeaponTid,
-                PosX = m.PosX,
-                PosY = m.PosY,
-                PosZ = m.PosZ
-            });
+            float ratio = Math.Clamp((start.Z - PlayerPhysicsState.FloorElevation) / (start.Z - end.Z), 0f, 1f);
+            var contact = start + (end - start) * ratio;
+            contact.Z = PlayerPhysicsState.FloorElevation;
+            return Bounce(missile, contact, new Vector3f(0, 0, 1));
+        }
 
-            // 范围伤害结算 (对标 G_RadiusDamage + BSP 掩体遮挡)
-            PlayerBasicInfo? thrower = players.Find(p => p.Id == m.ThrowerId);
+        return null;
+    }
 
-            foreach (var p in players)
-            {
-                if (p.IsDead) continue;
+    private static Impact Bounce(Missile missile, Vector3f contact, Vector3f normal)
+    {
+        float normalSpeed = MathF.Min(Vector3f.Dot(missile.Velocity, normal), 0f);
+        var tangent = missile.Velocity - normal * normalSpeed;
+        float reboundSpeed = -normalSpeed * BOUNCE_RESTITUTION;
+        if (normal.Z > 0f)
+        {
+            tangent *= GROUND_FRICTION;
+            if (reboundSpeed < RestSpeed) reboundSpeed = 0f;
+        }
+        missile.Position = contact + normal * SurfaceClearance;
+        missile.Velocity = tangent + normal * reboundSpeed;
+        return new Impact(contact, normal);
+    }
 
-                float dx = p.PosX - m.PosX;
-                float dy = p.PosY - m.PosY;
-                float dz = (p.PosZ + 90f) - m.PosZ;
-                float dist = (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
+    private static void UpdateFlight(Missile missile)
+    {
+        var flight = missile.Flight;
+        flight.X = missile.Position.X;
+        flight.Y = missile.Position.Y;
+        flight.Z = missile.Position.Z;
+        flight.Yaw = MathF.Atan2(missile.Velocity.Y, missile.Velocity.X) * 180f / MathF.PI;
+        flight.Pitch = -MathF.Atan2(missile.Velocity.Z, missile.Velocity.Length2D()) * 180f / MathF.PI;
+    }
 
-                if (dist <= SPLASH_RADIUS)
-                {
-                    if (physicsWorld != null && physicsWorld.IsReady &&
-                        !physicsWorld.TraceRayClear(m.PosX, m.PosY, m.PosZ + 8f, p.PosX, p.PosY, p.PosZ + 100f, out _))
-                    {
-                        continue;
-                    }
-                    float factor = 1.0f - (dist / SPLASH_RADIUS);
-                    int damage = Math.Max(5, (int)(MAX_SPLASH_DAMAGE * factor));
-                    G_Combat.ApplyDamage(p, thrower, damage, 2, "grenade");
-                }
-            }
+    private void Detonate(Missile missile, Impact? impact, IReadOnlyList<PlayerBasicInfo> players, OfficialPhysicsWorld? physicsWorld)
+    {
+        var position = missile.Position;
+        var owner = players.FirstOrDefault(player => player.Id == missile.OwnerId);
+        int effectId = missile.Effect switch
+        {
+            GrenadeEffect.Flash => 8,
+            GrenadeEffect.Smoke => 1278,
+            _ => 4
+        };
+        OnGrenadeExploded?.Invoke(new GrenadeExplosionEventData
+        {
+            ThrowerId = missile.OwnerId,
+            EffectId = effectId,
+            WeaponName = missile.Flight.WeaponName,
+            PosX = position.X,
+            PosY = position.Y,
+            PosZ = position.Z,
+            CollisionNormal = impact?.Normal,
+            CollisionPoint = missile.Effect == GrenadeEffect.Blast ? impact?.Position : null
+        });
+
+        if (missile.Effect == GrenadeEffect.Smoke)
+        {
+            var surface = impact!.Value.Position;
+            _smokeClouds.Add(new SmokeCloud(new SceneSmokeData(SV_Snapshot.AllocTempEntityId(), surface)));
+        }
+        else if (missile.Effect == GrenadeEffect.Blast)
+        {
+            ApplySplashDamage(missile, owner, players, physicsWorld);
+        }
+    }
+
+    private static void ApplySplashDamage(Missile missile, PlayerBasicInfo? owner, IReadOnlyList<PlayerBasicInfo> players,
+        OfficialPhysicsWorld? physicsWorld)
+    {
+        var position = missile.Position;
+        foreach (var player in players)
+        {
+            if (player.IsDead) continue;
+            var delta = new Vector3f(player.PosX, player.PosY, player.PosZ + 90f) - position;
+            float distance = delta.Length();
+            if (distance > SPLASH_RADIUS) continue;
+
+            if (physicsWorld != null
+                && !physicsWorld.TraceRayClear(position.X, position.Y, position.Z + 8f,
+                    player.PosX, player.PosY, player.PosZ + 100f, out _)) continue;
+
+            int damage = Math.Max(5, (int)(MAX_SPLASH_DAMAGE * (1f - distance / SPLASH_RADIUS)));
+            G_Combat.ApplyDamage(player, owner, damage, 2, missile.Flight.WeaponName);
         }
     }
 }

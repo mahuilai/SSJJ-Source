@@ -20,6 +20,8 @@ public class ProfileManager {
         public WeaponSlot secondary;
         public WeaponSlot closed;
         public WeaponSlot bom1;
+        public WeaponSlot bom2 = new WeaponSlot(10000020.0, 20, "flashgrenade");
+        public WeaponSlot bom3 = new WeaponSlot(10012020.0, 12020, "smoke");
         public int roleTID = 3;
         public int roleCTID = 4;
     }
@@ -36,7 +38,11 @@ public class ProfileManager {
         }
     }
 
+    public record AvatarAppearance(long storageSkinId, int facadePartId) {}
+
     public static class Profile {
+        boolean persistent = true;
+        File profileFile;
         public int selectedBagIndex = 0;
         public int selectedAvatarBagIndex = 0;
         public int defaultAvatar = 3;
@@ -46,6 +52,9 @@ public class ProfileManager {
         public int team = 1;
         public List<BagSlot> bags = new ArrayList<>();
         public Map<Long, Long> equippedSkins = new LinkedHashMap<>(); // weaponStorageId -> skinStorageId
+        public Map<Integer, AvatarAppearance> avatarAppearances = new LinkedHashMap<>();
+        public Map<Integer, Map<Integer, Long>> avatarParts = new LinkedHashMap<>();
+        public Map<String, String> userSettings = new LinkedHashMap<>();
         public Map<Long, Integer> storageAmounts = new LinkedHashMap<>(); // storageId -> amount override
         public Map<Integer, Integer> equippedPersonalise = new LinkedHashMap<>(); // personalise tid -> equip index
         public String equippedTitle = "";
@@ -66,7 +75,9 @@ public class ProfileManager {
         }
     }
 
-    private static File getProfileFile() {
+    static File getProfileFile() {
+        String configured = System.getProperty("ssjj.profile");
+        if (configured != null && !configured.isBlank()) return new File(configured);
         File f1 = new File("../user_profile.json");
         if (f1.exists()) return f1;
         File f2 = new File("user_profile.json");
@@ -77,15 +88,32 @@ public class ProfileManager {
     }
 
     public static synchronized void save(Profile p) {
+        if (!p.persistent) return;
         try {
             StringBuilder sb = new StringBuilder();
             sb.append("{\n");
             sb.append("  \"selectedBagIndex\": ").append(p.selectedBagIndex).append(",\n");
+            sb.append("  \"selectedAvatarBagIndex\": ").append(p.selectedAvatarBagIndex).append(",\n");
             sb.append("  \"defaultAvatar\": ").append(p.defaultAvatar).append(",\n");
             sb.append("  \"defaultCareer\": ").append(jsonQuote(p.defaultCareer)).append(",\n");
             sb.append("  \"playerName\": ").append(jsonQuote(p.playerName)).append(",\n");
             sb.append("  \"lastChangePlayerName\": ").append(p.lastChangePlayerName).append(",\n");
             sb.append("  \"team\": ").append(p.team).append(",\n");
+            sb.append("  \"avatarAppearances\": [");
+            var appearances = new StringJoiner(", ");
+            for (var entry : p.avatarAppearances.entrySet()) {
+                AvatarAppearance appearance = entry.getValue();
+                appearances.add("{\"roleId\": " + entry.getKey() + ", \"storageSkinId\": "
+                    + appearance.storageSkinId() + ", \"facadePartId\": " + appearance.facadePartId() + "}");
+            }
+            sb.append(appearances).append("],\n");
+            var parts = new StringJoiner(", ");
+            p.avatarParts.forEach((role, slots) -> slots.forEach((slot, storage) ->
+                parts.add("{\"roleId\": " + role + ", \"slot\": " + slot + ", \"storageId\": " + storage + "}")));
+            sb.append("  \"avatarParts\": [").append(parts).append("],\n");
+            var settings = new StringJoiner(", ");
+            p.userSettings.forEach((name, value) -> settings.add(jsonQuote(name) + ": " + jsonQuote(value)));
+            sb.append("  \"userSettings\": {").append(settings).append("},\n");
             sb.append("  \"bags\": [\n");
             for (int i = 0; i < p.bags.size(); i++) {
                 BagSlot b = p.bags.get(i);
@@ -95,7 +123,9 @@ public class ProfileManager {
                 sb.append("      \"master\": ").append(formatSlot(b.master)).append(",\n");
                 sb.append("      \"secondary\": ").append(formatSlot(b.secondary)).append(",\n");
                 sb.append("      \"closed\": ").append(formatSlot(b.closed)).append(",\n");
-                sb.append("      \"bom1\": ").append(formatSlot(b.bom1)).append("\n");
+                sb.append("      \"bom1\": ").append(formatSlot(b.bom1)).append(",\n");
+                sb.append("      \"bom2\": ").append(formatSlot(b.bom2)).append(",\n");
+                sb.append("      \"bom3\": ").append(formatSlot(b.bom3)).append("\n");
                 sb.append("    }").append(i < p.bags.size() - 1 ? "," : "").append("\n");
             }
             sb.append("  ],\n");
@@ -140,7 +170,7 @@ public class ProfileManager {
             }
             sb.append("  }\n");
             sb.append("}\n");
-            File target = getProfileFile();
+            File target = p.profileFile != null ? p.profileFile : getProfileFile();
             java.nio.file.Path dst = target.toPath().toAbsolutePath();
             java.nio.file.Path dir = dst.getParent();
             if (dir != null) Files.createDirectories(dir);
@@ -153,7 +183,7 @@ public class ProfileManager {
                 // 保留上一版，便于人工回滚
                 if (Files.exists(dst)) {
                     try {
-                        Files.copy(dst, dst.resolveSibling("user_profile.json.prev"),
+                        Files.copy(dst, dst.resolveSibling(dst.getFileName() + ".prev"),
                                 java.nio.file.StandardCopyOption.REPLACE_EXISTING);
                     } catch (Exception ignore) {}
                 }
@@ -216,8 +246,18 @@ public class ProfileManager {
     }
 
     public static synchronized Profile load() {
+        return load(getProfileFile(), null);
+    }
+
+    static File localSecondProfileFile() {
+        File primary = getProfileFile().getAbsoluteFile();
+        return new File(primary.getParentFile(), "user_profile_local_2.json");
+    }
+
+    public static synchronized Profile load(File f, String defaultName) {
         Profile p = new Profile();
-        File f = getProfileFile();
+        p.profileFile = f;
+        if (defaultName != null) p.playerName = defaultName;
         if (!f.exists()) {
             save(p);
             return p;
@@ -226,6 +266,9 @@ public class ProfileManager {
             String json = Files.readString(f.toPath(), java.nio.charset.StandardCharsets.UTF_8);
             Matcher m = Pattern.compile("\"selectedBagIndex\"\\s*:\\s*(\\d+)").matcher(json);
             if (m.find()) p.selectedBagIndex = Integer.parseInt(m.group(1));
+
+            m = Pattern.compile("\"selectedAvatarBagIndex\"\\s*:\\s*(\\d+)").matcher(json);
+            if (m.find()) p.selectedAvatarBagIndex = Math.min(1, Integer.parseInt(m.group(1)));
 
             m = Pattern.compile("\"defaultAvatar\"\\s*:\\s*(\\d+)").matcher(json);
             if (m.find()) p.defaultAvatar = Integer.parseInt(m.group(1));
@@ -241,6 +284,40 @@ public class ProfileManager {
 
             m = Pattern.compile("\"team\"\\s*:\\s*(\\d+)").matcher(json);
             if (m.find()) p.team = Integer.parseInt(m.group(1));
+
+            int appearancesKey = json.indexOf("\"avatarAppearances\"");
+            if (appearancesKey >= 0) {
+                int start = json.indexOf('[', appearancesKey);
+                if (start >= 0) {
+                    Pattern appearanceFields = Pattern.compile("\"roleId\"\\s*:\\s*(\\d+)\\s*,\\s*"
+                        + "\"storageSkinId\"\\s*:\\s*(\\d+)\\s*,\\s*\"facadePartId\"\\s*:\\s*(\\d+)");
+                    for (String appearance : extractArrayObjects(json, start)) {
+                        Matcher fields = appearanceFields.matcher(appearance);
+                        if (fields.find()) p.avatarAppearances.put(Integer.parseInt(fields.group(1)),
+                            new AvatarAppearance(Long.parseLong(fields.group(2)), Integer.parseInt(fields.group(3))));
+                    }
+                }
+            }
+            int avatarPartsKey = json.indexOf("\"avatarParts\"");
+            if (avatarPartsKey >= 0) {
+                int start = json.indexOf('[', avatarPartsKey);
+                if (start >= 0) {
+                    var partFields = Pattern.compile("\"roleId\"\\s*:\\s*(\\d+)\\s*,\\s*"
+                        + "\"slot\"\\s*:\\s*(\\d+)\\s*,\\s*\"storageId\"\\s*:\\s*(\\d+)");
+                    for (String part : extractArrayObjects(json, start)) {
+                        var fields = partFields.matcher(part);
+                        if (fields.find()) {
+                            p.avatarParts.computeIfAbsent(Integer.parseInt(fields.group(1)), id -> new LinkedHashMap<>())
+                                .put(Integer.parseInt(fields.group(2)), Long.parseLong(fields.group(3)));
+                        }
+                    }
+                }
+            }
+            Matcher settings = Pattern.compile("\"userSettings\"\\s*:\\s*\\{((?:[^\"}]|\"(?:\\\\.|[^\"\\\\])*\")*)\\}").matcher(json);
+            if (settings.find()) {
+                Matcher field = Pattern.compile("\"([a-zA-Z0-9_]+)\"\\s*:\\s*\"((?:\\\\.|[^\"\\\\])*)\"").matcher(settings.group(1));
+                while (field.find()) p.userSettings.put(field.group(1), jsonUnquote(field.group(2)));
+            }
 
             // Parse each bag as a balanced JSON object. Slot objects contain commas,
             // so splitting their values at the first comma drops weapon data.
@@ -259,6 +336,8 @@ public class ProfileManager {
                 bs.secondary = parseSlotField(bagJson, "secondary");
                 bs.closed = parseSlotField(bagJson, "closed");
                 bs.bom1 = parseSlotField(bagJson, "bom1");
+                if (bagJson.contains("\"bom2\"")) bs.bom2 = parseSlotField(bagJson, "bom2");
+                if (bagJson.contains("\"bom3\"")) bs.bom3 = parseSlotField(bagJson, "bom3");
             }
 
             // Parse equippedSkins

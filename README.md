@@ -1,84 +1,95 @@
-# SSJJ-Source — 生死狙击离线复刻与 Server-First 开源框架
+# SSJJ-Source
 
-> **定位声明**：本项目是一个**开源框架与实验性复刻工程**，旨在通过社区协作还原《生死狙击》离线/局域网体验。欢迎志同道合的开发者加入共建（协议逆向、武器技能、人机 AI、地图玩法、大厅联调等）。
+《生死狙击》本地联调项目。使用 C# / .NET 10 实现权威战斗服务端，以 Java AMF3 大厅和 Python 资源网关连接本地 AIR 大厅与 Unity 战斗客户端。战斗端保留原版 `Assembly-CSharp.dll`，启动器会校验其 SHA256。
 
----
+## 当前功能
 
-## 核心架构与开源模块
+- **本地双端联机**：两个大厅账号加入同频道、同房间；开局后两个 Unity 战斗窗口连接同一个房间服务端。角色身份、队伍、背包、输入和快照按会话区分。
+- **局内同步**：TCP 房间和战斗信令、UDP 输入与快照、移动与连跳、受击与死亡、开火与换弹动画、计分和回合结算。
+- **仓库和背包**：装备及皮肤随账号进入战斗。雷包可同时装手雷、闪光弹和烟雾弹，按 **5** 轮换，持有 C4 时按 **6** 切到 C4。
+- **玩法**：团队、个人竞技、死斗、爆破、刀战、武器大师、飞刀、大头英雄、生化，以及实验性的冒险模式。各模式的覆盖范围以现有测试和协议文档为准。
+- **人机频道**：本地联机和经典竞技频道的空位留给真人，人机娱乐频道按房间设置补 Bot。
 
-本项目同时包含两条技术路线及配套资源工具：
+## 准备环境
 
-1. **Server-First 独立服务端框架（当前主线，`SSJJ-Server/`）**
-   - 保持原版 Unity 战斗客户端 `Assembly-CSharp.dll` **零改动**，通过 `-la <base62(ProtoBuf(BootConfigData))>` 原生启动参数直连本地 `SSJJ-Server`（TCP `:27100` / UDP `:27101`）。
-   - 接入官方共享契约与原生物理引擎（`WizzardEngine.dll` + PhysX / BSP 碰撞），实现移动、弹道、击杀播报、准星红叉、计分板与多模式回合结算。
-   - 已包含团队（2003/3）、刀锋战士/刀战（15/2041）、爆破（2，含 C4 下包/拆包）、个人竞技（5）、死斗（12）、武器大师（64）、飞刀（74）、大头英雄（2019/19）等模式框架及 `VerifyE2E` 端到端测试套件（`_work/VerifyE2E/`）。
+| 依赖 | 用途 |
+| --- | --- |
+| Windows x64、.NET 10 SDK | 构建 C# 项目并加载原生战斗物理库 |
+| Python 3.10 或更新版本、Pillow | 启动脚本和本地 HTTP 资源网关 |
+| JDK 17 或更新版本 | 构建 Java 大厅服务及运行大厅联调测试 |
+| 自备兼容版本的 Unity 战斗客户端 | 默认路径为 `D:\SSJJ-4399\battle\3_64` |
+| 自备 AIR 大厅和匹配的本地资源 | 大厅默认路径为 `D:\SSJJ\SSJJ-4399\Lobby`，仅在图形大厅联调时使用 |
 
-2. **官方 AIR 大厅与本地网关（`_work/lobby_host/` + `_work/launch_lobby.py`）**
-   - Java AMF3 大厅服务端（`LobbyLoginServer.java`）、本地 HTTP 资源网关（`_work/gateway_8080.py`）与战斗启动桥接（`_work/launch_battle_from_lobby.py`）。
-   - 支持大厅登录、仓库/背包/皮肤/角色配置同步、创建房间并一键拉起战斗端。
+以下命令从仓库根目录运行。现有启动配置在 `D:\逆向\SSJJ双塔惊魂` 验证；使用其他路径时请核对 `ServerConfig.cs`、启动脚本中的客户端路径以及资源位置。
 
-3. **旧版离线注入模式（`Game-SSJJ-Source/Assets/Decompiled/Offline*.cs`）**
-   - 早期基于客户端注入的离线单人游玩实现（含 `OfflineGameController.cs`、`OfflineBotAI.cs`、`OfflineGameplay.cs` 等），保留供参考与对比。
-
-4. **Python 资源拉取与工具脚本（`Game-SSJJ/tools/`、`_work/`、`tools/`）**
-   - 包含资源下载、清单解析、AssetBundle 校验与启动准备脚本。
-
----
-
-## 界面与工程预览
-
-### AIR 大厅实机预览
-
-![AIR 大厅预览 1](docs/images/lobby_preview_1.png)
-![AIR 大厅预览 2](docs/images/lobby_preview_2.png)
-![AIR 大厅预览 3](docs/images/lobby_preview_3.png)
-![AIR 大厅登录态](docs/images/lobby_logged_in.png)
-
----
-
-## 目录结构
-
-```text
-SSJJ-Source/
-├── SSJJ-Server/                  # C# (.NET 10) Server-First 权威服务端框架
-│   ├── Program.cs                # 主循环、玩家步进与网络调度
-│   └── src/
-│       ├── Bots/                 # 人机 AI 与 BSP 导航图
-│       ├── Config/               # 武器/技能/皮肤数据表与 BSP 地图解析
-│       ├── GameModes/            # 爆破/刀战/团队/武器大师/大头/飞刀模式协调器
-│       ├── NativeEngine/         # WizzardEngine / PhysX 原生宿主
-│       ├── Network/              # TCP 信令网关 & UDP 快照/UserCmd 同步
-│       ├── Physics/              # 官方物理适配与 Quake3 Pmove
-│       ├── QuakeServer/          # 武器、伤害、投掷物与技能特效系统
-│       └── Snapshot/             # 原生 ParseOld 快照序列化器
-├── _work/
-│   ├── VerifyE2E/                # 端到端协议与玩法自动化测试
-│   ├── lobby_host/               # Java AMF3 大厅服务端与清单配置
-│   ├── gateway_8080.py           # 本地 :8080 资源网关
-│   ├── launch_lobby.py           # 大厅一键启动器
-│   ├── launch_battle_from_lobby.py # 大厅 -> 战斗端桥接启动
-│   └── launch_server_client.py   # 独立直连调试启动器
-├── Game-SSJJ-Source/Assets/Decompiled/Offline*.cs # 旧版离线注入模式源码
-├── Game-SSJJ/tools/              # 资源处理与辅助 Python 脚本
-└── docs/images/                  # 开源预览截图
+```powershell
+git clone https://github.com/mahuilai/SSJJ-Source.git
+Set-Location SSJJ-Source
+python -m pip install Pillow
 ```
 
----
+仓库中的项目文件引用本地客户端的依赖。构建前，从你已安装且有权使用的对应客户端复制以下文件到服务端目录。原始客户端文件保留在原位。
 
-## 快速开始（开发者）
+```powershell
+$gameData = 'D:\SSJJ-4399\battle\3_64\SSJJ_BattleClient_Unity_Data'
+$managedDest = 'SSJJ-Server\Assets\Plugins\Managed'
+$nativeDest = 'SSJJ-Server\Assets\Plugins\x86_64'
+New-Item -ItemType Directory -Force -Path $managedDest, $nativeDest | Out-Null
 
-1. **环境要求**：`.NET 10 SDK`、`Python 3.10+`（可选安装 `pip install pillow` 用于动态图标兜底）、`Java 17+`（AIR 大厅）。
-2. **准备原版依赖 DLL（重要）**：
-   - 因版权原因，仓库不含原厂二进制文件。请从原版《生死狙击》战斗客户端复制所需共享程序集（`protobuf-net.dll`、`SSJJ.Contract.dll`、`SSJJ.Contract.Serializer.dll`、`base.net.dll`、`configNet.dll`、`physics.net.dll`、`weaponPredicateNet.net.dll`、`ssjj.net.dll`、`itween.net.dll`）到 `SSJJ-Server\Assets\Plugins\Managed\`，以及原生 x64 DLL（`WizzardEngine.dll`、`PhysX3*.dll` 等）到 `SSJJ-Server\Assets\Plugins\x86_64\`。
-3. **编译服务端 & 运行 E2E 测试**：
-   ```powershell
-   dotnet build SSJJ-Server\SSJJ-Server.csproj -v minimal
-   dotnet run --project _work\VerifyE2E\VerifyE2E.csproj
-   ```
-4. **启动大厅**：
-   ```powershell
-   python -u _work\launch_lobby.py
-   ```
-   （启动器会自动检测并调用 `javac` 编译 `_work\lobby_host\java\*.java`。）
+$managedFiles = @(
+    'protobuf-net.dll', 'SSJJ.Contract.dll', 'SSJJ.Contract.Serializer.dll',
+    'base.net.dll', 'configNet.dll', 'physics.net.dll',
+    'weaponPredicateNet.net.dll', 'ssjj.net.dll', 'itween.net.dll'
+)
+foreach ($name in $managedFiles) {
+    Copy-Item -LiteralPath (Join-Path "$gameData\Managed" $name) -Destination $managedDest
+}
 
-> **版权说明**：本仓库**不包含**任何原厂客户端二进制文件、美术模型、贴图或加密资源包，仅开源自主编写的服务端框架、大厅桥接与工具脚本源码。
+$nativeFiles = @(
+    'vcruntime140.dll', 'nvToolsExt64_1.dll', 'RapidXml.dll',
+    'PhysX3Common_x64.dll', 'PhysX3_x64.dll', 'PhysX3Cooking_x64.dll',
+    'PhysX3CharacterKinematic_x64.dll', 'NaviProxy.dll', 'WizzardEngine.dll'
+)
+foreach ($name in $nativeFiles) {
+    Copy-Item -LiteralPath (Join-Path "$gameData\Plugins\x86_64" $name) -Destination $nativeDest
+}
+```
+
+- 战斗测试使用本机客户端的地图 BSP，并从 `Game source/06_singleplayer/tables_json/` 加载匹配版本的武器、技能及皮肤表。缺表时运行会降级，依赖原版数据的测试可能失败。
+- 图形大厅还需要匹配的大厅 SWF、资源清单及资源文件。构建成功只验证代码依赖就绪。仓库默认的资源位置和故障排查见[本地运行说明](docs/LOCAL_SETUP.md)。
+
+## 构建和测试
+
+```powershell
+dotnet build SSJJ-Server\SSJJ-Server.csproj -c Release
+dotnet build SSJJ-Server\SSJJ-Server.csproj -c Debug
+dotnet run --project SSJJ-Server.Tests\SSJJ-Server.Tests.csproj
+dotnet run --project _work\VerifyE2E\VerifyE2E.csproj
+```
+
+`SSJJ-Server.Tests` 检查逻辑和数据表行为。`VerifyE2E` 使用测试客户端检查协议、游戏规则和多会话，包含双大厅房间及战斗桥接用例。原版窗口中的动画、资源和输入手感另做实机验证。
+
+## 启动大厅
+
+1. 双端启动运行 [启动大厅_双端联机.bat](启动大厅_双端联机.bat)，也可执行 `python -u _work\launch_lobby.py --local-dual`。双端启动器默认使用当前检出目录的 **Release** 战斗服。
+2. 在两个大厅分别进入「本地联机频道」。第一端创建房间，第二端加入并准备。房主开局后会启动两个战斗窗口。
+3. 单大厅运行 [启动大厅.bat](启动大厅.bat)。独立战斗调试器使用当前检出目录的 **Debug** 战斗服，可执行 `python -u _work\launch_server_client.py --map map12 --mode team_ai`。
+
+本地大厅通过回环地址使用 TCP 2000、HTTP 8080 与 AIR 桥接端口 16397/16398。独立战斗服默认使用 TCP 27100、UDP 27101。大厅房间由桥接器分配战斗端口。
+
+## 目录与开发资料
+
+| 目录 | 内容 |
+| --- | --- |
+| [SSJJ-Server](SSJJ-Server/) | 战斗主循环、网络会话、物理、武器、快照、Bot 和模式规则 |
+| [SSJJ-Server.Tests](SSJJ-Server.Tests/) | 单元和回归测试 |
+| [_work/VerifyE2E](_work/VerifyE2E/) | 战斗和大厅协议端到端测试 |
+| [_work/lobby_host](_work/lobby_host/) | Java AMF3 大厅、账号资料与 RPC 配置 |
+| [docs/PROTOCOL_AUDIT.md](docs/PROTOCOL_AUDIT.md) | 协议审计和兼容行为说明 |
+| [docs/LOCAL_SETUP.md](docs/LOCAL_SETUP.md) | 本地依赖、日志与常见故障 |
+
+提交 Issue 时请附上 commit、模式、地图、复现步骤和去除账号信息后的相关日志。提交 PR 时请写明更改的行为和已运行的验证命令。
+
+## 源码与资源
+
+这是非官方项目。源码公开供查看，项目目前未授予通用的开源许可证。本地运行所需的原版客户端、原版资源和第三方库请从有权使用的本地安装获取。相关名称和资源的权利属于各自权利人。

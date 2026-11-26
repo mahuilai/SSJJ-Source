@@ -1,0 +1,662 @@
+{
+  "manct": {
+    "": {},
+    "ak47": {
+      "TORSO_ATTACK": 300,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 966
+    },
+    "angerfirescar": {
+      "TORSO_ATTACK": 833,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 966
+    },
+    "awakening_skill": {
+      "TORSO_ATTACK": 833
+    },
+    "awp": {
+      "TORSO_ATTACK": 300,
+      "TORSO_RELOAD": 1733
+    },
+    "baby_ram": {
+      "TORSO_ATTACK": 1366,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 1533
+    },
+    "bat": {
+      "TORSO_ATTACK": 833
+    },
+    "blink_shadow": {
+      "TORSO_ATTACK": 366,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 1033
+    },
+    "bow": {
+      "TORSO_ATTACK": 533
+    },
+    "c4": {
+      "TORSO_ATTACK": 3999,
+      "TORSO_RELOAD": 1733
+    },
+    "cheer": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33
+    },
+    "dadao": {
+      "TORSO_ATTACK": 866
+    },
+    "dagger": {
+      "TORSO_ATTACK": 833,
+      "TORSO_RELOAD": 1100,
+      "TORSO_SECONDARY_ATTACK": 833
+    },
+    "darkdiamond_skill": {
+      "TORSO_ATTACK": 833
+    },
+    "deagle": {
+      "TORSO_ATTACK": 300,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 966
+    },
+    "double_baton": {
+      "TORSO_ATTACK": 833
+    },
+    "double_deagle": {
+      "TORSO_ATTACK": 366,
+      "TORSO_RELOAD": 1733
+    },
+    "double_maul": {
+      "TORSO_ATTACK": 366,
+      "TORSO_RELOAD": 1733
+    },
+    "flying_shuttle": {
+      "TORSO_ATTACK": 200,
+      "TORSO_RELOAD": 1733
+    },
+    "gatling": {
+      "TORSO_ATTACK": 200,
+      "TORSO_RELOAD": 3733,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "gatling_dou_rage2": {
+      "TORSO_ATTACK": 200,
+      "TORSO_RELOAD": 3733
+    },
+    "ghost_rider": {
+      "TORSO_ATTACK": 233,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 466
+    },
+    "gloves": {
+      "TORSO_ATTACK": 833
+    },
+    "goldhoop_bar_skill": {
+      "TORSO_ATTACK": 1366
+    },
+    "grenade": {
+      "TORSO_ATTACK": 300,
+      "TORSO_RELOAD": 1733
+    },
+    "hammer": {
+      "TORSO_ATTACK": 833
+    },
+    "hero_cold_death": {
+      "TORSO_ATTACK": 300,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 966
+    },
+    "hk416": {
+      "TORSO_ATTACK": 200,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 966
+    },
+    "holy_rosary_skill": {
+      "TORSO_ATTACK": 1366
+    },
+    "infinite_hand1": {
+      "TORSO_ATTACK": 366,
+      "TORSO_RELOAD": 1733
+    },
+    "infinite_hand1_change_1": {
+      "TORSO_ATTACK": 366,
+      "TORSO_RELOAD": 1733
+    },
+    "infinite_hand1_change_2": {
+      "TORSO_ATTACK": 366,
+      "TORSO_RELOAD": 1733
+    },
+    "lightwithshadow_skill": {
+      "TORSO_ATTACK": 166,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 1533
+    },
+    "m4a1": {
+      "TORSO_ATTACK": 200,
+      "TORSO_RELOAD": 1733
+    },
+    "minideath": {
+      "TORSO_ATTACK": 200,
+      "TORSO_RELOAD": 1733
+    },
+    "mirage_dou_blade_skill": {
+      "TORSO_ATTACK": 166,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 1533
+    },
+    "mirage_sickle_attack": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "nunchaku": {
+      "TORSO_ATTACK": 1100,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 1100
+    },
+    "nunchaku_king": {
+      "TORSO_ATTACK": 1100,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 1100
+    },
+    "qin": {
+      "TORSO_ATTACK": 966,
+      "TORSO_RELOAD": 1733
+    },
+    "rider_dou_gun": {
+      "TORSO_ATTACK": 366,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 966
+    },
+    "rifle_opticor": {
+      "TORSO_ATTACK": 300,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 966
+    },
+    "riotshield": {
+      "TORSO_ATTACK": 200,
+      "TORSO_RELOAD": 1733
+    },
+    "role_skill_13": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "role_skill_2": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "role_skill_20": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "role_skill_3": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "role_skill_32": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "role_skill_38": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "role_skill_4": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "role_skill_5": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "rpk_hero": {
+      "TORSO_ATTACK": 300,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 966
+    },
+    "saw": {
+      "TORSO_ATTACK": 833,
+      "TORSO_RELOAD": 1100,
+      "TORSO_SECONDARY_ATTACK": 833
+    },
+    "sawed_pirate": {
+      "TORSO_ATTACK": 200,
+      "TORSO_RELOAD": 1733
+    },
+    "scythe": {
+      "TORSO_ATTACK": 833
+    },
+    "sea_of_shark": {
+      "TORSO_ATTACK": 1366
+    },
+    "shield": {
+      "TORSO_ATTACK": 833,
+      "TORSO_RELOAD": 966
+    },
+    "slingshot": {
+      "TORSO_ATTACK": 433
+    },
+    "smaw": {
+      "TORSO_ATTACK": 566,
+      "TORSO_RELOAD": 3166
+    },
+    "snake_chain_sword_skill": {
+      "TORSO_ATTACK": 1366
+    },
+    "stab": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33
+    },
+    "stab2": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33
+    },
+    "tangyuan": {
+      "TORSO_ATTACK": 1699
+    },
+    "telescope": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33
+    },
+    "thomson": {
+      "TORSO_ATTACK": 200,
+      "TORSO_RELOAD": 1733
+    },
+    "thunder_scepter": {
+      "TORSO_ATTACK": 700
+    },
+    "torso_christmas_blade_skill": {
+      "TORSO_ATTACK": 1366
+    },
+    "torso_julong_wing_chuchang": {
+      "TORSO_ATTACK": 1366
+    },
+    "torso_longzhou_idle": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "torso_nunchakus_legend_skill": {
+      "TORSO_ATTACK": 1366
+    },
+    "torso_star_debris_skill": {
+      "TORSO_ATTACK": 1366
+    },
+    "twins_infinity": {
+      "TORSO_ATTACK": 166,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 1533
+    },
+    "twins_skill": {
+      "TORSO_ATTACK": 166,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 1533
+    },
+    "viper": {
+      "TORSO_ATTACK": 233,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 466
+    },
+    "wind_boxer": {
+      "TORSO_ATTACK": 833
+    },
+    "wind_spirit": {
+      "TORSO_ATTACK": 833,
+      "TORSO_RELOAD": 1733
+    },
+    "xp_skill_1": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    }
+  },
+  "woman": {
+    "": {},
+    "ak47": {
+      "TORSO_ATTACK": 300,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 966
+    },
+    "angerfirescar": {
+      "TORSO_ATTACK": 833,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 966
+    },
+    "awakening_skill": {
+      "TORSO_ATTACK": 833
+    },
+    "awp": {
+      "TORSO_ATTACK": 300,
+      "TORSO_RELOAD": 1733
+    },
+    "baby_ram": {
+      "TORSO_ATTACK": 1366,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 1533
+    },
+    "bat": {
+      "TORSO_ATTACK": 833
+    },
+    "blink_shadow": {
+      "TORSO_ATTACK": 366,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 1033
+    },
+    "bow": {
+      "TORSO_ATTACK": 533
+    },
+    "c4": {
+      "TORSO_ATTACK": 3999,
+      "TORSO_RELOAD": 1733
+    },
+    "cheer": {
+      "TORSO_ATTACK": 33
+    },
+    "dadao": {
+      "TORSO_ATTACK": 866
+    },
+    "dagger": {
+      "TORSO_ATTACK": 833,
+      "TORSO_RELOAD": 1100,
+      "TORSO_SECONDARY_ATTACK": 833
+    },
+    "darkdiamond_skill": {
+      "TORSO_ATTACK": 833
+    },
+    "deagle": {
+      "TORSO_ATTACK": 300,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 1100
+    },
+    "double_baton": {
+      "TORSO_ATTACK": 833
+    },
+    "double_deagle": {
+      "TORSO_ATTACK": 366,
+      "TORSO_RELOAD": 1733
+    },
+    "double_maul": {
+      "TORSO_ATTACK": 366,
+      "TORSO_RELOAD": 1733
+    },
+    "flying_shuttle": {
+      "TORSO_ATTACK": 200,
+      "TORSO_RELOAD": 1733
+    },
+    "gatling": {
+      "TORSO_ATTACK": 200,
+      "TORSO_RELOAD": 3733,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "gatling_dou_rage2": {
+      "TORSO_ATTACK": 200,
+      "TORSO_RELOAD": 3733
+    },
+    "ghost_rider": {
+      "TORSO_ATTACK": 233,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 466
+    },
+    "gloves": {
+      "TORSO_ATTACK": 833
+    },
+    "goldhoop_bar_skill": {
+      "TORSO_ATTACK": 1366
+    },
+    "grenade": {
+      "TORSO_ATTACK": 300,
+      "TORSO_RELOAD": 1733
+    },
+    "hammer": {
+      "TORSO_ATTACK": 833
+    },
+    "hero_cold_death": {
+      "TORSO_ATTACK": 300,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 966
+    },
+    "hk416": {
+      "TORSO_ATTACK": 200,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 966
+    },
+    "holy_rosary_skill": {
+      "TORSO_ATTACK": 1366
+    },
+    "infinite_hand1": {
+      "TORSO_ATTACK": 366,
+      "TORSO_RELOAD": 1733
+    },
+    "infinite_hand1_change_1": {
+      "TORSO_ATTACK": 366,
+      "TORSO_RELOAD": 1733
+    },
+    "infinite_hand1_change_2": {
+      "TORSO_ATTACK": 366,
+      "TORSO_RELOAD": 1733
+    },
+    "lightwithshadow_skill": {
+      "TORSO_ATTACK": 366,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 1533
+    },
+    "m4a1": {
+      "TORSO_ATTACK": 200,
+      "TORSO_RELOAD": 1733
+    },
+    "minideath": {
+      "TORSO_ATTACK": 200,
+      "TORSO_RELOAD": 1733
+    },
+    "mirage_dou_blade_skill": {
+      "TORSO_ATTACK": 366,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 1533
+    },
+    "mirage_sickle_attack": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "nunchaku": {
+      "TORSO_ATTACK": 1100,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 1100
+    },
+    "nunchaku_king": {
+      "TORSO_ATTACK": 1100,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 1100
+    },
+    "qin": {
+      "TORSO_ATTACK": 966,
+      "TORSO_RELOAD": 1733
+    },
+    "rider_dou_gun": {
+      "TORSO_ATTACK": 366,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 966
+    },
+    "rifle_opticor": {
+      "TORSO_ATTACK": 300,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 966
+    },
+    "riotshield": {
+      "TORSO_ATTACK": 200,
+      "TORSO_RELOAD": 1733
+    },
+    "role_skill1_29": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "role_skill_1": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "role_skill_10": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "role_skill_11": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "role_skill_12": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "role_skill_17": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "role_skill_24": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "role_skill_25": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "role_skill_28": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "role_skill_29": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "role_skill_4": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "role_skill_46": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "role_skill_47": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "rpk_hero": {
+      "TORSO_ATTACK": 300,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 966
+    },
+    "saw": {
+      "TORSO_ATTACK": 833,
+      "TORSO_RELOAD": 1100,
+      "TORSO_SECONDARY_ATTACK": 833
+    },
+    "sawed_pirate": {
+      "TORSO_ATTACK": 200,
+      "TORSO_RELOAD": 1733
+    },
+    "scythe": {
+      "TORSO_ATTACK": 833
+    },
+    "sea_of_shark": {
+      "TORSO_ATTACK": 1366
+    },
+    "shield": {
+      "TORSO_ATTACK": 833,
+      "TORSO_RELOAD": 966
+    },
+    "slingshot": {
+      "TORSO_ATTACK": 433
+    },
+    "smaw": {
+      "TORSO_ATTACK": 566,
+      "TORSO_RELOAD": 3166
+    },
+    "snake_chain_sword_skill": {
+      "TORSO_ATTACK": 1366
+    },
+    "stab": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33
+    },
+    "stab2": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33
+    },
+    "tangyuan": {
+      "TORSO_ATTACK": 1699
+    },
+    "telescope": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33
+    },
+    "thomson": {
+      "TORSO_ATTACK": 200,
+      "TORSO_RELOAD": 1733
+    },
+    "thunder_scepter": {
+      "TORSO_ATTACK": 700
+    },
+    "torso_christmas_blade_skill": {
+      "TORSO_ATTACK": 1366
+    },
+    "torso_julong_wing_chuchang": {
+      "TORSO_ATTACK": 1366
+    },
+    "torso_kick": {
+      "TORSO_ATTACK": 1366
+    },
+    "torso_longzhou_idle": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    },
+    "torso_nunchakus_legend_skill": {
+      "TORSO_ATTACK": 1366
+    },
+    "torso_star_debris_skill": {
+      "TORSO_ATTACK": 1366
+    },
+    "twins_infinity": {
+      "TORSO_ATTACK": 366,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 1533
+    },
+    "twins_skill": {
+      "TORSO_ATTACK": 366,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 1533
+    },
+    "viper": {
+      "TORSO_ATTACK": 233,
+      "TORSO_RELOAD": 1733,
+      "TORSO_SECONDARY_ATTACK": 466
+    },
+    "wind_spirit": {
+      "TORSO_ATTACK": 833,
+      "TORSO_RELOAD": 1733
+    },
+    "xp_skill_1": {
+      "TORSO_ATTACK": 33,
+      "TORSO_RELOAD": 33,
+      "TORSO_SECONDARY_ATTACK": 33
+    }
+  }
+}

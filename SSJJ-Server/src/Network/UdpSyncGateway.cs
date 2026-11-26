@@ -65,27 +65,22 @@ namespace SSJJ.Server.Network
     /// </summary>
     public sealed class UdpSyncGateway
     {
+        private readonly ClientSessionRegistry _sessions;
         private readonly int _port;
         private readonly IPAddress _bindAddr;
         private UdpClient? _udp;
-        private IPEndPoint? _remoteClient;
-        private bool _running;
-        private bool _loggedProbe;
-        private bool _loggedUserCmd;
-        private readonly object _epLock = new object();
+        private volatile bool _running;
+        private int _loggedProbe;
+        private int _loggedUserCmd;
 
-        public event Action<List<DecodedUserCmd>>? OnUserCmdBatchReceived;
-
-        public UdpSyncGateway(int port = 27101, IPAddress? bindAddress = null)
+        public UdpSyncGateway(ClientSessionRegistry sessions, int port = 27101, IPAddress? bindAddress = null)
         {
+            _sessions = sessions;
             _port = port;
             _bindAddr = bindAddress ?? BindPolicy.Resolve();
         }
 
-        public bool HasClientEndpoint
-        {
-            get { lock (_epLock) return _remoteClient != null; }
-        }
+        public bool HasClientEndpoint => _sessions.Snapshot().Any(s => s.UdpEndPoint != null);
 
         public void Start()
         {
@@ -109,10 +104,6 @@ namespace SSJJ.Server.Network
                 try
                 {
                     var result = await _udp.ReceiveAsync();
-                    lock (_epLock)
-                    {
-                        _remoteClient = result.RemoteEndPoint;
-                    }
                     ProcessUdpPacket(result.Buffer, result.RemoteEndPoint);
                 }
                 catch when (!_running)
@@ -130,13 +121,21 @@ namespace SSJJ.Server.Network
         {
             if (data == null || data.Length < 9) return;
             // Client -> Server UDP framing: [4B BE len][4B BE ConnId][1B MethodId][body...]
+            int offset = 0;
+            if (ReadIntBE(data, ref offset) != data.Length - 4) return;
+            int connectionId = ReadIntBE(data, ref offset);
             int methodId = data[8];
+            if (methodId != 0 && methodId != 2) return;
+            if (methodId == 0 && data.Length is not (10 or 11)) return;
+
+            ClientSession? session = _sessions.ResolveUdp(connectionId, sender, probe: methodId == 0);
+            if (session == null) return;
+
             if (methodId == 0) // P2P Probe -> reply 6 bytes: [spliced=0, compressed=1, udpSize=1400 BE]
             {
-                if (!_loggedProbe)
+                if (System.Threading.Interlocked.Exchange(ref _loggedProbe, 1) == 0)
                 {
-                    _loggedProbe = true;
-                    Console.WriteLine($"[SSJJ-Server][UDP] Recv P2P Probe from {sender} (len={data.Length}) -> sending 6-byte P2PData ack");
+                    Console.WriteLine($"[SSJJ-Server][UDP] Recv P2P Probe from {sender} (len={data.Length}, cid={connectionId}) -> sending 6-byte P2PData ack");
                 }
                 byte[] body = new byte[] { 0, 1, 0x00, 0x00, 0x05, 0x78 };
                 byte[] ack = BuildServerUdpFrame(0, body);
@@ -145,28 +144,21 @@ namespace SSJJ.Server.Network
             else if (methodId == 2) // OnUserCmd2
             {
                 var batch = DecodeUserCmd2Chain(data, 9, data.Length - 9);
-                if (!_loggedUserCmd)
+                if (System.Threading.Interlocked.Exchange(ref _loggedUserCmd, 1) == 0)
                 {
-                    _loggedUserCmd = true;
                     Console.WriteLine($"[SSJJ-Server][UDP] First UserCmd2 packet from {sender}: len={data.Length}, decoded={batch.Count}");
                 }
-                if (batch.Count > 0)
-                {
-                    OnUserCmdBatchReceived?.Invoke(batch);
-                }
+                session.EnqueueCommands(batch);
             }
         }
 
-        public void HandleTcpUserCmd2(byte[] content)
+        public static void HandleTcpUserCmd2(ClientSession session, byte[] content)
         {
             if (content == null || content.Length < 15) return;
             // TCP 31 starts with 1 byte (31) before Latency
             int offset = content[0] == 31 ? 1 : 0;
             var batch = DecodeUserCmd2Chain(content, offset, content.Length - offset);
-            if (batch.Count > 0)
-            {
-                OnUserCmdBatchReceived?.Invoke(batch);
-            }
+            session.EnqueueCommands(batch);
         }
 
         /// <summary>
@@ -280,11 +272,11 @@ namespace SSJJ.Server.Network
             return result;
         }
 
-        public void SendSnapshot(byte[] rawSnapshotBytes)
+        public bool SendSnapshot(ClientSession session, byte[] rawSnapshotBytes)
         {
-            IPEndPoint? ep;
-            lock (_epLock) ep = _remoteClient;
-            if (ep == null || _udp == null || rawSnapshotBytes == null || rawSnapshotBytes.Length == 0) return;
+            IPEndPoint? ep = session.UdpEndPoint;
+            if (!session.IsSpawned || ep == null || _udp == null || rawSnapshotBytes == null || rawSnapshotBytes.Length == 0)
+                return false;
 
             try
             {
@@ -298,8 +290,10 @@ namespace SSJJ.Server.Network
                 byte[] body = compMs.ToArray();
                 byte[] frame = BuildServerUdpFrame(1, body);
                 _udp.Send(frame, frame.Length, ep);
+                return true;
             }
-            catch { }
+            catch (SocketException) { return false; }
+            catch (ObjectDisposedException) { return false; }
         }
 
         private static byte[] BuildServerUdpFrame(int methodId, byte[] body)

@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="SSJJ-Server.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="protobuf-net">
       <HintPath>Assets\Plugins\Managed\protobuf-net.dll</HintPath>
     </Reference>
@@ -47,7 +51,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Data\Maps\*.json">
+    <None Include="Data\*.json;Data\Maps\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

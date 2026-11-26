@@ -4,11 +4,17 @@ using System.IO;
 using NetData;
 using SSJJ.Data;
 using SSJJ.Server.Config;
+using SSJJ.Server.GameModes;
+using SSJJ.Server.Physics;
+using SSJJ.Server.QuakeServer;
 
 namespace SSJJ.Server.Snapshot
 {
     public sealed class SceneWeaponDrop
     {
+        public const float PickupRadius = 95f;
+        public const float PickupHeight = 120f;
+
         public int Id { get; set; }
         public string WeaponName { get; set; } = "c4";
         public string WeaponSkin { get; set; } = "";
@@ -16,6 +22,8 @@ namespace SSJJ.Server.Snapshot
         public float X { get; set; }
         public float Y { get; set; }
         public float Z { get; set; }
+        public float Yaw { get; set; }
+        public float Pitch { get; set; }
     }
 
     public sealed class HitWallSnapshotEvent
@@ -54,16 +62,22 @@ namespace SSJJ.Server.Snapshot
             IReadOnlyList<SceneWeaponDrop>? sceneDrops = null,
             IReadOnlyList<GrenadeExplosionEventData>? explosions = null,
             IReadOnlyList<HitEventData>? hits = null,
-            IReadOnlyList<int>? deletedIds = null)
+            IReadOnlyList<int>? deletedIds = null,
+            IReadOnlyList<PveTowerEntityData>? pveTowers = null,
+            int observerTargetId = 0,
+            int selfPlayerId = 1,
+            IReadOnlyList<SceneSmokeData>? smokeClouds = null,
+            IReadOnlyList<SceneBufEntityData>? sceneBuffs = null)
         {
             using var ms = new MemoryStream();
 
-            var localPlayer = FindPlayer(players, 1);
+            var observer = observerTargetId > 0 ? FindPlayer(players, observerTargetId) : null;
+            var bagOwner = observer ?? FindPlayer(players, selfPlayerId);
             int raceType = cfg.EffectiveRaceType;
             bool meleeOnly = ServerConfig.IsMeleeOnly(raceType);
 
             var bagList = new PlayerBagListData();
-            if (localPlayer?.HasC4 == true)
+            if (bagOwner?.HasC4 == true)
             {
                 bagList.C4Weapon = new BaseWeaponData
                 {
@@ -76,42 +90,63 @@ namespace SSJJ.Server.Snapshot
                 };
             }
 
-            for (int bIdx = 0; bIdx < cfg.Bags.Count; bIdx++)
+            var ownerBags = (bagOwner != null && !bagOwner.IsBot) ? cfg.GetHumanBags(bagOwner.CharacterId) : cfg.Bags;
+            for (int bIdx = 0; bIdx < ownerBags.Count; bIdx++)
             {
                 int bagId = bIdx + 1;
-                var bagCfg = cfg.Bags[bIdx];
+                var bagCfg = ownerBags[bIdx];
                 var bagData = new PlayerBagData { BagId = bagId };
+                bool isActiveBag = bagOwner != null && bagOwner.CurrentBagId == bagId;
+                var loadout = bagOwner?.Loadout;
 
-                bool isActiveBag = localPlayer != null && localPlayer.CurrentBagId == bagId;
-                if (!meleeOnly && !string.IsNullOrWhiteSpace(bagCfg.Primary))
+                BaseWeaponData? BuildSlot(int storageSlot, int protocolSlot, int throwableIdx, int fallbackId)
                 {
-                    bagData.FirstWeapon = MakeBaseWeapon(bagId, 1, bagCfg.Primary, bagCfg.PrimarySkin, tables,
-                        isActiveBag && localPlayer!.CurrentWeapon == 1 ? localPlayer : null);
+                    if (ServerConfig.IsBiohazard(raceType) && bagOwner != null && BiohazardRound.IsInfected(bagOwner))
+                    {
+                        return protocolSlot == 3 && isActiveBag
+                            ? MakeBaseWeapon(bagId, fallbackId, bagOwner.CurrentWeaponName, "", tables, bagOwner,
+                                new CarriedWeapon(bagOwner.CurrentWeaponName, "", 0, 0) { EntityId = bagOwner.BioWeaponEntityId },
+                                bagOwner.BioWeaponEntityId)
+                            : null;
+                    }
+                    if (meleeOnly && storageSlot != 3) return null;
+                    var carried = loadout?.Get(bagId, storageSlot);
+                    bool isEquipped = isActiveBag && bagOwner!.CurrentWeapon == protocolSlot
+                        && (protocolSlot != 4 || bagOwner.CurrentWeaponIndex == throwableIdx);
+                    var equipped = isEquipped ? bagOwner : null;
+                    string wpnName = (observer != null && equipped != null)
+                        ? equipped.CurrentWeaponName
+                        : (loadout == null ? bagCfg.GetSlotWeapon(storageSlot) : carried?.Name ?? "");
+                    if (string.IsNullOrWhiteSpace(wpnName)) return null;
+                    string wpnSkin = (observer != null && equipped != null)
+                        ? equipped.CurrentWeaponSkinName
+                        : (carried?.Skin ?? bagCfg.GetSlotSkin(storageSlot));
+                    int wpnId = carried is { EntityId: > 0 } ? carried.EntityId
+                        : carried is { StorageId: > 0 } ? carried.StorageId
+                        : bagCfg.GetSlotId(storageSlot);
+                    var data = MakeBaseWeapon(bagId, fallbackId, wpnName, wpnSkin, tables, equipped, carried, wpnId);
+                    if (observer != null && carried is not { EntityId: > 0 })
+                    {
+                        data.Id = observer.GetObservedWeaponId(bagId, storageSlot, wpnName);
+                    }
+                    return data;
                 }
-                if (!meleeOnly && !string.IsNullOrWhiteSpace(bagCfg.Secondary))
-                {
-                    bagData.SecondaryWeapon = MakeBaseWeapon(bagId, 2, bagCfg.Secondary, bagCfg.SecondarySkin, tables,
-                        isActiveBag && localPlayer!.CurrentWeapon == 2 ? localPlayer : null);
-                }
-                if (!string.IsNullOrWhiteSpace(bagCfg.Melee))
-                {
-                    bagData.MeleeWeapon = MakeBaseWeapon(bagId, 3, bagCfg.Melee, bagCfg.MeleeSkin, tables,
-                        isActiveBag && localPlayer!.CurrentWeapon == 3 ? localPlayer : null);
-                }
-                if (!meleeOnly && !string.IsNullOrWhiteSpace(bagCfg.Throwable))
-                {
-                    bagData.BombWeapons0 = MakeBaseWeapon(bagId, 4, bagCfg.Throwable, bagCfg.ThrowableSkin, tables,
-                        isActiveBag && localPlayer!.CurrentWeapon == 4 ? localPlayer : null);
-                }
+
+                bagData.FirstWeapon = BuildSlot(1, 1, 0, 1);
+                bagData.SecondaryWeapon = BuildSlot(2, 2, 0, 2);
+                bagData.MeleeWeapon = BuildSlot(3, 3, 0, 3);
+                bagData.BombWeapons0 = BuildSlot(4, 4, 0, 4);
+                bagData.BombWeapons1 = BuildSlot(6, 4, 1, 14);
+                bagData.BombWeapons2 = BuildSlot(7, 4, 2, 24);
                 bagList.Bags.Add(bagData);
             }
 
             var header = new SnapshotData
             {
                 ServerTime = serverTimeMs,
-                Self = 1,
+                Self = selfPlayerId,
                 BagList = bagList,
-                Observer = 0,
+                Observer = observerTargetId,
                 SeqId = seqId,
                 Base = -1,
                 LastCmd = lastCmdSeq,
@@ -130,7 +165,7 @@ namespace SSJJ.Server.Snapshot
             // Type 1: PlayerEntityData
             foreach (var p in players)
             {
-                var pe = BuildPlayerEntityData(p, cfg, serverTimeMs);
+                var pe = BuildPlayerEntityData(p, cfg, serverTimeMs, selfPlayerId);
                 WriteEntity(ms, 1, SerializeProto(pe));
             }
 
@@ -146,6 +181,8 @@ namespace SSJJ.Server.Snapshot
                         X = drop.X,
                         Y = drop.Y,
                         Z = drop.Z,
+                        Yaw = drop.Yaw,
+                        Pitch = drop.Pitch,
                         WeaponName = drop.WeaponName,
                         WeaponType = drop.WeaponType
                     };
@@ -157,25 +194,57 @@ namespace SSJJ.Server.Snapshot
                 }
             }
 
+            if (smokeClouds != null)
+            {
+                foreach (var smoke in smokeClouds)
+                {
+                    WriteEntity(ms, 9, SerializeProto(new SceneBufEntityData
+                    {
+                        Id = smoke.Id,
+                        EType = 9,
+                        X = smoke.Position.X,
+                        Y = smoke.Position.Y,
+                        Z = smoke.Position.Z,
+                        BufName = "smoke_area",
+                        Show = true,
+                        Scale = new Vector3DData { X = 1f, Y = 1f, Z = 1f }
+                    }));
+                }
+            }
+
+            if (sceneBuffs != null)
+            {
+                foreach (var buff in sceneBuffs)
+                {
+                    WriteEntity(ms, 9, SerializeProto(buff));
+                }
+            }
+
             // Type 5: GrenadeExplosionEventEntityData
             if (explosions != null)
             {
                 foreach (var exp in explosions)
                 {
+                    var point = exp.CollisionPoint ?? new Vector3f(exp.PosX, exp.PosY, exp.PosZ);
+                    var normal = exp.CollisionNormal ?? new Vector3f(0f, 0f, 1f);
                     var ge = new GrenadeExplosionEventEntityData
                     {
                         BaseEventEntity = new BaseEventEntityData
                         {
-                            Id = AllocTempEntityId(),
+                            Id = exp.EntityId,
                             EType = 5,
+                            EventId = exp.EffectId,
                             X = exp.PosX,
                             Y = exp.PosY,
                             Z = exp.PosZ,
-                            OwnerId = exp.ThrowerId
+                            OwnerId = exp.ThrowerId,
+                            Scale = new Vector3DData { X = 1f, Y = 1f, Z = 1f }
                         },
-                        ResTypeID = exp.WeaponTid,
-                        WeaponName = "grenade",
-                        HaveBulletHole = true,
+                        ResTypeID = 0,
+                        WeaponName = exp.WeaponName,
+                        CollisionPoint = new Vector3DData { X = point.X, Y = point.Y, Z = point.Z },
+                        CollisionNormal = new Vector3DData { X = normal.X, Y = normal.Y, Z = normal.Z },
+                        HaveBulletHole = exp.CollisionPoint.HasValue,
                         TimeRate = 1f
                     };
                     WriteEntity(ms, 5, SerializeProto(ge));
@@ -207,10 +276,19 @@ namespace SSJJ.Server.Snapshot
                 }
             }
 
+            // Type 14: PveTowerEntityData (PVE roadblocks / doors)
+            if (pveTowers != null)
+            {
+                foreach (var tower in pveTowers)
+                {
+                    WriteEntity(ms, 14, SerializeProto(tower));
+                }
+            }
+
             return ms.ToArray();
         }
 
-        private static BaseWeaponData MakeBaseWeapon(int bagId, int slot, string weaponName, string? weaponSkin, GameTables tables, PlayerBasicInfo? livePlayer)
+        private static BaseWeaponData MakeBaseWeapon(int bagId, int slot, string weaponName, string? weaponSkin, GameTables tables, PlayerBasicInfo? livePlayer, QuakeServer.CarriedWeapon? carried = null, int weaponId = 0)
         {
             var def = tables.GetWeapon(weaponName);
             int maxClip = def?.MaxClip ?? (slot == 3 ? 0 : 30);
@@ -219,14 +297,14 @@ namespace SSJJ.Server.Snapshot
 
             var bw = new BaseWeaponData
             {
-                Id = bagId * 10 + slot,
+                Id = weaponId > 0 ? weaponId : bagId * 10 + slot,
                 WeaponName = weaponName,
                 WeaponSkinName = !string.IsNullOrWhiteSpace(weaponSkin) ? weaponSkin.Trim() : "",
                 DyeingColor = "",
                 Texture = "",
-                Clip = livePlayer != null ? livePlayer.CurrentClip : maxClip,
+                Clip = livePlayer?.CurrentClip ?? carried?.Clip ?? maxClip,
                 MaxClip = maxClip,
-                CarryClip = livePlayer != null ? livePlayer.CurrentCarryClip : maxCarry,
+                CarryClip = livePlayer?.CurrentCarryClip ?? carried?.Reserve ?? maxCarry,
                 MaxCarryClip = maxCarry,
                 Accuracy = accuracy,
                 ShotsFired = livePlayer != null ? livePlayer.ShotsFired : 0,
@@ -234,6 +312,7 @@ namespace SSJJ.Server.Snapshot
                 NextAttackTimer = livePlayer != null ? (uint)Math.Max(0f, livePlayer.NextAttackTimer) : 0u,
                 NextSecondaryAttackTimer = livePlayer != null ? (uint)Math.Max(0f, livePlayer.NextSecondaryAttackTimer) : 0u,
                 DelayFire = livePlayer != null && livePlayer.DelayFire,
+                Direction = livePlayer?.RecoilDirection ?? carried?.RecoilDirection ?? false,
                 EffectLevel = livePlayer != null ? livePlayer.WeaponEffectLevel : 0,
                 Power = livePlayer != null ? livePlayer.WeaponPower : 100,
                 MaxPower = livePlayer != null ? livePlayer.WeaponMaxPower : 100,
@@ -241,16 +320,21 @@ namespace SSJJ.Server.Snapshot
                 MaxPower2 = livePlayer != null ? livePlayer.WeaponMaxPower2 : 100,
                 SpecialMode = livePlayer != null && livePlayer.SpecialMode,
                 NextSkillTimer = livePlayer != null ? livePlayer.NextSkillTimer : 0,
-                IsStartReload = livePlayer != null && livePlayer.IsStartReload,
+                IsStartReload = livePlayer != null && (livePlayer.IsStartReload || livePlayer.ReloadEndTime > 0),
                 ReloadEndTime = livePlayer != null ? livePlayer.ReloadEndTime : 0
             };
             return bw;
         }
 
-        private static PlayerEntityData BuildPlayerEntityData(PlayerBasicInfo p, ServerConfig cfg, int serverTimeMs)
+        private static PlayerEntityData BuildPlayerEntityData(PlayerBasicInfo p, ServerConfig cfg, int serverTimeMs, int selfPlayerId)
         {
             int alpha = Math.Clamp((int)Math.Round(p.Alpha * 100f), 0, 100);
             int selfAlpha = Math.Clamp((int)Math.Round(p.SelfAlpha * 100f), 0, 100);
+            int torsoAnim = p.TorsoAnim > 0 ? p.TorsoAnim : 13;
+            if (p.Id != selfPlayerId && !p.IsDead && p.TorsoAnimRemainMs <= 0 && torsoAnim != 13 && torsoAnim != 39)
+            {
+                torsoAnim = p.SpecialMode ? 39 : 13;
+            }
             var pe = new PlayerEntityData
             {
                 Id = p.Id,
@@ -267,22 +351,24 @@ namespace SSJJ.Server.Snapshot
                 PunchYaw = p.PunchYaw,
                 PunchPitch = p.PunchPitch,
                 DecayTime = p.DecayTime,
-                PlayerStateFlag = p.StateFlag,
                 MoveYaw = p.MoveYaw,
                 MovePitch = p.MovePitch,
                 MoveRoll = p.MoveRoll,
                 LegsAnim = p.LegsAnim > 0 ? p.LegsAnim : 7,
-                TorsoAnim = p.TorsoAnim > 0 ? p.TorsoAnim : 13,
-                TorsoAnimationTimer = (int)(p.TorsoAnimationTimer * 1000f),
+                LegsAnimationTimer = Math.Max(0, p.LegsAnimRemainMs),
+                TorsoAnim = torsoAnim,
+                TorsoAnimationTimer = p.IsDead ? Math.Max(0, p.LegsAnimRemainMs) : Math.Max(0, p.TorsoAnimRemainMs),
                 ViewAnim = p.ViewAnim > 0 ? p.ViewAnim : 13,
-                ViewAnimSpeed = p.ViewAnimSpeed > 0f ? p.ViewAnimSpeed : 1f,
                 ViewAnimationTimer = Math.Max(0, p.ViewAnimRemainMs),
+                ViewAnimSpeed = p.ViewAnimSpeed > 0f ? p.ViewAnimSpeed : 1f,
                 LeftViewAnim = p.LeftViewAnim > 0 ? p.LeftViewAnim : 13,
                 LeftViewAnimSpeed = p.LeftViewAnimSpeed > 0f ? p.LeftViewAnimSpeed : 1f,
+                LeftViewAnimationTimer = QuakeServer.PlayerPredictionEngine.IsInspectAnimation(p.ViewAnim)
+                    ? 0 : Math.Max(0, p.ViewAnimRemainMs),
                 Alpha = alpha,
                 SelfAlpha = selfAlpha,
                 Scale = 0f,
-                CharacterId = p.Id == 1 ? cfg.CharId : 100000L + p.Id,
+                CharacterId = p.CharacterId > 0 ? p.CharacterId : (p.Id == 1 ? cfg.CharId : 100000L + p.Id),
                 PlayerName = p.PlayerName,
                 Career = string.IsNullOrWhiteSpace(p.Career) ? "police" : p.Career,
                 CurrentHandName = string.IsNullOrWhiteSpace(p.HandName) ? "man" : p.HandName,
@@ -290,7 +376,7 @@ namespace SSJJ.Server.Snapshot
                 Texture = "",
                 InvincibleTime = p.InvincibleTime,
                 CurrentBagId = p.CurrentBagId,
-                CanChangeBag = true,
+                CanChangeBag = p.CanChangeBag && !p.IsDead,
                 CurrentWeapon = p.CurrentWeapon,
                 CurrentWeaponName = string.IsNullOrWhiteSpace(p.CurrentWeaponName) ? "m4a1" : p.CurrentWeaponName,
                 CurrentWeaponIndex = p.CurrentWeaponIndex,
@@ -300,7 +386,7 @@ namespace SSJJ.Server.Snapshot
                 LastFov = p.LastFov,
                 ResumeZoom = p.ResumeZoom,
                 IsDead = p.IsDead,
-                DeadTimer = (int)(p.DeadTimer * 1000f),
+                DeadTimer = p.DeadTimerMs,
                 Moving = p.Moving,
                 OnGround = p.OnGround,
                 GroundEntityNum = p.GroundEntityNum,
@@ -309,8 +395,9 @@ namespace SSJJ.Server.Snapshot
                 ViewHeight = p.ViewHeight,
                 DuckState = p.DuckState,
                 DuckTime = p.DuckTime,
-                BeingHitFriction = 16f,
-                LimitSpeedInJumpRule = true,
+                PlayerStateFlag = p.StateFlag != 0 ? p.StateFlag : p.PlayerStateFlag,
+                BeingHitFriction = p.BeingHitFriction > 0f ? p.BeingHitFriction : 16f,
+                LimitSpeedInJumpRule = p.LimitSpeedInJumpRule,
                 Team = p.Team,
                 TeamId = p.Team,
                 Hp = p.Hp,
@@ -329,9 +416,13 @@ namespace SSJJ.Server.Snapshot
                 BotQuality = p.BotQuality,
                 ControlEntityId = p.ControlEntityId,
                 GravityEffectRate = 1f,
+                Airaccelerate = p.Airaccelerate > 0f ? p.Airaccelerate : 10f,
                 LegsSpeedAnimTime = (int)p.LegsSpeedAnimTime,
                 TorsoAnimStartTime = (int)p.TorsoAnimStartTime
             };
+
+            if (p.BioRespawnRemainingMs is int respawnMs)
+                pe.CanReliveTime = respawnMs;
 
             if (!string.IsNullOrWhiteSpace(p.CareerSkin))
             {

@@ -129,18 +129,6 @@ _wb/
 .agents/
 .claude/
 离线大厅/
-Game-SSJJ/New Unity Project/
-Game-SSJJ/Assets/Luminara/Models/
-Game-SSJJ/Assets/Luminara/Source/
-mc-port/out/
-mc-port/fpmod/libs/
-mc-port/fpmod/
-Game-SSJJ/Assets/Luminara/
-Game-SSJJ/Assets/Parkour/
-**/.gradle/
-ssjj-port/build/
-ssjj-port/libs/
-_work/mode_sweep_logs/
 _work/Quake-III-Arena/
 _work/quake3/
 _work/*.bin
@@ -182,7 +170,12 @@ _work/extract_*.py
 _work/spawn_*.py
 _work/make_*.py
 # 玩家存档含个人账号数据，不入库
-_work/lobby_host/user_profile.json
+_work/lobby_host/user_profile*.json*
+_work/lobby_host/java_build/
+_work/mode_sweep_logs/
+_work/pve_selftest/
+_work/promo_video/
+*.mp4
 
 # ===== 6. 其它子工程边界 =====
 ssjj-lobby/assets/
@@ -207,18 +200,6 @@ offline-lobby-rebuild/
 offline-lobby-rebuild/analysis/*
 !offline-lobby-rebuild/analysis/rpc-callsite-catalog.json
 离线大厅/
-Game-SSJJ/New Unity Project/
-Game-SSJJ/Assets/Luminara/Models/
-Game-SSJJ/Assets/Luminara/Source/
-mc-port/out/
-mc-port/fpmod/libs/
-mc-port/fpmod/
-Game-SSJJ/Assets/Luminara/
-Game-SSJJ/Assets/Parkour/
-**/.gradle/
-ssjj-port/build/
-ssjj-port/libs/
-_work/mode_sweep_logs/
 _wb/
 /data/
 

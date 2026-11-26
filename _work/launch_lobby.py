@@ -14,7 +14,7 @@ def cleanup_subprocesses():
 
 # -*- coding: utf-8 -*-
 """Launch official Adobe AIR Lobby with 1:1 Java AMF3 Server on user desktop."""
-import os, sys, time, subprocess, socket, json, re, struct, threading, ctypes, shutil
+import os, sys, time, subprocess, socket, json, re, struct, threading, ctypes, shutil, tempfile
 from ctypes import wintypes
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,6 +26,7 @@ LOCAL_HALL = os.path.join(ROOT, "_work", "lobby_host", "hall_config.xml")
 LOCAL_RESC = os.path.join(ROOT, "_work", "lobby_host", "res_config_cdn.xml")
 LOCAL_RESC_LOCAL = os.path.join(ROOT, "_work", "lobby_host", "res_config_local.xml")
 JAVA_DIR = os.path.join(ROOT, "_work", "lobby_host", "java")
+JAVA_BUILD = os.path.join(ROOT, "_work", "lobby_host", "java_build")
 PROBE_LOG = os.path.join(ROOT, "Game-SSJJ-logs", "probe.log")
 CLIENT_LOG = os.path.join(ROOT, "Game-SSJJ-logs", "client_error.log")
 
@@ -43,6 +44,7 @@ os.environ.setdefault("SSJJ_SERVE_DECRYPTED", "1")
 HTTP_PORT = 8080
 LOGIN_PORT = 2000
 MICRO_PORT = 16397
+SECOND_MICRO_PORT = 16398
 
 # [PATCH 2026-11-01] 原先这里默认把 FLUI_ASSETS 强制切到 cache_prepared/ 的
 # DoABC-剥离版。该机制有两个致命 bug：
@@ -162,7 +164,18 @@ class MicroServer(threading.Thread):
         except Exception:
             pass
 
+def compile_lobby_server():
+    sources = ["LobbyLoginServer.java", "AdventureLobby.java", "ProfileManager.java", "RpcTable.java"]
+    amf = os.path.join("com", "strikegod", "downloader", "service")
+    sources.extend(os.path.join(amf, name) for name in (
+        "Amf3Encoder.java", "Amf3TypedObject.java", "Amf3Decoder.java",
+    ))
+    os.makedirs(JAVA_BUILD, exist_ok=True)
+    subprocess.run(["javac", "-encoding", "UTF-8", "-d", JAVA_BUILD, *sources], cwd=JAVA_DIR, check=True)
+
+
 def ensure_services():
+    compile_lobby_server()
     kill_port(HTTP_PORT)
     kill_port(LOGIN_PORT)
     time.sleep(0.5)
@@ -183,21 +196,17 @@ def ensure_services():
                          cwd=ROOT, stdout=gw_log, stderr=gw_log,
                          creationflags=0x00000008 | 0x00000200)
         MANAGED_PROCS.append(p_gw)
-        for _ in range(30):
+        for _ in range(120):
+            if p_gw.poll() is not None:
+                raise RuntimeError(f"Gateway exited with code {p_gw.returncode}. See {gw_log_path}")
             time.sleep(0.5)
             if is_port_listening(HTTP_PORT): break
+        else:
+            raise RuntimeError(f"Gateway startup timed out. See {gw_log_path}")
         print("[Lobby] Master HTTP Gateway ready on :8080!", flush=True)
 
     # 2. Check Java AMF3 Lobby Server :2000
     if not is_port_listening(LOGIN_PORT):
-        cls_path = os.path.join(JAVA_DIR, "LobbyLoginServer.class")
-        java_files = [os.path.join(JAVA_DIR, f) for f in os.listdir(JAVA_DIR) if f.endswith(".java")]
-        need_compile = not os.path.isfile(cls_path) or any(
-            os.path.getmtime(jf) > os.path.getmtime(cls_path) for jf in java_files
-        )
-        if need_compile and java_files:
-            print("[Lobby] Compiling Java AMF3 LobbyLoginServer...", flush=True)
-            subprocess.run(["javac", "-encoding", "UTF-8", "-d", JAVA_DIR] + java_files, check=True)
         print("[Lobby] Starting Java AMF3 LobbyLoginServer on :2000...", flush=True)
         srv_log_path = os.path.join(ROOT, "Game-SSJJ-logs", "server.log")
         srv_log = open(srv_log_path, "a", encoding="utf-8", buffering=1)
@@ -208,13 +217,20 @@ def ensure_services():
         java_cmd.append('-Dssjj.logFile=' + os.path.join(ROOT, 'Game-SSJJ-logs', 'server.log'))
         if os.environ.get('SSJJ_RPC_VERBOSE') == '1':
             java_cmd.append('-Dssjj.verbose=1')
-        java_cmd.extend(['-cp', JAVA_DIR, 'LobbyLoginServer', str(LOGIN_PORT)])
+        profile = os.environ.get('SSJJ_LOBBY_PROFILE')
+        if profile:
+            java_cmd.append('-Dssjj.profile=' + os.path.abspath(profile))
+        java_cmd.extend(['-cp', JAVA_BUILD, 'LobbyLoginServer', str(LOGIN_PORT)])
         p_java = subprocess.Popen(java_cmd,
                          cwd=JAVA_DIR, stdout=srv_log, stderr=srv_log, creationflags=0x00000008 | 0x00000200)
         MANAGED_PROCS.append(p_java)
         for _ in range(20):
+            if p_java.poll() is not None:
+                raise RuntimeError(f"Java lobby exited with code {p_java.returncode}. See {srv_log_path}")
             time.sleep(0.5)
             if is_port_listening(LOGIN_PORT): break
+        else:
+            raise RuntimeError(f"Java lobby startup timed out. See {srv_log_path}")
         print("[Lobby] Java AMF3 Server ready on :2000!", flush=True)
 
 
@@ -461,14 +477,20 @@ def update_configs():
         json.dump(d, open(PARAS, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
 
 def ensure_official_window_flags():
-    """Ensure transparent is false for Stage3D direct mode hardware acceleration."""
+    """Preserve the AIR window descriptor while setting the active transparency flag."""
     path = os.path.join(LOBBY_DIR, 'META-INF', 'AIR', 'application.xml')
     if not os.path.isfile(path): return
     try:
-        text = open(path, encoding='utf-8').read()
-        import re
-        updated = re.sub(r'<transparent>.*?</transparent>', '<transparent>true</transparent>', text, flags=re.S)
-        with open(path, 'w', encoding='utf-8') as f: f.write(updated)
+        with open(path, 'rb') as descriptor:
+            original = descriptor.read()
+        updated = re.sub(
+            rb'<!--.*?-->|(<transparent>).*?(</transparent>)',
+            lambda match: match[1] + b'true' + match[2] if match[1] else match[0],
+            original, flags=re.S,
+        )
+        if updated != original:
+            with open(path, 'wb') as descriptor:
+                descriptor.write(updated)
         print('[Lobby] Verified transparent=true for Stage3D direct mode.', flush=True)
     except Exception as e:
         print(f'[Lobby] Window descriptor error: {e}', flush=True)
@@ -499,7 +521,26 @@ class PROCESS_INFORMATION(ctypes.Structure):
         ('dwProcessId', wintypes.DWORD), ('dwThreadId', wintypes.DWORD),
     ]
 
-def launch_air():
+def prepare_second_lobby(destination):
+    shutil.copytree(LOBBY_DIR, destination, dirs_exist_ok=True,
+                    ignore=shutil.ignore_patterns('*.bak', '*.abc', 'md5cache'))
+    descriptor = os.path.join(destination, 'META-INF', 'AIR', 'application.xml')
+    with open(descriptor, 'rb') as stream:
+        original = stream.read()
+    updated, count = re.subn(rb'<id>[^<]+</id>', b'<id>AirLobbyPreloader249Local2</id>', original, count=1)
+    if count != 1:
+        raise RuntimeError('无法设定第二个 AIR 大厅的独立应用 ID')
+    with open(descriptor, 'wb') as stream:
+        stream.write(updated)
+    paras_path = os.path.join(destination, 'paras.dat')
+    with open(paras_path, encoding='utf-8-sig') as stream:
+        parameters = json.load(stream)
+    parameters.update(username='900000002', nickname='糖心大掌门', microPort=SECOND_MICRO_PORT)
+    with open(paras_path, 'w', encoding='utf-8') as stream:
+        json.dump(parameters, stream, ensure_ascii=False, separators=(',', ':'))
+
+
+def launch_air(exe=EXE, directory=LOBBY_DIR, clear_stale=True):
     try:
         ctypes.windll.shcore.SetProcessDpiAwareness(2)
     except Exception:
@@ -507,27 +548,32 @@ def launch_air():
     
     # Clear stale instances from the previous session; the two AIR apps are
     # separate processes, so the chat must not be mistaken for the lobby HWND.
-    subprocess.run(['taskkill', '/f', '/im', 'AirLobbyPreloader.exe'], capture_output=True)
-    stop_old_air_chat()
-    time.sleep(0.5)
+    if clear_stale:
+        subprocess.run(['taskkill', '/f', '/im', 'AirLobbyPreloader.exe'], capture_output=True)
+        stop_old_air_chat()
+        time.sleep(0.5)
 
     si = STARTUPINFOW()
     si.cb = ctypes.sizeof(STARTUPINFOW)
     si.lpDesktop = 'WinSta0\\Default'
     pi = PROCESS_INFORMATION()
     ok = ctypes.windll.kernel32.CreateProcessW(
-        None, f'"{EXE}"', None, None, False, 0, None, LOBBY_DIR,
+        None, f'"{exe}"', None, None, False, 0, None, directory,
         ctypes.byref(si), ctypes.byref(pi)
     )
     if not ok:
         err = ctypes.windll.kernel32.GetLastError()
         print(f"[Lobby] CreateProcess on WinSta0 failed err={err}, fallback to subprocess", flush=True)
-        p = subprocess.Popen([EXE], cwd=LOBBY_DIR)
+        p = subprocess.Popen([exe], cwd=directory)
         return p.pid, None
     print(f"[Lobby] Launched Adobe AIR Lobby on WinSta0\\Default! PID={pi.dwProcessId}", flush=True)
     return pi.dwProcessId, pi.hProcess
 
 def main():
+    dual_lobby = "--local-dual" in sys.argv[1:]
+    if dual_lobby:
+        os.environ["SSJJ_LOBBY_LOCAL_DUAL"] = "1"
+        print("[Lobby] 本地双大厅已启用。两个账号进入同一频道和房间后，由房主开始游戏。", flush=True)
     print("=======================================================", flush=True)
     print("   4399生死狙击 官方AIR大厅启动器 (Java AMF3 服务端)    ", flush=True)
     print("=======================================================", flush=True)
@@ -543,7 +589,28 @@ def main():
     update_configs()
     ensure_services()
     ensure_official_window_flags()
+    second_package = None
+    second_handle = None
+    if dual_lobby:
+        if is_port_listening(SECOND_MICRO_PORT):
+            raise RuntimeError(f'第二个大厅的本地适配端口 {SECOND_MICRO_PORT} 已被占用')
+        second_package = tempfile.TemporaryDirectory(prefix='ssjj-lobby-local2-')
+        prepare_second_lobby(second_package.name)
+        second_micro = MicroServer(SECOND_MICRO_PORT)
+        second_micro.start()
+
     pid, hProc = launch_air()
+    if second_package:
+        second_pid, second_handle = launch_air(os.path.join(second_package.name, os.path.basename(EXE)),
+                                               second_package.name, clear_stale=False)
+        print(f'[Lobby] 第二大厅 PID={second_pid}', flush=True)
+
+        def show_second_lobby():
+            if second_micro.load_complete.wait(80):
+                time.sleep(1.5)
+                second_micro.restore_viewport()
+
+        threading.Thread(target=show_second_lobby, daemon=True).start()
 
     user32 = ctypes.windll.user32
     get_exit_code = ctypes.windll.kernel32.GetExitCodeProcess
@@ -634,7 +701,7 @@ def main():
                             )
                         is_lobby_title = (title.value in (viewport_title, "SSJJ_FlashAir_Battle16397", "SSJJ_FlashAir_Battle", "SSJJ_BattleClient") or
                                           (user32.IsWindowVisible(h) and any(kw in title.value for kw in ("4399", "生死狙击", "SSJJ"))))
-                        if is_lobby_title and class_name.value == "ApolloRuntimeContentWindow":
+                        if is_lobby_title and class_name.value == "ApolloRuntimeContentWindow" and (not dual_lobby or p.value == pid):
                             found.append((wintypes.HWND(h), rect))
                         elif p.value == pid and class_name.value == "ApolloRuntimeContentWindow":
                             found.append((wintypes.HWND(h), rect))
@@ -744,6 +811,10 @@ def main():
         if host_window:
             host_window.close()
         cleanup_subprocesses()
+        if second_handle:
+            ctypes.windll.kernel32.CloseHandle(second_handle)
+        if second_package:
+            second_package.cleanup()
 
 if __name__ == '__main__':
     main()

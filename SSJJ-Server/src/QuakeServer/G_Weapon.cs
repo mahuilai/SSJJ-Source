@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using SSJJ.Server.Config;
 using SSJJ.Server.Physics;
 using SSJJ.Server.Snapshot;
@@ -7,7 +8,7 @@ using SSJJ.Server.Snapshot;
 namespace SSJJ.Server.QuakeServer
 {
     /// <summary>
-    /// 权威武器系统：接入 Weapon.json 数据表 + WeEngine BSP 掩体遮挡校验 + 近战弧面/枪械射线碰撞判定
+    /// 权威武器系统：接入 Weapon.json 数据表 + WeEngine BSP 掩体遮挡校验 + 弹道/HitBox/穿墙/距离衰减判定
     /// </summary>
     public class G_Weapon
     {
@@ -51,43 +52,142 @@ namespace SSJJ.Server.QuakeServer
             bool freeForAll,
             IReadOnlyList<PlayerBasicInfo> targets)
         {
-            if ((!primaryDown && !secondaryDown) || _fireCooldown > 0f || shooter.IsDead) return false;
+            TryFireEx(shooter, shooterPhysics, primaryDown, secondaryDown, tables, physicsWorld, freeForAll, targets, out _, out bool anyHit);
+            return anyHit;
+        }
+
+        internal bool TryFire(
+            PlayerBasicInfo shooter,
+            PlayerPhysicsState? shooterPhysics,
+            bool primaryDown,
+            bool secondaryDown,
+            GameTables? tables,
+            OfficialPhysicsWorld? physicsWorld,
+            bool freeForAll,
+            IReadOnlyList<PlayerBasicInfo> targets,
+            out bool fired)
+        {
+            bool ok = TryFireEx(shooter, shooterPhysics, primaryDown, secondaryDown, tables, physicsWorld, freeForAll, targets, out fired, out bool anyHit);
+            if (!ok || !fired) return false;
+
+            string wName = string.IsNullOrWhiteSpace(shooter.CurrentWeaponName) ? "m4a1" : shooter.CurrentWeaponName;
+            var tblDef = tables?.GetWeapon(wName);
+            bool isMelee = shooter.CurrentWeapon == 3 || IsMeleeName(wName, tblDef);
+            bool secondary = secondaryDown && (isMelee || tblDef?.HasMeleeSecondary == true);
+            ApplyPostFireState(shooter, tables, tblDef, wName, isMelee || secondary, secondary);
+            return anyHit;
+        }
+
+        internal static void ApplyPostFireState(
+            PlayerBasicInfo shooter,
+            GameTables? tables,
+            Config.WeaponDef? tblDef,
+            string wName,
+            bool isMeleeOrSecondary,
+            bool secondary,
+            int? overrideIntervalMs = null)
+        {
+            if (isMeleeOrSecondary)
+            {
+                int primaryDelay = secondary ? tblDef?.StabSlashMs ?? 850 : tblDef?.SlashSlashMs ?? 400;
+                int secondaryDelay = secondary ? tblDef?.StabStabMs ?? 850 : tblDef?.SlashStabMs ?? 500;
+                shooter.NextAttackTimer = shooter.ClientTime + primaryDelay;
+                shooter.NextSecondaryAttackTimer = shooter.ClientTime + secondaryDelay;
+                if (tables != null && tblDef != null) CombatAnimation.StartAttack(shooter, tables, tblDef, secondary);
+                return;
+            }
+
+            int intervalMs = overrideIntervalMs
+                ?? tblDef?.AttackIntervalMs
+                ?? (WeaponDefs.TryGetValue(wName, out var wd) ? (int)(wd.FireInterval * 1000f) : 100);
+            shooter.NextAttackTimer = shooter.ClientTime + intervalMs;
+            shooter.ShotsFired++;
+            shooter.DelayFire = tblDef?.AttackType != "Pistol";
+            if (tables != null && tblDef != null) CombatAnimation.StartAttack(shooter, tables, tblDef, secondary: false);
+        }
+
+        public bool TryFireEx(
+            PlayerBasicInfo shooter,
+            PlayerPhysicsState? shooterPhysics,
+            bool primaryDown,
+            bool secondaryDown,
+            GameTables? tables,
+            OfficialPhysicsWorld? physicsWorld,
+            bool freeForAll,
+            IReadOnlyList<PlayerBasicInfo> targets,
+            out bool didFire,
+            out bool anyHit,
+            PlayerPositionHistory? positionHistory = null,
+            int? shotTimeMs = null,
+            float damageMultiplier = 1f,
+            float attackIntervalScale = 1f)
+        {
+            didFire = false;
+            anyHit = false;
+            bool hasNativeCooldownTimer = shooter.ClientTime > 0
+                && (shooter.NextAttackTimer > 0 || shooter.NextSecondaryAttackTimer > 0);
+            if ((!primaryDown && !secondaryDown) || (!hasNativeCooldownTimer && _fireCooldown > 0f)
+                || shooter.IsDead || shooter.IsStartReload || shooter.ReloadEndTime > 0)
+                return false;
 
             string wName = string.IsNullOrWhiteSpace(shooter.CurrentWeaponName) ? "m4a1" : shooter.CurrentWeaponName;
             var tblDef = tables?.GetWeapon(wName);
 
-            bool isMelee = shooter.CurrentWeapon == 3 || (tblDef?.IsMelee ?? (wName.Contains("dagger", StringComparison.OrdinalIgnoreCase) || wName.Contains("knife", StringComparison.OrdinalIgnoreCase) || wName.Contains("bat", StringComparison.OrdinalIgnoreCase) || wName.Contains("sword", StringComparison.OrdinalIgnoreCase)));
+            bool isMelee = shooter.CurrentWeapon == 3 || IsMeleeName(wName, tblDef);
+            bool isRifleMeleeSecondary = !isMelee && secondaryDown && (tblDef?.HasMeleeSecondary ?? false);
             bool isThrowable = shooter.CurrentWeapon == 4 || (tblDef?.IsThrowable ?? false);
             if (isThrowable || wName.Equals("c4", StringComparison.OrdinalIgnoreCase))
             {
                 return false;
             }
 
-            if (isMelee)
+            if (shooter.ClientTime > 0)
             {
-                return TryMeleeAttack(shooter, tblDef, secondaryDown, physicsWorld, freeForAll, targets);
+                if ((isMelee || isRifleMeleeSecondary) && secondaryDown)
+                {
+                    if (shooter.ClientTime < shooter.NextSecondaryAttackTimer) return false;
+                }
+                else if (shooter.ClientTime < shooter.NextAttackTimer)
+                {
+                    return false;
+                }
             }
 
-            float fireInterval = tblDef != null ? Math.Max(0.05f, tblDef.AttackIntervalMs / 1000f)
-                : (WeaponDefs.TryGetValue(wName, out var wd) ? wd.FireInterval : 0.10f);
+            if (isMelee || isRifleMeleeSecondary)
+            {
+                didFire = true;
+                anyHit = TryMeleeAttack(shooter, tblDef, secondaryDown, physicsWorld, freeForAll, targets);
+                return true;
+            }
+
+            var ballistics = tblDef?.Ballistics;
+            if ((ballistics?.SingleShot == true || tblDef?.AttackType == "Pistol") && shooter.ShotsFired > 0) return false;
+
+            float fireInterval = (tblDef != null ? Math.Max(0.04f, tblDef.AttackIntervalMs / 1000f)
+                : (WeaponDefs.TryGetValue(wName, out var wd) ? wd.FireInterval : 0.10f)) * Math.Clamp(attackIntervalScale, 0.35f, 2.0f);
             float baseDmg = tblDef != null ? tblDef.BaseDamage
                 : (WeaponDefs.TryGetValue(wName, out var wd2) ? wd2.BaseDamage : 33f);
             int maxClip = tblDef != null && tblDef.MaxClip > 0 ? tblDef.MaxClip
                 : (WeaponDefs.TryGetValue(wName, out var wd3) ? wd3.MaxClip : 30);
             int pellets = tblDef != null ? Math.Max(1, tblDef.FireBullets) : 1;
-            float spread = tblDef?.WeaponType == 5
+            float spread = ballistics?.Spread(shooter) ?? (tblDef?.WeaponType == 5
                 ? ((shooter.Velocity2D > 10 || !shooter.OnGround) ? 0.085f : (shooter.Fov < 90 ? 0.0005f : 0.025f))
-                : (tblDef?.WeaponType == 6 ? 0.055f : Math.Clamp(shooter.WeaponAccuracy * 0.08f, 0.004f, 0.07f));
+                : (tblDef?.WeaponType == 6 ? 0.055f : Math.Clamp(shooter.WeaponAccuracy * 0.08f, 0.004f, 0.07f)));
             float maxRange = tblDef != null ? Math.Min(tblDef.ShotDistance, 20000f) : 12000f;
 
             if (shooter.MaxClip <= 0) shooter.MaxClip = maxClip;
             if (shooter.CurrentClip <= 0)
             {
-                // 自动换弹兜底，直到完整换弹读条介入
-                shooter.CurrentClip = shooter.MaxClip;
+                if (shooter.IsBot && shooter.CurrentCarryClip > 0 && tblDef != null)
+                {
+                    PlayerPredictionEngine.StepReload(shooter, tblDef, reloadPressed: true, attackDown: false);
+                }
+                return false;
             }
-            shooter.CurrentClip = Math.Max(0, shooter.CurrentClip - 1);
+            int clipCost = Math.Max(1, tblDef?.ClipPerShot ?? 1);
+            shooter.CurrentClip = Math.Max(0, shooter.CurrentClip - clipCost);
             _fireCooldown = fireInterval;
+            didFire = true;
 
             float muzzleX = shooter.PosX;
             float muzzleY = shooter.PosY;
@@ -111,66 +211,78 @@ namespace SSJJ.Server.QuakeServer
                 DirPitch = shooter.ViewPitch
             });
 
-            bool anyHit = false;
             for (int p = 0; p < pellets; p++)
             {
-                float fwdX = baseFwdX + (float)(_rng.NextDouble() * 2.0 - 1.0) * spread;
-                float fwdY = baseFwdY + (float)(_rng.NextDouble() * 2.0 - 1.0) * spread;
-                float fwdZ = baseFwdZ + (float)(_rng.NextDouble() * 2.0 - 1.0) * spread;
-                float mag = (float)Math.Sqrt(fwdX * fwdX + fwdY * fwdY + fwdZ * fwdZ);
-                if (mag > 0.0001f) { fwdX /= mag; fwdY /= mag; fwdZ /= mag; }
+                Vector3f forward = ballistics?.ShotDirection(shooter, p, spread) ?? new Vector3f(
+                    baseFwdX + (float)(_rng.NextDouble() * 2.0 - 1.0) * spread,
+                    baseFwdY + (float)(_rng.NextDouble() * 2.0 - 1.0) * spread,
+                    baseFwdZ + (float)(_rng.NextDouble() * 2.0 - 1.0) * spread).Normalized();
 
                 PlayerBasicInfo? bestHitTarget = null;
                 float minHitDistance = maxRange;
+                float bestDamageScale = 1f;
                 int hitPart = 2;
+                var rayOrigin = new Vector3f(muzzleX, muzzleY, muzzleZ);
 
                 foreach (var target in targets)
                 {
                     if (target.Id == shooter.Id || target.IsDead) continue;
                     if (!freeForAll && target.Team == shooter.Team) continue;
 
-                    float toTargetX = target.PosX - muzzleX;
-                    float toTargetY = target.PosY - muzzleY;
-                    float toTargetZ = (target.PosZ + 100f) - muzzleZ;
-
-                    float proj = toTargetX * fwdX + toTargetY * fwdY + toTargetZ * fwdZ;
-                    if (proj <= 0f || proj >= minHitDistance) continue;
-
-                    float perpX = muzzleX + fwdX * proj;
-                    float perpY = muzzleY + fwdY * proj;
-                    float perpZ = muzzleZ + fwdZ * proj;
-
-                    float dx = perpX - target.PosX;
-                    float dy = perpY - target.PosY;
-                    float dist2D = (float)Math.Sqrt(dx * dx + dy * dy);
-
-                    if (dist2D <= 32f && perpZ >= target.PosZ && perpZ <= target.PosZ + 175f)
+                    PlayerTargetState targetState;
+                    if (positionHistory != null && shotTimeMs is int timestamp)
                     {
-                        // BSP 掩体遮挡校验：穿过墙壁则不算命中
-                        if (physicsWorld != null && physicsWorld.IsReady &&
-                            !physicsWorld.TraceRayClear(muzzleX, muzzleY, muzzleZ, perpX, perpY, perpZ, out _))
+                        if (!positionHistory.TryGetTarget(target.Id, timestamp, out targetState)) continue;
+                    }
+                    else
+                    {
+                        targetState = PlayerTargetState.Capture(target);
+                    }
+
+                    if (!PlayerHitboxSystem.RaycastTarget(rayOrigin, forward, minHitDistance, targetState,
+                        out float hitDist, out Vector3f hitPt, out _, out int candidatePart))
+                    {
+                        continue;
+                    }
+
+                    float wallScale = 1f;
+                    if (physicsWorld != null && physicsWorld.IsReady)
+                    {
+                        float maxWall = tblDef?.MaxWallThicknessCm ?? 60f;
+                        float penPow = tblDef?.WallPenetrationPower ?? 0.65f;
+                        if (!physicsWorld.TraceWallbang(muzzleX, muzzleY, muzzleZ, hitPt.X, hitPt.Y, hitPt.Z,
+                            maxWall, penPow, out wallScale))
                         {
                             continue;
                         }
-
-                        minHitDistance = proj;
-                        bestHitTarget = target;
-                        if (perpZ >= target.PosZ + 135f) hitPart = 1;
-                        else if (perpZ >= target.PosZ + 95f) hitPart = 2;
-                        else if (perpZ >= target.PosZ + 65f) hitPart = 3;
-                        else hitPart = 5;
                     }
+
+                    minHitDistance = hitDist;
+                    bestHitTarget = target;
+                    hitPart = candidatePart;
+                    bestDamageScale = wallScale;
                 }
 
                 if (bestHitTarget != null)
                 {
-                    G_Combat.ApplyDamage(bestHitTarget, shooter, (int)baseDmg, hitPart, wName, ignoreArmor: false);
+                    float rangeMeters = minHitDistance / 100f;
+                    float falloffPerMeter = tblDef?.RangeFalloffPerMeter ?? 0.996f;
+                    float distScale = Math.Clamp(MathF.Pow(falloffPerMeter, Math.Max(0f, rangeMeters - 5f)), 0.35f, 1.0f);
+                    int scaledDmg = Math.Max(1, (int)MathF.Round(baseDmg * bestDamageScale * distScale * Math.Max(0.1f, damageMultiplier)));
+                    float armorPen = tblDef?.ArmorPenetration ?? 0.65f;
+                    G_Combat.ApplyDamage(bestHitTarget, shooter, scaledDmg, hitPart, wName, ignoreArmor: false, armorPenetration: armorPen);
                     anyHit = true;
                 }
             }
 
-            return anyHit;
+            return true;
         }
+
+        private static bool IsMeleeName(string wName, Config.WeaponDef? tblDef) =>
+            tblDef?.IsMelee ?? (wName.Contains("dagger", StringComparison.OrdinalIgnoreCase)
+                || wName.Contains("knife", StringComparison.OrdinalIgnoreCase)
+                || wName.Contains("bat", StringComparison.OrdinalIgnoreCase)
+                || wName.Contains("sword", StringComparison.OrdinalIgnoreCase));
 
         private bool TryMeleeAttack(
             PlayerBasicInfo shooter,

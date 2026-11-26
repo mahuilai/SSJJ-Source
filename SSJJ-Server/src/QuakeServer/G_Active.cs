@@ -21,7 +21,7 @@ namespace SSJJ.Server.QuakeServer
         {
             if (snap.IsDead)
             {
-                snap.DeadTimer += dt;
+                G_Combat.AdvanceDeathClock(snap, G_Combat.CurrentServerTimeMs);
                 pState.Velocity.X *= 0.9f;
                 pState.Velocity.Y *= 0.9f;
                 pState.Velocity.Z -= 800f * dt; // 重力下落

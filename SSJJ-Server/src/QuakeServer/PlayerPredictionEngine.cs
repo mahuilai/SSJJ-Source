@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
 using SSJJ.Server.Snapshot;
 using WeaponDef = SSJJ.Server.Config.WeaponDef;
 
@@ -88,16 +91,40 @@ namespace SSJJ.Server.QuakeServer
             int prevLegsAnim = p.LegsAnim;
             if (!onGround)
             {
-                p.LegsAnim = 5;
+                if (prevLegsAnim != 5 && prevLegsAnim != 340)
+                {
+                    p.LegsAnim = 5;
+                    p.LegsAnimRemainMs = 499;
+                }
+                else if (prevLegsAnim == 5)
+                {
+                    p.LegsAnimRemainMs = Math.Max(0, p.LegsAnimRemainMs - frameIntervalMs);
+                    if (p.LegsAnimRemainMs == 0)
+                    {
+                        p.LegsAnim = 340;
+                    }
+                }
+            }
+            else if (prevLegsAnim == 5 || prevLegsAnim == 340)
+            {
+                p.LegsAnim = 6;
+                p.LegsAnimRemainMs = 280;
+            }
+            else if (prevLegsAnim == 6 && p.LegsAnimRemainMs > frameIntervalMs)
+            {
+                p.LegsAnimRemainMs -= frameIntervalMs;
+                p.LegsAnim = 6;
             }
             else if (p.Moving)
             {
+                p.LegsAnimRemainMs = 0;
                 if (duckState == 0) p.LegsAnim = isBackward ? 10 : 9;
                 else if (!isWalk && velocity2D > 310) p.LegsAnim = isBackward ? 2 : 1;
                 else p.LegsAnim = isBackward ? 4 : 3;
             }
             else
             {
+                p.LegsAnimRemainMs = 0;
                 p.LegsAnim = duckState == 0 ? 8 : 7;
             }
 
@@ -107,7 +134,9 @@ namespace SSJJ.Server.QuakeServer
             }
 
             float legAnimSpeed = (p.LegsAnim == 1 || p.LegsAnim == 2) ? velocity2D * 0.0016f : 1f;
-            p.LegsSpeedAnimTime += frameIntervalMs * legAnimSpeed;
+            // PlayerLegPredictionSystem truncates EACH command's scaled interval to int.
+            // Accumulating fractions until snapshot serialization causes a growing drift.
+            p.LegsSpeedAnimTime += (int)(frameIntervalMs * legAnimSpeed);
         }
 
         /// <summary>
@@ -201,16 +230,88 @@ namespace SSJJ.Server.QuakeServer
             }
             else if (reloadPressed && !p.IsStartReload && p.MaxClip > 0 && p.CurrentClip < p.MaxClip && p.CurrentCarryClip > 0)
             {
-                int durMs = isShotgun ? 450 : 1400;
+                int durMs = isShotgun ? 450 : GetDefaultViewAnimDurationMs(wDef, 17);
                 p.IsStartReload = true;
                 p.ReloadEndTime = p.ClientTime + durMs;
                 p.NextAttackTimer = p.ClientTime + durMs;
                 p.ViewAnim = 17;
+                p.LeftViewAnim = 17;
                 p.ViewAnimRemainMs = durMs;
                 p.Fov = 90;
                 p.LastFov = 90;
                 p.ResumeZoom = false;
             }
+        }
+
+        private static readonly Lazy<Dictionary<string, Dictionary<string, int>>> _weaponAnimDurations = new(() => LoadWeaponAnimDurations());
+
+        private static Dictionary<string, Dictionary<string, int>> LoadWeaponAnimDurations()
+        {
+            var result = new Dictionary<string, Dictionary<string, int>>(StringComparer.OrdinalIgnoreCase);
+            try
+            {
+                string[] candidates =
+                {
+                    Path.Combine(AppContext.BaseDirectory, "Data", "weapon_anim_durations.json"),
+                    Path.Combine(AppContext.BaseDirectory, "weapon_anim_durations.json"),
+                    Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Data", "weapon_anim_durations.json")),
+                    Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "SSJJ-Server", "Data", "weapon_anim_durations.json"))
+                };
+                foreach (var path in candidates)
+                {
+                    if (!File.Exists(path)) continue;
+                    var parsed = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, int>>>(File.ReadAllText(path));
+                    if (parsed != null)
+                    {
+                        foreach (var kv in parsed) result[kv.Key] = kv.Value;
+                        break;
+                    }
+                }
+            }
+            catch { }
+            return result;
+        }
+
+        private static readonly Dictionary<string, int> ActionIds = LoadActionIds();
+
+        private static Dictionary<string, int> LoadActionIds()
+        {
+            var ids = new Dictionary<string, int>(StringComparer.Ordinal);
+            foreach (var field in typeof(share.constant.AnimationConstant).GetFields(
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static))
+            {
+                if (field.GetValue(null) is int id) ids.Add(field.Name, id);
+            }
+            return ids;
+        }
+
+        public static int GetDefaultViewAnimDurationMs(WeaponDef wDef, int viewAnimId)
+        {
+            if (!_weaponAnimDurations.Value.TryGetValue(wDef.Name, out var actions)) return 0;
+            foreach (var (name, duration) in actions)
+                if (ActionIds.GetValueOrDefault(name) == viewAnimId && viewAnimId > 0) return duration;
+            return 0;
+        }
+
+        public static bool IsInspectAnimation(int animation) =>
+            animation is share.constant.AnimationConstant.TORSO_SHOWGUN or share.constant.AnimationConstant.TORSO_SPECIAL_SHOWGUN;
+
+        public static bool TryInspectWeapon(PlayerBasicInfo player, WeaponDef weapon)
+        {
+            if (player.IsDead || player.IsStartReload || player.Fov < 90
+                || player.ViewAnim is not (13 or 14 or 39 or 48))
+                return false;
+
+            int animation = player.SpecialMode
+                ? share.constant.AnimationConstant.TORSO_SPECIAL_SHOWGUN
+                : share.constant.AnimationConstant.TORSO_SHOWGUN;
+            int duration = GetDefaultViewAnimDurationMs(weapon, animation);
+            if (duration <= 0) return false;
+
+            player.ViewAnim = animation;
+            player.ViewAnimRemainMs = duration;
+            player.ViewAnimSpeed = 1f;
+            return true;
         }
 
         /// <summary>
@@ -222,24 +323,63 @@ namespace SSJJ.Server.QuakeServer
             {
                 int atkMs = Math.Max(40, wDef.AttackIntervalMs);
                 p.ShotsFired++;
-                p.DelayFire = true;
-                p.NextAttackTimer = p.ClientTime + atkMs;
-                p.ViewAnim = isSecondary ? 20 : 15;
-                p.ViewAnimRemainMs = atkMs;
-                p.DecayTime = Math.Max(40, atkMs / 2);
-                p.PunchPitch = Math.Max(-8f, p.PunchPitch - (wDef.WeaponType == 5 ? 2.5f : 0.65f));
-                float maxAcc = wDef.WeaponType == 5 ? 0.65f : 0.45f;
-                p.WeaponAccuracy = Math.Min(maxAcc, wDef.DefaultAccuracy + p.ShotsFired * 0.025f);
+                p.DelayFire = wDef.Ballistics?.SingleShot != true;
+                var ballistics = isSecondary ? null : wDef.Ballistics;
+                ballistics?.UpdateAccuracy(p, atkMs);
+                if (wDef.IsMelee)
+                {
+                    int meleeCd = isSecondary ? Math.Max(300, wDef.StabStabMs) : Math.Max(150, wDef.SlashSlashMs);
+                    p.NextAttackTimer = p.ClientTime + meleeCd;
+                    p.NextSecondaryAttackTimer = p.ClientTime + meleeCd;
+                    p.ViewAnim = isSecondary ? 20 : 31;
+                    p.TorsoAnim = 15;
+                }
+                else if (isSecondary)
+                {
+                    int meleeCd = Math.Max(300, wDef.StabStabMs);
+                    p.NextAttackTimer = p.ClientTime + meleeCd;
+                    p.NextSecondaryAttackTimer = p.ClientTime + meleeCd;
+                    p.ViewAnim = 20;
+                    p.TorsoAnim = 20;
+                }
+                else
+                {
+                    p.NextAttackTimer = p.ClientTime + atkMs;
+                    p.ViewAnim = 15;
+                    p.TorsoAnim = 15;
+                }
+                p.ViewAnimSpeed = 1.0f;
+                p.LeftViewAnim = p.ViewAnim;
+                p.LeftViewAnimSpeed = 1.0f;
+                p.ViewAnimRemainMs = GetDefaultViewAnimDurationMs(wDef, p.ViewAnim);
+                if (ballistics != null)
+                {
+                    ballistics.ApplyRecoil(p, atkMs);
+                }
+                else
+                {
+                    p.DecayTime = Math.Max(40, atkMs / 2);
+                    p.PunchPitch = Math.Max(-8f, p.PunchPitch - (wDef.WeaponType == 5 ? 2.5f : 0.65f));
+                    float maxAcc = wDef.WeaponType == 5 ? 0.65f : 0.45f;
+                    p.WeaponAccuracy = Math.Min(maxAcc, wDef.DefaultAccuracy + p.ShotsFired * 0.025f);
+                }
                 return;
             }
 
             if (!isAttackDown)
             {
+                if (wDef.Ballistics?.SingleShot == true)
+                {
+                    p.ShotsFired = 0;
+                    return;
+                }
                 if (p.DelayFire)
                 {
                     p.DelayFire = false;
+                    p.RecoilRunUpMax = false;
                     if (p.ShotsFired > 8) p.ShotsFired = 8;
                     p.DecreaseShotsFired = p.ClientTime + 150;
+                    return;
                 }
                 if (wDef.WeaponType == 0) // Pistol: 单点松手归零
                 {

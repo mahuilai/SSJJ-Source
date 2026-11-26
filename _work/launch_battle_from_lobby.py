@@ -11,6 +11,9 @@ import subprocess
 import sys
 import time
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from launch_server_client import CLIENT_DLL, CLIENT_EXE, ORIG_SHA256, is_port_open, launch_battle_client_visible, sha256_file
+
 
 ROOT = Path(__file__).resolve().parent.parent
 PROFILE_PATH = ROOT / "_work" / "lobby_host" / "user_profile.json"
@@ -29,6 +32,7 @@ RACE_TYPE_TO_MODE = {
     2: "explode",
     3: "team",
     5: "personal",
+    6: "biohazard",
     12: "deathmatch",
     15: "blade",
     19: "bighead",
@@ -41,6 +45,7 @@ RACE_TYPE_TO_MODE = {
     2003: "team_ai",
     2019: "bighead",
     2041: "blade_ai",
+    10001: "pve",
 }
 
 
@@ -76,6 +81,16 @@ def weapon_code(bag: dict, *slot_names: str, required: bool = False) -> str:
     if required:
         raise RuntimeError(f"Bag is missing its {slot_names[0]} weapon")
     return ""
+
+
+def weapon_storage_id(item: dict | None) -> int:
+    if not isinstance(item, dict):
+        return 0
+    raw = item.get("storageId") or item.get("id") or 0
+    try:
+        return int(float(raw))
+    except (TypeError, ValueError, OverflowError):
+        return 0
 
 
 _SKINS_CACHE: dict[int, str] | None = None
@@ -142,25 +157,33 @@ def weapon_skin(profile: dict, item: dict | None) -> str:
 
 
 def bag_weapons(profile: dict, bag: dict) -> dict:
+    # Older profiles omit the two grenade slots. Explicit null retains an unequipped slot.
+    bag = {"bom2": {"storageId": 10000020, "tid": 20, "codeName": "flashgrenade"},
+           "bom3": {"storageId": 10012020, "tid": 12020, "codeName": "smoke"}, **bag}
     primary = bag.get("master")
     secondary = bag.get("secondary")
     melee = bag.get("closed")
-    throwable = next((bag.get(name) for name in ("bom1", "bom2", "bom3")
-                      if isinstance(bag.get(name), dict)), None)
     if not isinstance(primary, dict) or not isinstance(secondary, dict) or not isinstance(melee, dict):
         raise RuntimeError("Every battle bag must contain primary, secondary and melee weapons")
-    if not isinstance(throwable, dict):
-        raise RuntimeError("Every battle bag must contain a throwable weapon")
-    items = (primary, secondary, melee, throwable)
     return {
         "primary": weapon_code(bag, "master", required=True),
         "secondary": weapon_code(bag, "secondary", required=True),
         "melee": weapon_code(bag, "closed", required=True),
-        "throwable": weapon_code(bag, "bom1", "bom2", "bom3", required=True),
-        "primary_skin": weapon_skin(profile, items[0]),
-        "secondary_skin": weapon_skin(profile, items[1]),
-        "melee_skin": weapon_skin(profile, items[2]),
-        "throwable_skin": weapon_skin(profile, items[3]),
+        "throwable": weapon_code(bag, "bom1"),
+        "throwable2": weapon_code(bag, "bom2"),
+        "throwable3": weapon_code(bag, "bom3"),
+        "primary_id": weapon_storage_id(primary),
+        "secondary_id": weapon_storage_id(secondary),
+        "melee_id": weapon_storage_id(melee),
+        "throwable_id": weapon_storage_id(bag.get("bom1")),
+        "throwable2_id": weapon_storage_id(bag.get("bom2")),
+        "throwable3_id": weapon_storage_id(bag.get("bom3")),
+        "primary_skin": weapon_skin(profile, primary),
+        "secondary_skin": weapon_skin(profile, secondary),
+        "melee_skin": weapon_skin(profile, melee),
+        "throwable_skin": weapon_skin(profile, bag.get("bom1")),
+        "throwable2_skin": weapon_skin(profile, bag.get("bom2")),
+        "throwable3_skin": weapon_skin(profile, bag.get("bom3")),
     }
 
 
@@ -196,17 +219,19 @@ def find_lobby_hwnd() -> int:
     return 0
 
 
-def set_lobby_visible(visible: bool) -> None:
-    hwnd = find_lobby_hwnd()
-    if not hwnd:
-        return
+def set_lobby_visible(visible: bool, both_lobbies: bool = False) -> None:
+    if os.name != "nt": return
     user32 = ctypes.windll.user32
-    if visible:
-        user32.ShowWindow(hwnd, 9)   # SW_RESTORE
-        user32.ShowWindow(hwnd, 5)   # SW_SHOW
-        user32.SetForegroundWindow(hwnd)
-    else:
-        user32.ShowWindow(hwnd, 0)   # SW_HIDE
+    handles = [find_lobby_hwnd()]
+    if both_lobbies:
+        handles.append(user32.FindWindowW(None, "SSJJ_FlashAir_Battle16398"))
+    for hwnd in dict.fromkeys(filter(None, handles)):
+        if visible:
+            user32.ShowWindow(hwnd, 9)   # SW_RESTORE
+            user32.ShowWindow(hwnd, 5)   # SW_SHOW
+            user32.SetForegroundWindow(hwnd)
+        else:
+            user32.ShowWindow(hwnd, 0)   # SW_HIDE
 
 
 def battle_process_running() -> bool:
@@ -232,7 +257,8 @@ def prepare_config(profile_path: Path, config_path: Path, template_path: Path | 
                    career_override: str | None = None, bag_override: int | None = None,
                    scene_id: int | None = None, race_type: int | None = None,
                    team_override: int | None = None, ally_bots: int | None = None,
-                   enemy_bots: int | None = None) -> dict:
+                   enemy_bots: int | None = None, max_human_players: int | None = None,
+                   tcp_port: int | None = None, udp_port: int | None = None) -> dict:
     profile = read_json(profile_path, "lobby profile")
     bags = profile.get("bags")
     if not isinstance(bags, list) or len(bags) < 5:
@@ -272,6 +298,7 @@ def prepare_config(profile_path: Path, config_path: Path, template_path: Path | 
     config["career"] = career
     config["hand"] = "woman" if ("woman" in career.lower() or "pandora" in career.lower() or "queen" in career.lower() or "rose" in career.lower()) else "man"
     config["player_team"] = 2 if team_val == 2 else 1
+    config["god_mode"] = False
     if profile.get("playerName"):
         config["player_name"] = str(profile["playerName"])
     if ally_bots is not None:
@@ -280,6 +307,12 @@ def prepare_config(profile_path: Path, config_path: Path, template_path: Path | 
         config["enemy_bot_count"] = max(0, int(enemy_bots))
     if ally_bots is not None or enemy_bots is not None:
         config["bot_count"] = int(config.get("ally_bot_count", 0)) + int(config.get("enemy_bot_count", 0))
+    if max_human_players is not None:
+        config["max_human_players"] = max(1, min(16, int(max_human_players)))
+    if tcp_port is not None:
+        config["tcp_port"] = int(tcp_port)
+    if udp_port is not None:
+        config["udp_port"] = int(udp_port)
     config["active_bag"] = active_bag + 1
     config["bags"] = battle_bags
     if mode_key in ("blade", "blade_ai", "flyknife"):
@@ -310,17 +343,125 @@ def write_config(path: Path, config: dict) -> None:
     os.replace(temporary, path)
 
 
+def launch_multiplayer(config: dict, control: Path, room_id: int, seats: list[list[str]], server_only: bool) -> None:
+    roster = {}
+    for cid, team, name, *profile_file in seats:
+        member = {"team": int(team), "name": name}
+        if profile_file:
+            seat_profile = Path(profile_file[0])
+            seat_config = prepare_config(seat_profile, LAUNCH_CONFIG, team_override=int(team))
+            member.update({key: seat_config[key] for key in ("active_bag", "bags", "career", "hand")})
+        roster[int(cid)] = member
+    if len(roster) != len(seats) or not (1 if server_only else 2) <= len(roster) <= 16:
+        raise RuntimeError("联机房的大厅角色 ID 重复或席位数量超出范围")
+    if not server_only:
+        if (BATTLE_DIR / "LookSceneDebug.txt").exists():
+            raise RuntimeError("LookSceneDebug.txt 会强制离线模式，请先移开该文件")
+        if sha256_file(CLIENT_DLL) != ORIG_SHA256:
+            raise RuntimeError("原版战斗客户端 DLL SHA256 校验失败")
+        if not is_port_open("127.0.0.1", 8080):
+            raise RuntimeError("大厅资源网关 127.0.0.1:8080 未启动")
+
+    configured_project = os.environ.get("SSJJ_LOBBY_MULTIPLAYER_PROJECT")
+    project = Path(configured_project).resolve() if configured_project else ROOT
+    server_path = project / "SSJJ-Server" / "bin" / "Release" / "net10.0" / "SSJJ-Server.exe"
+    if not server_path.is_file():
+        raise RuntimeError(f"未找到已构建的多人战斗服 {server_path}")
+    config.update(room_id=room_id, max_human_players=max(2, len(roster)), lobby_players=roster, god_mode=False)
+    config_file = control / "launch_config.json"
+    write_config(config_file, config)
+    tcp_port, udp_port = config["tcp_port"], config["udp_port"]
+    if is_port_open("127.0.0.1", tcp_port):
+        raise RuntimeError(f"联机房 TCP 端口已被占用 {tcp_port}")
+    launch_args = [str(server_path), "--config-json", str(config_file), "--room-id", str(room_id),
+                   "--tcp-port", str(tcp_port), "--udp-port", str(udp_port)]
+    environment = dict(os.environ, SSJJ_BIND_ADDR="127.0.0.1", SSJJ_RESOURCE_PORT="8080")
+    clients = []
+    server = None
+    kernel = ctypes.windll.kernel32 if os.name == "nt" else None
+    if kernel:
+        kernel.GetExitCodeProcess.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_ulong)]
+        kernel.TerminateProcess.argtypes = [ctypes.c_void_p, ctypes.c_uint]
+        kernel.CloseHandle.argtypes = [ctypes.c_void_p]
+    try:
+        server_log = control / "server.log"
+        with server_log.open("w", encoding="utf-8") as output:
+            server = subprocess.Popen(launch_args, cwd=project, env=environment, stdout=output,
+                                      stderr=subprocess.STDOUT, creationflags=subprocess.CREATE_NO_WINDOW if kernel else 0)
+        deadline = time.monotonic() + 12
+        while server.poll() is None and time.monotonic() < deadline:
+            if "Simulation loop started" in server_log.read_text(encoding="utf-8", errors="replace"):
+                break
+            time.sleep(0.10)
+        else:
+            raise RuntimeError(f"联机战斗服未就绪，见 {server_log}")
+
+        if not server_only:
+            cids = list(roster.keys())
+            for seat_idx, cid in enumerate(cids, start=1):
+                token = subprocess.check_output([*launch_args, "--battle-host", "127.0.0.1", "--char-id", str(cid), "--print-la"],
+                                                cwd=project, env=environment, text=True, timeout=10).strip().splitlines()[-1]
+                client_log = str(control / f"client-{cid}.log")
+                client = launch_battle_client_visible([CLIENT_EXE, "-la", token, "-screen-fullscreen", "0", "-logFile", client_log], str(BATTLE_DIR))
+                clients.append(client)
+                log(f"room {room_id} role {cid} launched native client PID {client[2]}")
+                if seat_idx < len(cids):
+                    # Stagger next Unity client until current seat enters arena so concurrent clients do not race on Preload/*/data.tmp.
+                    preload_deadline = time.monotonic() + 20
+                    while server.poll() is None and time.monotonic() < preload_deadline:
+                        srv_txt = server_log.read_text(encoding="utf-8", errors="replace")
+                        if (any(f"cid={cid}" in ln and "entered arena" in ln for ln in srv_txt.splitlines())
+                                or sum(1 for ln in srv_txt.splitlines() if "entered arena" in ln) >= seat_idx):
+                            break
+                        time.sleep(0.25)
+            set_lobby_visible(False, both_lobbies=True)
+
+        (control / "ready").touch()
+        log(f"room {room_id} ready on 127.0.0.1:{tcp_port}/{udp_port}, seats={len(roster)}, logs={control}")
+
+        def alive(client):
+            process, handle, _ = client
+            if process is not None:
+                return process.poll() is None
+            code = ctypes.c_ulong()
+            return bool(kernel.GetExitCodeProcess(handle, ctypes.byref(code))) and code.value == 259
+
+        while server.poll() is None and not (control / "stop").exists() and (server_only or any(map(alive, clients))):
+            time.sleep(0.4)
+    finally:
+        for process, handle, _ in clients:
+            if process is not None:
+                if process.poll() is None:
+                    process.terminate()
+            elif handle:
+                kernel.TerminateProcess(handle, 0)
+                kernel.CloseHandle(handle)
+        if server is not None and server.poll() is None:
+            server.terminate()
+            server.wait(timeout=5)
+        if clients:
+            set_lobby_visible(True, both_lobbies=True)
+
+
 def launch(profile_path: Path = PROFILE_PATH, config_path: Path = LAUNCH_CONFIG,
            template_path: Path | None = None, career_override: str | None = None,
            bag_override: int | None = None, start_game: bool = True,
            scene_id: int | None = None, race_type: int | None = None,
            team_override: int | None = None, ally_bots: int | None = None,
-           enemy_bots: int | None = None) -> dict:
+           enemy_bots: int | None = None, max_human_players: int | None = None,
+           tcp_port: int | None = None, udp_port: int | None = None,
+           room_id: int | None = None, seats: list[list[str]] | None = None,
+           control: Path | None = None, server_only: bool = False) -> dict:
     config = prepare_config(
         profile_path, config_path, template_path,
         career_override, bag_override, scene_id, race_type,
-        team_override, ally_bots, enemy_bots,
+        team_override, ally_bots, enemy_bots, max_human_players, tcp_port, udp_port,
     )
+    if seats and start_game:
+        if room_id is None or control is None:
+            raise RuntimeError("联机席位需要大厅房间号及控制目录")
+        launch_multiplayer(config, control, room_id, seats, server_only)
+        return config
     write_config(config_path, config)
     active = config["bags"][config["active_bag"] - 1]
     log("prepared map=%s mode=%s career=%s bag=%s primary=%s secondary=%s melee=%s throwable=%s" % (
@@ -330,12 +471,17 @@ def launch(profile_path: Path = PROFILE_PATH, config_path: Path = LAUNCH_CONFIG,
         return config
     if not SERVER_LAUNCHER.is_file():
         raise RuntimeError(f"Server-First battle launcher not found: {SERVER_LAUNCHER}")
+    port_args = []
+    if tcp_port is not None:
+        port_args += ["--tcp-port", str(tcp_port)]
+    if udp_port is not None:
+        port_args += ["--udp-port", str(udp_port)]
     flags = subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0
     hid_lobby = False
     proc = None
     try:
         proc = subprocess.Popen(
-            [sys.executable, str(SERVER_LAUNCHER), "--config-json", str(config_path), "--kill-existing"],
+            [sys.executable, str(SERVER_LAUNCHER), "--config-json", str(config_path), *port_args],
             cwd=str(ROOT),
             close_fds=os.name != "nt",
             creationflags=flags,
@@ -362,7 +508,6 @@ def launch(profile_path: Path = PROFILE_PATH, config_path: Path = LAUNCH_CONFIG,
                 proc.wait(timeout=2.0)
             except subprocess.TimeoutExpired:
                 proc.terminate()
-        subprocess.run(["taskkill", "/F", "/IM", "SSJJ-Server.exe"], capture_output=True)
         if hid_lobby:
             set_lobby_visible(True)
     return config
@@ -380,6 +525,13 @@ def main() -> int:
     parser.add_argument("--team", type=int)
     parser.add_argument("--ally-bots", type=int)
     parser.add_argument("--enemy-bots", type=int)
+    parser.add_argument("--max-human-players", type=int)
+    parser.add_argument("--tcp-port", type=int)
+    parser.add_argument("--udp-port", type=int)
+    parser.add_argument("--room-id", type=int)
+    parser.add_argument("--seat", action="append", nargs="+", metavar="SEAT")
+    parser.add_argument("--room-control", type=Path)
+    parser.add_argument("--server-only", action="store_true")
     parser.add_argument("--prepare-only", action="store_true", help="write config without launching battle")
     args = parser.parse_args()
     try:
@@ -387,7 +539,8 @@ def main() -> int:
             args.profile, args.config_path, args.config_template,
             args.career, args.bag, not args.prepare_only,
             args.scene_id, args.race_type, args.team,
-            args.ally_bots, args.enemy_bots,
+            args.ally_bots, args.enemy_bots, args.max_human_players,
+            args.tcp_port, args.udp_port, args.room_id, args.seat, args.room_control, args.server_only,
         )
         return 0
     except Exception as exc:

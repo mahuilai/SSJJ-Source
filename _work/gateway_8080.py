@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 """SSJJ Master HTTP Resource Gateway (8080) - 100% Offline Zero-Latency Mode"""
 import http.server, socketserver, urllib.parse, os, sys, time, threading, re, json, io, socket, zlib, struct, hashlib
-try:
-    from PIL import Image
-except ImportError:
-    Image = None
+from PIL import Image
+from pathlib import Path
+import xml.etree.ElementTree as ET
 
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from lobby_assets import LobbyAssets, read_manifest
+
+ROOT_DIR = str(Path(__file__).resolve().parent.parent)
 HTTP_PORT = 8080
 CACHE = os.path.join(ROOT_DIR, "_work", "lobby_host", "cache")
 # Generated icon SWFs live here so the official cached assets are never overwritten.
@@ -80,45 +82,44 @@ _MD5_CACHE = {}
 # 实验开关：SSJJ_PREPARED_FOR=<key1,key2>
 # 对这些资源改发 cache_prepared/ 版（DoABC 已剥离），并把契约里的 md5/size
 # 同步改成该版的真实值，保证客户端的完整性校验能通过。
-# key -> (old_md5, old_size, new_md5, new_size)
+# URL -> (MD5, size) of the prepared payload for that row.
 PREPARED_FORCE = {}
+LOBBY_ASSETS = None
 
 def build_res_contract():
-    """Map resource path -> (md5, size) from the local res_config."""
+    """Load the same byte contract delivered to the AIR client."""
     global RES_CONTRACT
-    contract = {}
-    try:
-        with open(LOCAL_RESC_LOCAL, 'r', encoding='utf-8', errors='replace') as f:
-            xml = f.read()
-    except Exception as ex:
-        print(f"[Gateway] res contract unavailable: {ex}", flush=True)
-        return
-    for m in re.finditer(r'<([A-Za-z0-9_]+)\s+url="([^"]+)"[^>]*?md5="([0-9a-fA-F]{32})"[^>]*?size="(\d+)"', xml):
-        contract[m.group(2).replace('/', '_')] = (m.group(3).lower(), int(m.group(4)))
-    RES_CONTRACT = contract
-    print(f"[Gateway] res contract loaded: {len(contract)} entries", flush=True)
-
-    forced = [x.strip() for x in os.environ.get("SSJJ_PREPARED_FOR", "").split(",") if x.strip()]
-    if os.environ.get("SSJJ_KEEP_SENSITIVE_FILTER", "") != "1":
-        for k in (
+    RES_CONTRACT = read_manifest(LOCAL_RESC_LOCAL)
+    PREPARED_FORCE.clear()
+    forced = set(os.environ.get("SSJJ_PREPARED_FOR", "").split(","))
+    if os.environ.get("SSJJ_KEEP_SENSITIVE_FILTER") != "1":
+        forced.update((
             "config_dirtyWords_22f10d057903220ec12df1f0455c6cde",
             "template_DirtySensitiveWord_972448c26d2b764aa6551486e3ae5377.bin",
-        ):
-            if k not in forced and os.path.isfile(os.path.join(PREPARED_DIR, k)):
-                forced.append(k)
-    for k in forced:
-        p = os.path.join(PREPARED_DIR, k)
-        if not os.path.isfile(p):
-            print(f"[Gateway] PREPARED_FORCE skip (missing): {k}", flush=True)
-            continue
-        old = contract.get(k)
-        new = (file_md5(p), os.path.getsize(p))
-        if old is None:
-            print(f"[Gateway] PREPARED_FORCE skip (no contract row): {k}", flush=True)
-            continue
-        RES_CONTRACT[k] = new
-        PREPARED_FORCE[k] = (old[0], old[1], new[0], new[1])
-        print(f"[Gateway] PREPARED_FORCE {k}: {old} -> {new}", flush=True)
+        ))
+    for url, old in RES_CONTRACT.items():
+        key = url.replace("/", "_")
+        path = os.path.join(PREPARED_DIR, key)
+        if key in forced and os.path.isfile(path):
+            new = (file_md5(path), os.path.getsize(path))
+            if new[0]:
+                RES_CONTRACT[url] = new
+                PREPARED_FORCE[url] = new
+                print(f"[Gateway] PREPARED_FORCE {url}: {old} -> {new}", flush=True)
+    print(f"[Gateway] res contract loaded: {len(RES_CONTRACT)} entries", flush=True)
+
+
+def res_config_bytes():
+    if not PREPARED_FORCE:
+        return Path(LOCAL_RESC_LOCAL).read_bytes()
+    tree = ET.parse(LOCAL_RESC_LOCAL)
+    for row in tree.iter():
+        override = PREPARED_FORCE.get(row.get("url"))
+        if override:
+            digest, size = override
+            row.attrib.update(md5=digest, size=str(size), encode="false", compress="false")
+    return ET.tostring(tree.getroot(), encoding="utf-8", xml_declaration=True)
+
 
 def file_md5(path):
     try:
@@ -137,45 +138,32 @@ def file_md5(path):
     except Exception:
         return None
 
-def pick_by_contract(key, candidates):
-    """Return the first candidate whose bytes satisfy the declared md5/size.
-
-    candidates is an ordered list of (label, path). When the manifest has no
-    row for this key we fall back to the first existing file so unrelated
-    assets keep their previous behaviour.
-    """
-    expect = RES_CONTRACT.get(key)
-    if expect is None:
-        # Not described by the manifest: caller falls through to the legacy
-        # plain/ -> cache_prepared/ -> cache/ order unchanged.
-        return None
-    for label, path in candidates:
-        if not (path and os.path.isfile(path)):
-            continue
-        want_md5, want_size = expect
-        if os.path.getsize(path) != want_size:
-            continue
-        if file_md5(path) == want_md5:
-            return path
-    return None
-
-def contract_conflicts(key, candidates):
-    """Paths that exist for this key but were rejected by the manifest check."""
-    expect = RES_CONTRACT.get(key)
-    if expect is None:
-        return []
-    out = []
-    for label, path in candidates:
-        if path and os.path.isfile(path):
-            out.append(f"{label}:{os.path.getsize(path)}")
-    return out
-
 # Build Master Asset Pool (13,558 assets)
 ASSET_POOL = {}
 HASH_POOL = {}
 DISK_BUNDLE_BY_NAME = {}
 PATCHED_MANIFEST_BYTES = None
 WEAPON_3D_FALLBACK = None
+
+def select_compatible_player_anim_bundles(manifest):
+    # DefaultCareerAnimInfo enumerates animWarps children as XmlElement.
+    # These local revisions omit the comments that the current client cannot cast.
+    # Both revisions retain the original leg.anm and torso.anm byte for byte.
+    revisions = (
+        ('manct', 'fa5473b46bf63158673d31341673a7d1', 4292005, 2283968426,
+         '2e02590d41e913b0bac151b3f805edcb', 4148245, 3286757092),
+        ('woman', '95453a2ae16ffbce14b8f5b82846846a', 6009057, 38507805,
+         'e1bb4b814da1b656eba024c7e02d3daf', 5746338, 924763467),
+    )
+    for model, old_hash, old_size, old_crc, new_hash, new_size, new_crc in revisions:
+        path = HASH_POOL.get(new_hash)
+        if not path or os.path.getsize(path) != new_size or file_md5(path) != new_hash:
+            continue
+        name = f'playeranim/{model}'
+        previous = f'<AssetBundle crc="{old_crc}" md5="{old_hash}" name="{name}" size="{old_size}"/>'
+        compatible = f'<AssetBundle crc="{new_crc}" md5="{new_hash}" name="{name}" size="{new_size}"/>'
+        manifest = manifest.replace(previous, compatible, 1)
+    return manifest
 
 def _index_bundle_tree(root_dir):
     if not os.path.isdir(root_dir):
@@ -253,7 +241,7 @@ def index_assets():
                     patched_cnt += 1
                     return f"{m.group(1)}{new_h}{m.group(3)}{bname}{m.group(5)}{new_sz}{m.group(7)}"
                 return m.group(0)
-            m_txt = pat.sub(_repl, m_txt)
+            m_txt = pat.sub(_repl, select_compatible_player_anim_bundles(m_txt))
             PATCHED_MANIFEST_BYTES = m_txt.encode('utf-8')
             print(f"[Gateway] Patched {patched_cnt} manifest bundle hashes to match local disk bundles.", flush=True)
         except Exception as e:
@@ -433,7 +421,7 @@ def _swf_parses(data):
         return False
 
 def make_weapon_swf(png_path, export_name=None):
-    if not TPL_BYTES or Image is None: return None
+    if not TPL_BYTES: return None
     try:
         im = Image.open(png_path).convert('RGBA')
         canvas = Image.new('RGBA', (175, 55), (0, 0, 0, 0))
@@ -611,13 +599,15 @@ class GatewayHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header('Content-Type', ctype)
         self.send_header('Content-Length', str(len(data)))
         self.end_headers()
-        self.wfile.write(data)
+        if self.command != "HEAD":
+            self.wfile.write(data)
 
     def send_error(self, code, message=None, explain=None):
-        log_req(f"    -> {code} {message or ''}")
+        log_req(f"    -> {code} {getattr(self, 'resource_path', '')} {message or ''}")
         return super().send_error(code, message, explain)
 
-    def _serve(self, path, ctype=None):
+    def _serve(self, path, ctype=None, *, preserve_bytes=False):
+        path = os.fspath(path)
         try:
             if ctype is None:
                 if path.endswith('.swf'): ctype = 'application/x-shockwave-flash'
@@ -629,14 +619,17 @@ class GatewayHandler(http.server.SimpleHTTPRequestHandler):
             with open(path, 'rb') as f:
                 data = f.read()
             bn = os.path.basename(path)
-            if path.endswith('.swf') and (bn.startswith('resource_swf_') or 'resource/swf/' in self.path):
+            if not preserve_bytes and path.endswith('.swf') and (bn.startswith('resource_swf_') or 'resource/swf/' in self.path):
                 data = _ensure_avm2_timeline_swf(data)
             self._serve_bytes(data, ctype)
         except Exception as e:
             self.send_error(500, str(e))
 
     def do_GET(self):
-        p = urllib.parse.urlparse(self.path).path.lstrip('/')
+        p = urllib.parse.unquote(urllib.parse.urlsplit(self.path).path.lstrip('/'))
+        if re.search(r"[:\\\x00-\x1f]", p) or any(part in ('.', '..') for part in p.split('/')):
+            return self.send_error(400, "Invalid resource path")
+        self.resource_path = p
         log_req(f"GET {p}")
 
         # [PATCH 2026-11-01] Flash/AIR 沙箱策略文件。
@@ -661,11 +654,6 @@ class GatewayHandler(http.server.SimpleHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(body)
             return
-
-        # 实验：被强制走 prepared 版的资源优先直接发（契约已在 build_res_contract 里同步改过）
-        _k0 = p.replace('/', '_')
-        if _k0 in PREPARED_FORCE:
-            return self._serve(os.path.join(PREPARED_DIR, _k0), 'application/x-shockwave-flash')
 
         if p == 'probe':
             q = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
@@ -735,18 +723,6 @@ class GatewayHandler(http.server.SimpleHTTPRequestHandler):
         if p == 'config/hall_config.xml': return self._serve(LOCAL_HALL, 'text/xml')
         if p.startswith('Lobby_') and p.endswith('.swf'): return self._serve(LOCAL_LOBBY, 'application/x-shockwave-flash')
 
-        # [R1 & R3 PATCH] Stage3D ClientView Engine & 3D Model SWFs
-        if p.startswith('ClientView_') or p.startswith('RenderThread_') or p == 'ClientView.swf' or p == 'RenderThread.swf':
-            cv_path = os.path.join(ROOT_DIR, "资源下载", "大厅资源", "SSJJ-main", "output", "swf", "ClientView_cb90b1c9823af027e0536313e50106e4.swf")
-            if os.path.isfile(cv_path):
-                return self._serve(cv_path, 'application/x-shockwave-flash')
-
-        if p.startswith('LobbyModelView') or p.startswith('LobbyWeaponView'):
-            empty_swf = os.path.join(ROOT_DIR, "_work", "flexsdk", "frameworks", "javascript", "FABridge", "samples", "EmptySwf.swf")
-            if os.path.isfile(empty_swf):
-                return self._serve(empty_swf, 'application/x-shockwave-flash')
-            minimal_swf = bytes.fromhex("4657530e250000007800055f00000fa000000c010044110800000040000000")
-            return self._serve_bytes(minimal_swf, 'application/x-shockwave-flash')
         if p == 'FLUI_ASSETS_dec.swf':
             return self._serve(os.path.join(ROOT_DIR, '_work', 'lobby_host', 'cache', 'FLUI_ASSETS_dec.swf'), 'application/x-shockwave-flash')
         if p == 'ComponentAssets_dec.swf':
@@ -756,100 +732,25 @@ class GatewayHandler(http.server.SimpleHTTPRequestHandler):
         if p == 'HallModelAssets_dec.swf':
             return self._serve(os.path.join(ROOT_DIR, '_work', 'lobby_host', 'cache_prepared', 'resource_flas_HallModelAssets_051e678bb680fd0609ad61503d71d9da.swf'), 'application/x-shockwave-flash')
         if p == 'config/res_config_38a3d077fefc79e447d6ea3efe8c8f66.xml':
-            # 有强制 prepared 的资源时，必须同步改写它声明的 md5/size，
-            # 否则客户端按旧值校验会失败、重试 5 次后 onLoadError。
-            #
-            # [PATCH 2026-11-01] 原实现用 `txt.replace(omd5, nmd5)` 全局替换，
-            # 而同一个 md5 在官方 res_config 里同时出现在 url= 和 md5= 两个属性中，
-            # 替换把 URL 也改成了 prepared 版的文件名 -> 客户端请求
-            # <name>_<prepared_md5>.swf，网关按原 md5 拼 key -> 文件名对不上
-            # -> 404 -> "loader, resource load error"。现在只改属性值，
-            # URL 保持官方原样。
-            if PREPARED_FORCE:
-                try:
-                    txt = open(LOCAL_RESC_LOCAL, encoding='utf-8', errors='replace').read()
-                    for k, (omd5, osz, nmd5, nsz) in PREPARED_FORCE.items():
-                        txt = re.sub(r'(\smd5=")' + re.escape(omd5) + r'(")',
-                                     r'\g<1>' + nmd5 + r'\g<2>', txt)
-                        txt = re.sub(r'(\ssize=")' + str(osz) + r'(")',
-                                     r'\g<1>' + str(nsz) + r'\g<2>', txt)
-                    return self._serve_bytes(txt.encode('utf-8'), 'text/xml')
-                except Exception as ex:
-                    log_req(f"    !! res_config patch failed: {ex}")
-            return self._serve(LOCAL_RESC_LOCAL, 'text/xml')
-        # [PATCH 2026-11-01] 契约分发前置。
-        #
-        # res_config 的 md5/size/compress/encode 描述的是 **CDN 上的字节**，
-        # 客户端流程是：先按 md5 校验原始字节 -> 再按 encode/compress 决定是否
-        # swfDecode + uncompress。所以网关必须下发**契约原样**的字节，让客户端
-        # 走它自己的解密路径。
-        #
-        # 之前的 bug：NewMainView 特判分支在这里之前就 return 了 plain/ 下的
-        # 11415 B 压缩态 XML，而 res_config 被 apply_plain_manifest() 标成
-        # encode="false" compress="false" -> 客户端不解密 -> XML() 解析压缩字节
-        # -> analysisLoadDataError resName:mainView,type:XML -> 资源队列卡死
-        # -> 幕布不移除 -> 黑屏。
-        #
-        # cdn_pristine/ 与 plain/ 里的 848 条已按官方 res_config 契约
-        # (md5+size) 逐条校验通过，全部命中，0 缺失。
+            return self._serve_bytes(res_config_bytes(), 'text/xml')
+
+        declared = RES_CONTRACT.get(p)
+        if declared is not None or LOBBY_ASSETS.managed(p):
+            override = PREPARED_FORCE.get(p)
+            if override is not None:
+                asset = Path(PREPARED_DIR) / p.replace('/', '_')
+                status = "matched" if file_md5(asset) == override[0] else "mismatch"
+                if status == "mismatch":
+                    asset = None
+            else:
+                asset, status = LOBBY_ASSETS.lookup(p, declared)
+            if asset is None:
+                return self.send_error(404, f"Lobby asset {status}")
+            # Hashed or signed assets must reach AIR byte for byte. The
+            # legacy AVM2 normalization still applies to dynamic icon SWFs.
+            return self._serve(asset, preserve_bytes=declared is not None or status == "matched")
+
         key = p.replace('/', '_')
-        ordered = [
-            ('decrypted', os.path.join(DECRYPTED_DIR, key)),
-            ('plain', os.path.join(PLAIN_DIR, key)),
-            ('cache', os.path.join(CACHE, key)),
-            ('prepared', os.path.join(PREPARED_DIR, key)),
-            ('pristine', os.path.join(PRISTINE_DIR, key)),
-        ]
-        chosen = pick_by_contract(key, ordered)
-        if chosen:
-            return self._serve(chosen)
-
-        rejected = contract_conflicts(key, ordered)
-        if rejected:
-            log_req(f"    !! contract mismatch for {key} -> {', '.join(rejected)}")
-
-        if 'NewMainView_4bd8246c78fc282a9d9a41d6cb18944e.xml' in p:
-            plain_xml = os.path.join(PLAIN_DIR, "resource_view_NewMainView_4bd8246c78fc282a9d9a41d6cb18944e.xml")
-            if os.path.isfile(plain_xml):
-                return self._serve(plain_xml, "text/xml")
-            orig_xml = os.path.join(CACHE, "resource_view_NewMainView_4bd8246c78fc282a9d9a41d6cb18944e.xml")
-            if os.path.isfile(orig_xml):
-                return self._serve(orig_xml, 'text/xml')
-
-        if 'BagView_9846bc3c853d01d233aa0e531680746f.xml' in p:
-            plain_xml = os.path.join(PLAIN_DIR, "resource_view_BagView_9846bc3c853d01d233aa0e531680746f.xml")
-            if os.path.isfile(plain_xml):
-                return self._serve(plain_xml, "text/xml")
-            dec_xml = os.path.join(ROOT_DIR, "_work", "lobby_host", "decrypted", "resource_view_BagView_9846bc3c853d01d233aa0e531680746f.xml")
-            if os.path.isfile(dec_xml):
-                return self._serve(dec_xml, 'text/xml')
-
-        # WeaponAssets are prebuilt and served from disk; the request handler
-        # never rewrites, recompresses or synthesizes an SWF.
-        if 'WeaponAssets' in p:
-            static_swf = resolve_weapon_swf_path(p)
-            if static_swf:
-                return self._serve(static_swf, 'application/x-shockwave-flash')
-
-        # SkinAssets handling
-        if 'SkinAssets' in p:
-            cache_file = os.path.join(CACHE, p.replace('/', '_'))
-            if os.path.isfile(cache_file) and os.path.getsize(cache_file) >= 500:
-                return self._serve(cache_file, 'application/x-shockwave-flash')
-            skin_name = os.path.basename(p)
-            for skin_dir in (
-                os.path.join(ROOT_DIR, "资源下载", "大厅资源", "ssjj-lobby-src", "SSJJ-离线大厅", "mirror", "s10", "resource", "swf", "SkinAssets"),
-                os.path.join(ROOT_DIR, "offline-lobby-rebuild", "dist", "resource", "swf", "SkinAssets"),
-            ):
-                candidate = os.path.join(skin_dir, skin_name)
-                if os.path.isfile(candidate) and os.path.getsize(candidate) >= 500:
-                    return self._serve(candidate, 'application/x-shockwave-flash')
-            if skin_name in ASSET_POOL and os.path.getsize(ASSET_POOL[skin_name]) >= 500:
-                return self._serve(ASSET_POOL[skin_name], 'application/x-shockwave-flash')
-            tpl_skin = os.path.join(CACHE, "resource_swf_SkinAssets_skin_118_1.swf")
-            if os.path.isfile(tpl_skin):
-                return self._serve(tpl_skin, 'application/x-shockwave-flash')
-
         # TitleIcon handling
         if 'titleIcon' in p:
             cache_file = os.path.join(CACHE, p.replace('/', '_'))
@@ -857,28 +758,13 @@ class GatewayHandler(http.server.SimpleHTTPRequestHandler):
                 return self._serve(cache_file, 'application/x-shockwave-flash')
             tpl_title = os.path.join(CACHE, "resource_swf_titleIcon_title_40001.swf")
             if os.path.isfile(tpl_title):
+                log_req(f"    !! fallback {p} -> {os.path.basename(tpl_title)}")
                 return self._serve(tpl_title, 'application/x-shockwave-flash')
 
-        # Fallbacks for assets the manifest does not describe.
-        # 契约可能**故意**声明 size=0（如 config/i18n_next_*.txt，其 md5 就是空串的
-        # d41d8cd98f00b204e9800998ecf8427e），此时空文件才是正确资源，不能当坏文件跳过；
-        # 反过来，契约声明了非 0 大小时，空文件绝不该被发出。一律以契约声明为准。
-        expect = RES_CONTRACT.get(key)
-        allow_empty = bool(expect is not None and expect[1] == 0)
-        for label, path in ordered:
-            if not os.path.isfile(path):
-                continue
-            if os.path.getsize(path) == 0 and not allow_empty:
-                continue
-            return self._serve(path)
-
-        prepared_asset = os.path.join(PREPARED_DIR, key)
-        if p.startswith('resource/flas/') and os.path.isfile(prepared_asset):
-            return self._serve(prepared_asset, 'application/x-shockwave-flash')
-
-        # General Cache
-        cache = os.path.join(CACHE, key)
-        if os.path.isfile(cache): return self._serve(cache)
+        for directory in LOBBY_ASSETS.flat:
+            path = directory / key
+            if path.is_file() and path.stat().st_size:
+                return self._serve(path)
 
         # Asset Pool for general assets
         clean_p = p.split('$')[0]
@@ -892,10 +778,12 @@ class GatewayHandler(http.server.SimpleHTTPRequestHandler):
         if 'StuffAssets' in p:
             for f in os.listdir(CACHE):
                 if 'StuffAssets' in f and f.endswith('.swf') and os.path.getsize(os.path.join(CACHE, f)) >= 500:
+                    log_req(f"    !! fallback {p} -> {f}")
                     return self._serve(os.path.join(CACHE, f), 'application/x-shockwave-flash')
         if 'KillIcon' in p:
             for f in os.listdir(CACHE):
                 if 'KillIcon' in f and f.endswith('.swf') and os.path.getsize(os.path.join(CACHE, f)) >= 500:
+                    log_req(f"    !! fallback {p} -> {f}")
                     return self._serve(os.path.join(CACHE, f), 'application/x-shockwave-flash')
 
         # 100% Zero-latency Offline: Never wait on external CDN
@@ -954,7 +842,9 @@ class GatewayHandler(http.server.SimpleHTTPRequestHandler):
         self._serve_bytes(b'ok', 'text/plain')
 
 def run():
+    global LOBBY_ASSETS
     build_res_contract()
+    LOBBY_ASSETS = LobbyAssets(Path(ROOT_DIR), file_md5)
     print(f"[Gateway] Starting Master HTTP Resource Gateway on 127.0.0.1:{HTTP_PORT}...", flush=True)
     server = socketserver.ThreadingTCPServer(('127.0.0.1', HTTP_PORT), GatewayHandler)
     server.daemon_threads = True
